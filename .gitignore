@@ -60,3 +60,6 @@ db_backup_*.sql
 
 # 工具产生的临时目录
 .dumate/
+
+# 本地 agent 记忆目录，不随仓库公开
+.workbuddy/

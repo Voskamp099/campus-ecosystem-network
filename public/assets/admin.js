@@ -168,10 +168,20 @@ const HUB_CONTENT_SUBTABS = {
 };
 
 const IS_FILE_MODE = window.location.protocol === "file:";
-// 离线（file://）模式下的演示管理员账号：用户名与线上 .env 的 ADMIN_USERNAME 保持一致（admin），
-// 密码为本地演示默认值。线上 server 模式以 .env 中的 ADMIN_PASSWORD 为准，切勿依赖此处硬编码值。
+// 离线（file://）模式下的演示管理员账号：用户名与线上 .env 的 ADMIN_USERNAME 保持一致（admin）。
+// 密码不写死在代码里：首次使用时由使用者在这台电脑上设定，只保存在浏览器 localStorage。
+// 线上 server 模式以 .env 中的 ADMIN_PASSWORD 为准。
 const LOCAL_ADMIN_USERNAME = "admin";
-const LOCAL_ADMIN_PASSWORD = "123456";
+const LOCAL_PASSWORD_KEY = "alliance_local_admin_password";
+function localAdminPassword() {
+  let pwd = localStorage.getItem(LOCAL_PASSWORD_KEY);
+  if (!pwd) {
+    pwd = window.prompt("本地演示模式：请为这台电脑设置一个本地管理员密码（仅保存在此浏览器，不会上传）");
+    if (!pwd) return null;
+    localStorage.setItem(LOCAL_PASSWORD_KEY, pwd);
+  }
+  return pwd;
+}
 const LOCAL_TOKEN_KEY = "alliance_admin_token";
 
 const LOCAL_DEFAULTS = {
@@ -247,9 +257,9 @@ function applyModeUI() {
     modeBadge.textContent = "本地模式 · 浏览器存储";
     modeBadge.classList.add("local");
     modeBadge.classList.remove("live");
-    modeNotice.innerHTML = "<strong>当前是本地模式。</strong> 你的修改会保存在当前浏览器 localStorage，不会同步到服务器。默认超级管理员账号为 <code>admin</code>，默认测试密码为 <code>123456</code>。";
+    modeNotice.innerHTML = "<strong>当前是本地模式。</strong> 你的修改会保存在当前浏览器 localStorage，不会同步到服务器。管理员账号为 <code>admin</code>，密码是这台电脑上设定的本地密码。";
     loginUsername.placeholder = "本地模式默认账号：admin";
-    loginPassword.placeholder = "本地模式默认密码：123456";
+    loginPassword.placeholder = "本地模式密码（首次使用时会让你设置）";
     return;
   }
 
@@ -364,7 +374,8 @@ async function localApi(path, options = {}) {
 
   if (path === "/api/admin/auth/login" && method === "POST") {
     const body = parseBody();
-    if (body.username === LOCAL_ADMIN_USERNAME && body.password === LOCAL_ADMIN_PASSWORD) {
+    const localPassword = localAdminPassword();
+    if (body.username === LOCAL_ADMIN_USERNAME && body.password && body.password === localPassword) {
       return {
         token: "local-admin-token",
         admin: { username: LOCAL_ADMIN_USERNAME }

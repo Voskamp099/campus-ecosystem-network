@@ -285,9 +285,21 @@
       const HOME_PAGE = IS_FILE_MODE ? 'index.html' : '/';
       const REGISTER_PAGE = IS_FILE_MODE ? 'register.html' : '/register.html';
       const FORGOT_PASSWORD_PAGE = IS_FILE_MODE ? 'forgot-password.html' : '/forgot-password.html';
+      // 本地演示账号的密码不再写死在代码里：首次使用时由使用者在自己的电脑上设定，
+      // 只保存在本浏览器的 localStorage，不会提交到任何服务器。
+      const LOCAL_PASSWORD_KEY = 'alliance_local_demo_password';
+      function localDemoPassword() {
+        let pwd = localStorage.getItem(LOCAL_PASSWORD_KEY);
+        if (!pwd) {
+          pwd = window.prompt('本地演示模式：请为这台电脑设置一个本地密码（仅保存在此浏览器，不会上传）');
+          if (!pwd) return null;
+          localStorage.setItem(LOCAL_PASSWORD_KEY, pwd);
+        }
+        return pwd;
+      }
       const LOCAL_TEST_ACCOUNT = {
         email: 'test@alliance.local',
-        password: '123456',
+        password: null,
         user: {
           id: 10001,
           userId: 10001,
@@ -302,7 +314,7 @@
       };
       const LOCAL_SUPER_ADMIN = {
         email: 'gly',
-        password: '123456',
+        password: null,
         user: {
           id: 90001,
           userId: 90001,
@@ -435,7 +447,7 @@
 
         try {
           if (IS_FILE_MODE) {
-            if (email === LOCAL_SUPER_ADMIN.email && password === LOCAL_SUPER_ADMIN.password) {
+            if (email === LOCAL_SUPER_ADMIN.email && password && password === localDemoPassword()) {
               localStorage.setItem('alliance_token', 'local-admin-token');
               localStorage.setItem('alliance_user', JSON.stringify(LOCAL_SUPER_ADMIN.user));
 
@@ -453,7 +465,7 @@
               return;
             }
 
-            if (email === LOCAL_TEST_ACCOUNT.email && password === LOCAL_TEST_ACCOUNT.password) {
+            if (email === LOCAL_TEST_ACCOUNT.email && password && password === localDemoPassword()) {
               localStorage.setItem('alliance_token', 'local-user-token');
               localStorage.setItem('alliance_user', JSON.stringify(LOCAL_TEST_ACCOUNT.user));
 
@@ -472,7 +484,7 @@
             }
 
             notice.className = 'notice error';
-            notice.textContent = '本地可用账号：gly / 123456（超级管理员）或 test@alliance.local / 123456';
+            notice.textContent = '本地模式：账号为 gly（超级管理员）或 test@alliance.local，密码是这台电脑上设置的本地演示密码';
             return;
           }
 
