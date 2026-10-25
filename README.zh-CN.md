@@ -1,11 +1,11 @@
-# 北京校园生态合作联盟
+# 北京校园生态合作联盟（Campus Ecosystem Network）
 
 连接高校学生、企业与政府伙伴的全栈平台，让实习机会、活动与合作需求真正被匹配起来，
 而不是躺在一个微信群里。
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
-[![CI](https://github.com/Voskamp099/campus-ecosystem-alliance/actions/workflows/ci.yml/badge.svg)](https://github.com/Voskamp099/campus-ecosystem-alliance/actions/workflows/ci.yml)
+[![CI](https://github.com/Voskamp099/campus-ecosystem-network/actions/workflows/ci.yml/badge.svg)](https://github.com/Voskamp099/campus-ecosystem-network/actions/workflows/ci.yml)
 
 > **关于本仓库** — 作为作品展示公开，用于说明平台背后的工程实现。本仓库不以开源项目方式发布，
 > 未授予任何许可，详见 [NOTICE](NOTICE)。样本数据已脱敏，提交历史保留原样。

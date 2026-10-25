@@ -1,4 +1,4 @@
-# Campus Ecosystem Alliance
+# Campus Ecosystem Network
 
 **北京校园生态合作联盟** — a full-stack platform that connects university students,
 companies and government partners, so that internships, events and collaboration
@@ -6,7 +6,7 @@ requests actually get matched instead of sitting in a WeChat group.
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
-[![CI](https://github.com/Voskamp099/campus-ecosystem-alliance/actions/workflows/ci.yml/badge.svg)](https://github.com/Voskamp099/campus-ecosystem-alliance/actions/workflows/ci.yml)
+[![CI](https://github.com/Voskamp099/campus-ecosystem-network/actions/workflows/ci.yml/badge.svg)](https://github.com/Voskamp099/campus-ecosystem-network/actions/workflows/ci.yml)
 
 > **About this repository** — published as a portfolio artefact so the engineering can be
 > reviewed. It is not an open-source release and carries no licence; see [NOTICE](NOTICE).
