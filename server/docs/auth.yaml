@@ -24,7 +24,7 @@ paths:
                 password:
                   type: string
                   minLength: 6
-                  example: "123456"
+                  example: "your-password"
                 nickname:
                   type: string
                   example: "张三"
@@ -97,7 +97,7 @@ paths:
                   example: "user@example.com"
                 password:
                   type: string
-                  example: "123456"
+                  example: "your-password"
       responses:
         '200':
           description: 登录成功
@@ -265,7 +265,7 @@ paths:
               properties:
                 oldPassword:
                   type: string
-                  example: "123456"
+                  example: "your-password"
                 newPassword:
                   type: string
                   minLength: 6

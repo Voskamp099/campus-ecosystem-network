@@ -63,7 +63,7 @@ JWT_SECRET=your-secret-key-change-me
 
 # 管理员配置
 ADMIN_USERNAME=gly
-ADMIN_PASSWORD=123456
+ADMIN_PASSWORD=请替换为强密码
 ADMIN_EMAIL=admin@example.com
 
 # 数据库配置（可选）

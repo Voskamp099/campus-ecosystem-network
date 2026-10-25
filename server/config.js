@@ -58,7 +58,7 @@ const config = {
   // 管理员配置
   adminUsername: process.env.ADMIN_USERNAME || "gly",
   adminEmail: process.env.ADMIN_EMAIL || "gly@alliance.local",
-  adminPassword: process.env.ADMIN_PASSWORD || "123456",
+  adminPassword: process.env.ADMIN_PASSWORD || "",
   adminPasswordHash: process.env.ADMIN_PASSWORD_HASH || "",
   
   // MySQL 配置
