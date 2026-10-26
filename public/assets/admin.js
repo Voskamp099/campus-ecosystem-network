@@ -157,7 +157,7 @@ const HUB_CONTENT_SUBTABS = {
     label: "实习实践",
     sectionKey: "recruit",
     groupKey: null,
-    placeholder: { title: "例如：AI 产品经理实习生", meta: "例如：北京 · 京东总部 · 实习 3 个月+", desc: "例如：适合对 AI 产品感兴趣的同学", link: "例如：mailto:hr@example.com" }
+    placeholder: { title: "例如：AI 产品经理实习生", meta: "例如：北京 · 云帆科技总部 · 实习 3 个月+", desc: "例如：适合对 AI 产品感兴趣的同学", link: "例如：mailto:hr@example.com" }
   },
   events: {
     label: "近期活动",
@@ -207,7 +207,7 @@ const LOCAL_DEFAULTS = {
     { id: 1, title: "实习实践与创业支持", desc: "适合找机会、找伙伴、找资源的同学。", image: "", link: "#join" }
   ],
   alliance_content_recruit: [
-    { id: 1, title: "AI 产品经理实习生", meta: "北京 · 京东总部 · 实习 3 个月+", desc: "适合对 AI 产品和需求分析有兴趣的同学。", image: "", link: "mailto:hr@example.com" }
+    { id: 1, title: "AI 产品经理实习生", meta: "北京 · 云帆科技总部 · 实习 3 个月+", desc: "适合对 AI 产品和需求分析有兴趣的同学。", image: "", link: "mailto:hr@example.com" }
   ],
   alliance_content_events: [
     { id: 1, title: "OpenClaw 从安装到落地", meta: "AI 活动 · 北京", desc: "围绕 AI 工具落地的交流活动。", image: "", link: "#events" },
@@ -227,7 +227,7 @@ const LOCAL_DEFAULTS = {
   ],
   alliance_directory_company: [
     { id: 1, title: "百度 AI 生态合作组", meta: "企业方 · AI 生态", desc: "适合 AI 生态宣讲、实践机会对接和校园资源合作。", image: "", link: "#join", items: ["校园宣讲", "实践机会", "生态合作"] },
-    { id: 2, title: "京东校园合作团队", meta: "企业方 · 校园合作", desc: "适合企业开放日、校企活动与实践岗位合作。", image: "", link: "#join", items: ["开放日", "校企活动", "岗位合作"] }
+    { id: 2, title: "云帆科技校园合作团队", meta: "企业方 · 校园合作", desc: "适合企业开放日、校企活动与实践岗位合作。", image: "", link: "#join", items: ["开放日", "校企活动", "岗位合作"] }
   ],
   alliance_directory_applications: []
 };

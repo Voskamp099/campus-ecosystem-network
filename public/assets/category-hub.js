@@ -31,7 +31,7 @@ const defaultCategoryDetails = {
     { title: "实习实践与创业支持", desc: "适合找机会、找伙伴、找资源的同学。", image: "", link: "#join", meta: "就业创业 · 资源对接" }
   ],
   recruit: [
-    { title: "AI 产品经理实习生", desc: "适合对 AI 产品和需求分析有兴趣的同学。", image: "", link: "mailto:hr@example.com", meta: "北京 · 京东总部 · 实习 3 个月+" }
+    { title: "AI 产品经理实习生", desc: "适合对 AI 产品和需求分析有兴趣的同学。", image: "", link: "mailto:hr@example.com", meta: "北京 · 云帆科技总部 · 实习 3 个月+" }
   ],
   events: [
     { title: "OpenClaw 从安装到落地", desc: "围绕 AI 工具接入、协作方式和实际落地案例的交流小聚。", image: "", link: "#events", meta: "AI 活动 · 北京" }
