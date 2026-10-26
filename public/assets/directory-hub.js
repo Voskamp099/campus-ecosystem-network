@@ -17,7 +17,7 @@ const defaultDirectory = {
   ],
   company: [
     { title: "百度 AI 生态合作组", meta: "企业方 · AI 生态", desc: "适合 AI 生态宣讲、实践机会对接和校园资源合作。", image: "", link: "#join", items: ["校园宣讲", "实践机会", "生态合作"] },
-    { title: "京东校园合作团队", meta: "企业方 · 校园合作", desc: "适合企业开放日、校企活动与实践岗位合作。", image: "", link: "#join", items: ["开放日", "校企活动", "岗位合作"] },
+    { title: "云帆科技校园合作团队", meta: "企业方 · 校园合作", desc: "适合企业开放日、校企活动与实践岗位合作。", image: "", link: "#join", items: ["开放日", "校企活动", "岗位合作"] },
     { title: "Wteam 青年创业网络", meta: "企业方 · 创业社群", desc: "适合创业项目招募、社群共建和资源链接。", image: "", link: "#join", items: ["项目招募", "社群共建", "资源链接"] }
   ]
 };

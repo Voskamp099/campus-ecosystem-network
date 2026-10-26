@@ -112,7 +112,7 @@ paths:
                           example: "AI 产品经理实习生"
                         meta:
                           type: string
-                          example: "北京 · 京东总部 · 实习 3 个月+"
+                          example: "北京 · 云帆科技总部 · 实习 3 个月+"
                         desc:
                           type: string
                           example: "适合对 AI 产品和需求分析有兴趣的同学"

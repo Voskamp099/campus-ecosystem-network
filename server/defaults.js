@@ -25,7 +25,7 @@ export const DEFAULT_SITE_CONTENT = {
     ]
   },
   recruit: [
-    { title: "AI 产品经理实习生", meta: "北京 · 京东总部 · 实习 3 个月+", desc: "适合对 AI 产品和需求分析有兴趣的同学。", image: "", link: "mailto:hr@example.com" },
+    { title: "AI 产品经理实习生", meta: "北京 · 云帆科技总部 · 实习 3 个月+", desc: "适合对 AI 产品和需求分析有兴趣的同学。", image: "", link: "mailto:hr@example.com" },
     { title: "百度 AI 生态志愿者计划", meta: "百度生态 · 线上社群", desc: "适合企业合作伙伴、技术团队和校园组织，围绕百度 AI 生态展开交流。", image: "", link: "#join" },
     { title: "Wteam 创业者长期招募", meta: "创业社群 · 全国高校", desc: "面向有项目、有想法或正在寻找方向的大学生创业者，提供长期陪伴与资源对接。", image: "", link: "#join" }
   ],
@@ -42,9 +42,9 @@ export const DEFAULT_SITE_CONTENT = {
       { name: "对外经济贸易大学", type: "财经院校", logo: "" }
     ],
     company: [
-      { name: "腾讯", type: "互联网 / 科技", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Crect width='46' height='46' rx='12' fill='%231274D4'/%3E%3Ctext x='23' y='31' text-anchor='middle' font-family='Noto Sans SC,sans-serif' font-size='18' font-weight='700' fill='white'%3E%E8%85%BE%3C/text%3E%3C/svg%3E" },
-      { name: "字节跳动", type: "互联网", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Crect width='46' height='46' rx='12' fill='%23FE2C55'/%3E%3Ctext x='23' y='31' text-anchor='middle' font-family='Noto Sans SC,sans-serif' font-size='13' font-weight='700' fill='white'%3E%E5%AD%97%E7%AC%A6%3C/text%3E%3C/svg%3E" },
-      { name: "京东", type: "电商 / 科技", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Crect width='46' height='46' rx='12' fill='%23E2231A'/%3E%3Ctext x='23' y='31' text-anchor='middle' font-family='Noto Sans SC,sans-serif' font-size='18' font-weight='700' fill='white'%3E%E4%BA%AC%3C/text%3E%3C/svg%3E" },
+      { name: "云图科技", type: "互联网 / 科技", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Crect width='46' height='46' rx='12' fill='%231274D4'/%3E%3Ctext x='23' y='31' text-anchor='middle' font-family='Noto Sans SC,sans-serif' font-size='18' font-weight='700' fill='white'%3E%E5%9B%BE%3C/text%3E%3C/svg%3E" },
+      { name: "星野科技", type: "互联网", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Crect width='46' height='46' rx='12' fill='%23FE2C55'/%3E%3Ctext x='23' y='31' text-anchor='middle' font-family='Noto Sans SC,sans-serif' font-size='13' font-weight='700' fill='white'%3E%E6%98%9F%E7%AC%A6%3C/text%3E%3C/svg%3E" },
+      { name: "云帆科技", type: "电商 / 科技", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Crect width='46' height='46' rx='12' fill='%23E2231A'/%3E%3Ctext x='23' y='31' text-anchor='middle' font-family='Noto Sans SC,sans-serif' font-size='18' font-weight='700' fill='white'%3E%E5%B8%86%3C/text%3E%3C/svg%3E" },
       { name: "百度", type: "AI / 搜索", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Crect width='46' height='46' rx='12' fill='%231931D1'/%3E%3Ctext x='23' y='31' text-anchor='middle' font-family='Noto Sans SC,sans-serif' font-size='18' font-weight='700' fill='white'%3E%E7%99%BE%3C/text%3E%3C/svg%3E" },
       { name: "智联招聘", type: "人力资源", logo: "" },
       { name: "华住会", type: "酒店集团", logo: "" },
@@ -70,7 +70,7 @@ export const DEFAULT_SITE_CONTENT = {
     ],
     company: [
       { title: "百度 AI 生态合作组", meta: "企业方 · AI 生态", desc: "适合 AI 生态宣讲、实践机会对接和校园资源合作。", image: "", link: "#join", items: ["校园宣讲", "实践机会", "生态合作"] },
-      { title: "京东校园合作团队", meta: "企业方 · 校园合作", desc: "适合企业开放日、校企活动与实践岗位合作。", image: "", link: "#join", items: ["开放日", "校企活动", "岗位合作"] },
+      { title: "云帆科技校园合作团队", meta: "企业方 · 校园合作", desc: "适合企业开放日、校企活动与实践岗位合作。", image: "", link: "#join", items: ["开放日", "校企活动", "岗位合作"] },
       { title: "Wteam 青年创业网络", meta: "企业方 · 创业社群", desc: "适合创业项目招募、社群共建和资源链接。", image: "", link: "#join", items: ["项目招募", "社群共建", "资源链接"] }
     ]
   }

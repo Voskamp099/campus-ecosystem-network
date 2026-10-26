@@ -29,7 +29,7 @@ const defaultCategoryDetails = {
 };
 
 const defaultRecruitItems = [
-  { title: "AI 产品经理实习生", meta: "北京 · 京东总部 · 实习 3 个月+", desc: "适合对 AI 产品和需求分析有兴趣的同学。", image: "", link: "mailto:hr@example.com" },
+  { title: "AI 产品经理实习生", meta: "北京 · 云帆科技总部 · 实习 3 个月+", desc: "适合对 AI 产品和需求分析有兴趣的同学。", image: "", link: "mailto:hr@example.com" },
   { title: "百度 AI 生态志愿者计划", image: "", desc: "适合企业合作伙伴、技术团队和校园组织，围绕百度 AI 生态展开交流。", meta: "百度生态 · 线上社群", link: "#join" },
   { title: "Wteam 创业者长期招募", image: "", desc: "面向有项目、有想法或正在寻找方向的大学生创业者，提供长期陪伴与资源对接。", meta: "创业社群 · 全国高校", link: "#join" }
 ];
@@ -67,9 +67,9 @@ const defaultPartners = {
     { name: "对外经济贸易大学", type: "财经院校", logo: brandBadge("经贸", "#C8102E") }
   ],
   company: [
-    { name: "腾讯", type: "互联网 / 科技", logo: brandBadge("腾", "#1274D4") },
-    { name: "字节跳动", type: "互联网", logo: brandBadge("字", "#FE2C55") },
-    { name: "京东", type: "电商 / 科技", logo: brandBadge("京", "#E2231A") },
+    { name: "云图科技", type: "互联网 / 科技", logo: brandBadge("图", "#1274D4") },
+    { name: "星野科技", type: "互联网", logo: brandBadge("星", "#FE2C55") },
+    { name: "云帆科技", type: "电商 / 科技", logo: brandBadge("帆", "#E2231A") },
     { name: "百度", type: "AI / 搜索", logo: brandBadge("百", "#1931D1") },
     { name: "智联招聘", type: "人力资源", logo: brandBadge("智联", "#FF6000") },
     { name: "华住会", type: "酒店集团", logo: brandBadge("华住", "#1A53C7") },
@@ -96,7 +96,7 @@ const defaultDirectory = {
   ],
   company: [
     { title: "百度 AI 生态合作组", meta: "企业方 · AI 生态", desc: "适合 AI 生态宣讲、实践机会对接和校园资源合作。", image: "", link: "#join", items: ["校园宣讲", "实践机会", "生态合作"] },
-    { title: "京东校园合作团队", meta: "企业方 · 校园合作", desc: "适合企业开放日、校企活动与实践岗位合作。", image: "", link: "#join", items: ["开放日", "校企活动", "岗位合作"] },
+    { title: "云帆科技校园合作团队", meta: "企业方 · 校园合作", desc: "适合企业开放日、校企活动与实践岗位合作。", image: "", link: "#join", items: ["开放日", "校企活动", "岗位合作"] },
     { title: "Wteam 青年创业网络", meta: "企业方 · 创业社群", desc: "适合创业项目招募、社群共建和资源链接。", image: "", link: "#join", items: ["项目招募", "社群共建", "资源链接"] }
   ]
 };
