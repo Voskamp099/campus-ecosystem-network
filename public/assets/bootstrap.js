@@ -73,6 +73,37 @@
         link.setAttribute("data-alliance-favicon", "true");
       });
     }
+
+    // English presentation layer is active by default. Simplified Chinese is
+    // opt-in via ?lang=zh. The layer only rewrites text nodes/attributes.
+    var isChinese = new URLSearchParams(window.location.search).get("lang") === "zh";
+    if (!isChinese && !document.querySelector('script[data-alliance-i18n="true"]')) {
+      var i18n = document.createElement("script");
+      i18n.src = getAssetPath("assets/i18n-en.js");
+      i18n.setAttribute("data-alliance-i18n", "true");
+      document.head.appendChild(i18n);
+    }
+
+    // Language switch: English default shows a 中文 entry; the opt-in Chinese
+    // view shows an EN entry that returns to the default English build.
+    document.addEventListener("DOMContentLoaded", function () {
+      var btnId = isChinese ? "alliance-lang-en" : "alliance-lang-zh";
+      if (document.getElementById(btnId)) return;
+      var a = document.createElement("a");
+      a.id = btnId;
+      a.href = isChinese ? addLangParam(window.location.href, "en")
+                         : addLangParam(window.location.href, "zh");
+      a.textContent = isChinese ? "EN" : "中文";
+      a.setAttribute("aria-label", isChinese ? "View in English" : "查看中文版");
+      a.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:3000;font:700 12px/1 system-ui,sans-serif;color:#fff;background:#0a6e4f;padding:7px 12px;border-radius:20px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.3)";
+      document.body.appendChild(a);
+    });
+  }
+
+  function addLangParam(url, value) {
+    var u = new URL(url, window.location.href);
+    u.searchParams.set("lang", value);
+    return u.pathname + u.search + u.hash;
   }
 
   function loadScript(path) {
