@@ -158,6 +158,30 @@ node server/index.js
 也可以完全不起服务——直接在浏览器里打开 public/index.html，它会以本地模式运行，
 底层存储换成 localStorage。
 
+## 静态演示站
+
+同一份 `public/` 目录还可以不带后端直接发布到 GitHub Pages：
+
+```
+https://voskamp099.github.io/campus-ecosystem-network/
+```
+
+在这种托管下前端会主动探测后端是否存在（`public/assets/runtime-mode.js`），
+探测不到就自动切到本地模式，不需要任何配置。
+
+站点提供两个演示账号，密码固定并直接印在登录页上——静态演示站没有服务端，
+这份凭据本身不保护任何东西：
+
+| 账号 | 密码 | 登录后进入 |
+| --- | --- | --- |
+| `gly` | `demo2026` | 后台管理界面 |
+| `test@alliance.local` | `demo2026` | 用户中心 |
+
+两者都使用保留域名 `.local`，且只在探测不到后端时生效，因此无法用于正式环境。
+
+启用方式：仓库 **Settings → Pages → Source → GitHub Actions**。
+开启后，每次推送触及 `public/` 就会由 `.github/workflows/pages.yml` 自动重新部署。
+
 ```bash
 npm test                  # 64 个测试
 npm run test:coverage     # 覆盖率报告
@@ -169,7 +193,7 @@ npm run test:coverage     # 覆盖率报告
 
 - 随附的伙伴名称与示例条目是**演示数据**（server/defaults.js），不代表正式合作关系。
 - 样本数据中残留的个人信息已脱敏，同样的脱敏也应用到了完整的提交历史。
-- .env.example 里的 CSRF_SECRET 仍是占位符，部署前请替换。
+- .env.example 里的 CSRF_SECRET 仍是占位符，部署前请替换——生产环境缺它服务会拒绝启动。
 
 ## 许可
 

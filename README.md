@@ -171,6 +171,32 @@ The site is on `http://localhost:3000`, the console on `http://localhost:3000/ad
 You can also skip the server entirely — open `public/index.html` directly in a browser
 and it runs in local mode with `localStorage` as the backing store.
 
+## The static demo site
+
+A second deployment shape ships the same `public/` directory to GitHub Pages with no
+backend at all:
+
+```
+https://voskamp099.github.io/campus-ecosystem-network/
+```
+
+On that host the frontend probes for a backend (`public/assets/runtime-mode.js`);
+finding none, it switches to local mode on its own — no configuration needed.
+
+Two demo accounts are available. The password is fixed and printed on the login
+page, because a static demo has no server-side credential to protect:
+
+| Account | Password | Lands on |
+| --- | --- | --- |
+| `gly` | `demo2026` | the admin console |
+| `test@alliance.local` | `demo2026` | the user centre |
+
+Both use the reserved `.local` domain and only work where no backend is reachable,
+so they cannot be used against a real deployment.
+
+To enable the site: repository **Settings → Pages → Source → GitHub Actions**.
+After that, every push touching `public/` redeploys via `.github/workflows/pages.yml`.
+
 ```bash
 npm test                  # 64 tests
 npm run test:coverage     # coverage report
@@ -184,7 +210,8 @@ The API is documented with Swagger at `/api-docs` while the server is running.
   (`server/defaults.js`), not formal partnerships.
 - Personal data that ended up in the sample dataset has been redacted, and the same
   redaction was applied across the full commit history.
-- `CSRF_SECRET` in `.env.example` is still a placeholder. Replace it before deploying.
+- `CSRF_SECRET` in `.env.example` is still a placeholder. Replace it before deploying —
+  in production the server refuses to start without it.
 
 ## License
 

@@ -32,11 +32,17 @@ function validateConfig() {
     if (process.env.ADMIN_PASSWORD === "123456") {
       errors.push("ADMIN_PASSWORD 不能使用默认密码（生产环境）");
     }
+    if (!process.env.CSRF_SECRET) {
+      errors.push("CSRF_SECRET 必须设置（生产环境），生成方式：node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"");
+    }
   }
 
   // 推荐配置的变量
   if (!process.env.JWT_SECRET || process.env.JWT_SECRET === "change-me") {
     warnings.push("JWT_SECRET 未设置，使用默认值，存在安全风险");
+  }
+  if (!process.env.CSRF_SECRET) {
+    warnings.push("CSRF_SECRET 未设置，将使用本次进程随机生成的密钥（重启后已签发的 token 会失效）");
   }
   if (!process.env.ADMIN_PASSWORD && !process.env.ADMIN_PASSWORD_HASH) {
     warnings.push("ADMIN_PASSWORD 未设置，后台登录密码为空");

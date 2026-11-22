@@ -1,7 +1,26 @@
+import { randomBytes } from "node:crypto";
 import { doubleCsrf } from "csrf-csrf";
 import { logger } from "./logger.js";
 
 const isProduction = process.env.NODE_ENV === "production";
+
+// CSRF 签名密钥。
+// 原来这里写死了一个常量兜底，但仓库是公开的——那个默认值人人皆知，
+// 部署时忘了配 CSRF_SECRET 就会静默降级到公开可猜的值，CSRF 防护形同虚设。
+// 现在改为：配置了就用配置的；测试环境用固定值保证可复现；
+// 其余情况用进程级随机值生成，既不影响开发调试，也不会泄露。
+const TEST_CSRF_SECRET = "csrf-secret-for-tests-only";
+const runtimeCsrfSecret = process.env.CSRF_SECRET
+  || (process.env.NODE_ENV === "test"
+    ? TEST_CSRF_SECRET
+    : randomBytes(32).toString("hex"));
+
+if (!process.env.CSRF_SECRET && !isProduction) {
+  console.warn(
+    "[CSRF] 未配置 CSRF_SECRET，已使用本次进程随机生成的密钥。" +
+    "重启后密钥会变化（已签发的 token 失效），正式部署请在 .env 中配置固定值。"
+  );
+}
 
 // HTTPS 判定：
 //   1. 显式环境变量 HTTPS=true / FORCE_HTTPS=true 优先
@@ -20,7 +39,7 @@ const csrfCookieName = isHttps
   : "psifi.x-csrf-token";
 
 const { generateCsrfToken, validateRequest, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET || "csrf-secret-change-me-in-production",
+  getSecret: () => process.env.CSRF_SECRET || runtimeCsrfSecret,
   getSessionIdentifier: (req) => {
     // 关键：CSRF token 是在「未登录」时通过 GET /api/csrf-token 签发的，
     // 此时请求没有 Authorization 头，session 标识只能是 user-agent。

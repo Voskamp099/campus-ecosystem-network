@@ -8,6 +8,7 @@ dotenv.config({ path: ".env.test" });
 // 设置测试环境（必须在 config.js 被 import 之前设置，dotenv.config 不会覆盖已存在的值）
 process.env.NODE_ENV = "test";
 process.env.JWT_SECRET = "test-secret-key-for-jest";
+process.env.CSRF_SECRET = "test-csrf-secret-for-jest";
 process.env.ADMIN_USERNAME = "test-admin";
 process.env.ADMIN_PASSWORD = "test-password";
 process.env.MYSQL_HOST = "127.0.0.1";

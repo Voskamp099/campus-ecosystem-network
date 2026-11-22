@@ -1,0 +1,53 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: 部署静态站点到 GitHub Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 关闭 Jekyll 处理
+        run: touch public/.nojekyll
+
+      # 产物自检：避免把一个空壳站点发上线
+      - name: 检查站点产物
+        run: |
+          set -e
+          test -f public/index.html || { echo "缺少 public/index.html"; exit 1; }
+          test -f public/assets/runtime-mode.js || { echo "缺少 runtime-mode.js（静态形态的运行模式判定依赖它）"; exit 1; }
+          echo "产物检查通过，共 $(find public -type f | wc -l | tr -d ' ') 个文件"
+
+      - name: 上传站点产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: 发布
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -53,6 +53,7 @@ jobs:
         env:
           NODE_ENV: test
           JWT_SECRET: test-secret-key
+          CSRF_SECRET: test-csrf-secret
           ADMIN_USERNAME: admin
           ADMIN_PASSWORD: test-password
           MYSQL_HOST: 127.0.0.1
