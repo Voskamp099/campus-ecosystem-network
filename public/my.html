@@ -10,10 +10,11 @@
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#091a33">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <script src="assets/runtime-mode.js"></script>
   <script>
     (function () {
       var script = document.createElement("script");
-      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "/assets/bootstrap.js";
+      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "assets/bootstrap.js";
       script.onload = function () { window.AllianceBootstrap.initHead(); };
       document.head.appendChild(script);
     })();
@@ -653,7 +654,7 @@
         <span class="menu-label">用户信息</span>
       </div>
       <div class="menu-divider"></div>
-      <a class="menu-item" id="adminMenuItem" href="/admin.html" style="display:none;">
+      <a class="menu-item" id="adminMenuItem" href="admin.html" style="display:none;">
         <span class="menu-icon">⚙</span>
         <span class="menu-label">联盟后台</span>
       </a>
@@ -963,6 +964,15 @@
           var formData = new FormData();
           formData.append("avatar", file);
 
+          // 演示/静态托管模式没有后端：头像只保存在本机
+          if (window.AllianceRuntime && window.AllianceRuntime.isOffline()) {
+            var localUser = JSON.parse(localStorage.getItem("alliance_user") || "{}");
+            localUser.avatar_url = reader.result;
+            localStorage.setItem("alliance_user", JSON.stringify(localUser));
+            alert("演示模式：头像已保存在本机浏览器");
+            return;
+          }
+
           var token = localStorage.getItem("alliance_token");
           fetch("/api/user/avatar", {
             method: "POST",
@@ -1052,6 +1062,20 @@
             };
 
             var token = localStorage.getItem("alliance_token");
+
+            // 演示/静态托管模式没有后端：资料只保存在本机
+            if (window.AllianceRuntime && window.AllianceRuntime.isOffline()) {
+              var localProfileUser = JSON.parse(localStorage.getItem("alliance_user") || "{}");
+              Object.assign(localProfileUser, data);
+              localStorage.setItem("alliance_user", JSON.stringify(localProfileUser));
+              setText("profileName", localProfileUser.nickname || localProfileUser.email);
+              setText("profileBio", localProfileUser.bio || "");
+              setText("topName", localProfileUser.nickname || localProfileUser.email);
+              editProfileModal.style.display = "none";
+              alert("演示模式：资料已保存在本机浏览器");
+              return;
+            }
+
             fetch("/api/user/profile", {
               method: "PUT",
               headers: {
@@ -1099,9 +1123,9 @@
       }
 
       [
-        isFileMode ? "assets/nav-auth.js?v=202607211850" : "/assets/nav-auth.js?v=202607211850",
-        isFileMode ? "assets/auth-guard.js?v=202607211850" : "/assets/auth-guard.js?v=202607211850",
-        isFileMode ? "assets/user-center.js?v=202607211850" : "/assets/user-center.js?v=202607211850"
+        isFileMode ? "assets/nav-auth.js?v=202607211850" : "assets/nav-auth.js?v=202607211850",
+        isFileMode ? "assets/auth-guard.js?v=202607211850" : "assets/auth-guard.js?v=202607211850",
+        isFileMode ? "assets/user-center.js?v=202607211850" : "assets/user-center.js?v=202607211850"
       ].forEach(function (src) {
         var script = document.createElement("script");
         script.src = src;

@@ -48,7 +48,10 @@ function readLocalContent(key, fallback) {
 }
 
 async function loadContent() {
-  if (window.location.protocol === "file:") {
+  const hasBackend = window.AllianceBootstrap && typeof window.AllianceBootstrap.detectBackend === "function"
+    ? await window.AllianceBootstrap.detectBackend()
+    : false;
+  if (!hasBackend) {
     state.content.directory = {
       campus: readLocalContent("alliance_directory_campus", defaultDirectory.campus),
       government: readLocalContent("alliance_directory_government", defaultDirectory.government),
@@ -83,7 +86,7 @@ function getActiveItems() {
 }
 
 function getApplyLink(item) {
-  const target = window.location.protocol === "file:" ? "directory-apply.html" : "/directory-apply";
+  const target = "directory-apply.html";
   const params = new URLSearchParams({
     category: state.activeCategory,
     title: item.title || "",

@@ -10,10 +10,11 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="zh_CN">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <script src="assets/runtime-mode.js"></script>
   <script>
     (function () {
       var script = document.createElement("script");
-      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "/assets/bootstrap.js";
+      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "assets/bootstrap.js";
       script.onload = function () { window.AllianceBootstrap.initHead(); };
       document.head.appendChild(script);
     })();
@@ -230,6 +231,38 @@
         display: inline-flex;
       }
     }
+    .demo-hint {
+      margin: 0 0 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(96,165,250,0.28);
+      border-radius: 12px;
+      background: rgba(96,165,250,0.08);
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .demo-hint[hidden] { display: none !important; }
+    .demo-hint strong { display:block; color: var(--text); font-weight: 500; margin-bottom: 10px; }
+    .demo-accounts { display: flex; flex-wrap: wrap; gap: 8px; }
+    .demo-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 9px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background .15s ease, border-color .15s ease;
+    }
+    .demo-chip:hover { background: rgba(96,165,250,0.16); border-color: rgba(96,165,250,0.45); }
+    .demo-role { color: var(--accent); }
+    .demo-id { font-family: var(--mono, monospace); }
+    .demo-pwd { color: var(--muted); font-family: var(--mono, monospace); }
+    .demo-note { margin: 10px 0 0; font-size: 12px; opacity: .78; }
   </style>
 </head>
 <body>
@@ -243,6 +276,23 @@
       </div>
 
       <div class="notice" id="notice"></div>
+
+      <div class="demo-hint" id="demoHint" hidden>
+        <strong>当前为演示模式（未检测到后端服务）</strong>
+        <div class="demo-accounts">
+          <button type="button" class="demo-chip" data-email="gly" data-pwd="demo2026">
+            <span class="demo-role">管理员</span>
+            <span class="demo-id">gly</span>
+            <span class="demo-pwd">demo2026</span>
+          </button>
+          <button type="button" class="demo-chip" data-email="test@alliance.local" data-pwd="demo2026">
+            <span class="demo-role">普通用户</span>
+            <span class="demo-id">test@alliance.local</span>
+            <span class="demo-pwd">demo2026</span>
+          </button>
+        </div>
+        <p class="demo-note">点击任一账号自动填入。这些是公开的演示凭据，只在本地或静态托管下生效，不会影响正式服务。</p>
+      </div>
 
       <form id="loginForm">
         <div class="form-group">
@@ -279,12 +329,27 @@
 
   <script>
     (function() {
-      const IS_FILE_MODE = window.location.protocol === 'file:';
-      const API_BASE = IS_FILE_MODE ? 'http://localhost:3000/api' : '/api';
-      const MY_PAGE = IS_FILE_MODE ? 'my.html' : '/my.html';
-      const HOME_PAGE = IS_FILE_MODE ? 'index.html' : '/';
-      const REGISTER_PAGE = IS_FILE_MODE ? 'register.html' : '/register.html';
-      const FORGOT_PASSWORD_PAGE = IS_FILE_MODE ? 'forgot-password.html' : '/forgot-password.html';
+      // 运行形态由 AllianceRuntime 判定：file:// 与"探测不到后端"（GitHub Pages 静态托管）
+      // 都属于离线演示模式，走 localStorage 分支；只有真实 Node 服务才打 API。
+      // 原来只看协议，导致静态托管下把请求打到站点根目录的 /api → 404。
+      let IS_FILE_MODE = window.location.protocol === 'file:';
+      let API_BASE = IS_FILE_MODE ? 'http://localhost:3000/api' : 'api';
+      const MY_PAGE = 'my.html';
+      const ADMIN_PAGE = 'admin.html';
+      const HOME_PAGE = 'index.html';
+
+      async function ensureMode() {
+        if (window.AllianceRuntime) {
+          await window.AllianceRuntime.whenReady();
+          IS_FILE_MODE = window.AllianceRuntime.isOffline();
+          API_BASE = window.AllianceRuntime.apiBase();
+        } else {
+          IS_FILE_MODE = window.location.protocol === 'file:';
+        }
+        return IS_FILE_MODE;
+      }
+      const REGISTER_PAGE = 'register.html';
+      const FORGOT_PASSWORD_PAGE = 'forgot-password.html';
       // 本地演示账号的密码不再写死在代码里：首次使用时由使用者在自己的电脑上设定，
       // 只保存在本浏览器的 localStorage，不会提交到任何服务器。
       const LOCAL_PASSWORD_KEY = 'alliance_local_demo_password';
@@ -297,6 +362,23 @@
         }
         return pwd;
       }
+
+      // 演示密码校验：固定演示密码开箱即用；使用者自设的本地密码同样有效。
+      // 这里只读 localStorage，不触发 prompt，避免每次登录都弹窗。
+      function demoPasswordOk(input) {
+        if (!input) return false;
+        if (input === DEMO_PASSWORD) return true;
+        try {
+          const saved = localStorage.getItem(LOCAL_PASSWORD_KEY);
+          return !!saved && input === saved;
+        } catch (e) {
+          return false;
+        }
+      }
+      // 演示账号：仅在"探测不到后端"的离线演示模式下生效，绝不会影响真实后端的登录。
+      // 密码公开可见是有意为之——静态演示站没有服务端，这个凭据不具备任何真实权限；
+      // 同时邮箱一律使用保留域名 .local，避免与真实账号撞车。
+      const DEMO_PASSWORD = 'demo2026';
       const LOCAL_TEST_ACCOUNT = {
         email: 'test@alliance.local',
         password: null,
@@ -367,6 +449,24 @@
         });
       }
 
+      // 演示模式提示：探测不到后端时展示可一键填入的演示账号
+      const demoHint = document.getElementById('demoHint');
+      if (demoHint) {
+        demoHint.querySelectorAll('.demo-chip').forEach(function (chip) {
+          chip.addEventListener('click', function () {
+            document.getElementById('email').value = chip.getAttribute('data-email') || '';
+            document.getElementById('password').value = chip.getAttribute('data-pwd') || '';
+            document.getElementById('email').classList.remove('input-error');
+            document.getElementById('password').classList.remove('input-error');
+            document.getElementById('emailError').classList.remove('show');
+            document.getElementById('passwordError').classList.remove('show');
+          });
+        });
+        ensureMode().then(function (offline) {
+          demoHint.hidden = !offline;
+        });
+      }
+
       // 自动填充记住的邮箱
       const rememberedEmail = localStorage.getItem('rememberedEmail');
       if (rememberedEmail) {
@@ -426,7 +526,10 @@
 
       document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
+        // 提交前先确认运行形态：有后端打 API，没有后端走本地演示账号。
+        await ensureMode();
+
         // 验证
         const isEmailValid = validateEmail();
         const isPasswordValid = validatePassword();
@@ -447,7 +550,8 @@
 
         try {
           if (IS_FILE_MODE) {
-            if (email === LOCAL_SUPER_ADMIN.email && password && password === localDemoPassword()) {
+            const pwdOk = demoPasswordOk(password);
+            if (email === LOCAL_SUPER_ADMIN.email && pwdOk) {
               localStorage.setItem('alliance_token', 'local-admin-token');
               localStorage.setItem('alliance_user', JSON.stringify(LOCAL_SUPER_ADMIN.user));
 
@@ -458,14 +562,15 @@
               }
 
               notice.className = 'notice success';
-              notice.textContent = '超级管理员登录成功，正在跳转...';
+              notice.textContent = '超级管理员登录成功，正在进入后台...';
               setTimeout(() => {
-                window.location.href = MY_PAGE;
+                // 演示管理员直接进后台界面；正式服务的管理员仍走用户中心再进后台
+                window.location.href = IS_FILE_MODE ? ADMIN_PAGE : MY_PAGE;
               }, 300);
               return;
             }
 
-            if (email === LOCAL_TEST_ACCOUNT.email && password && password === localDemoPassword()) {
+            if (email === LOCAL_TEST_ACCOUNT.email && pwdOk) {
               localStorage.setItem('alliance_token', 'local-user-token');
               localStorage.setItem('alliance_user', JSON.stringify(LOCAL_TEST_ACCOUNT.user));
 
@@ -484,7 +589,7 @@
             }
 
             notice.className = 'notice error';
-            notice.textContent = '本地模式：账号为 gly（超级管理员）或 test@alliance.local，密码是这台电脑上设置的本地演示密码';
+            notice.textContent = '演示模式：管理员账号 gly，普通账号 test@alliance.local，密码 ' + DEMO_PASSWORD;
             return;
           }
 
@@ -555,7 +660,7 @@
     var script = document.createElement("script");
     script.src = window.location.protocol === "file:"
       ? "assets/nav-auth.js?v=202604201933"
-      : "/assets/nav-auth.js?v=202604201933";
+      : "assets/nav-auth.js?v=202604201933";
     document.body.appendChild(script);
   })();
 </script>

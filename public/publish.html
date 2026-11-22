@@ -9,10 +9,15 @@
   <meta property="og:description" content="发布活动或实习实践信息。">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- nav-auth.js 必须同步加载：它定义 window.AuthState，下面的内联脚本要立刻用到。
+       之前用 document.createElement('script') 动态插入，脚本默认 async、不阻塞后续代码，
+       导致 AuthState 尚未就绪就被判定为未登录，已登录用户也被踢回登录页。 -->
+  <script src="assets/nav-auth.js"></script>
+  <script src="assets/runtime-mode.js"></script>
   <script>
     (function () {
       var script = document.createElement("script");
-      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "/assets/bootstrap.js";
+      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "assets/bootstrap.js";
       script.onload = function () { window.AllianceBootstrap.initHead(); };
       document.head.appendChild(script);
     })();
@@ -135,15 +140,22 @@
   <script>
     (function() {
       'use strict';
+      // 运行形态：file:// 与"探测不到后端"（GitHub Pages 静态托管）都算离线演示模式。
       var IS_FILE_MODE = window.location.protocol === 'file:';
-      var LOGIN_PAGE = IS_FILE_MODE ? 'login.html' : '/login.html';
-      var HOME_PAGE = IS_FILE_MODE ? 'index.html' : '/';
+      var API_BASE = '';
+      var LOGIN_PAGE = 'login.html';
+      var HOME_PAGE = 'index.html';
+
+      async function resolveMode() {
+        if (window.AllianceRuntime && typeof window.AllianceRuntime.whenReady === 'function') {
+          await window.AllianceRuntime.whenReady();
+          IS_FILE_MODE = window.AllianceRuntime.isOffline();
+          API_BASE = window.AllianceRuntime.apiBase();
+        }
+        return IS_FILE_MODE;
+      }
 
       document.getElementById('publishBackHomeLink').href = HOME_PAGE;
-
-      var authScript = document.createElement('script');
-      authScript.src = IS_FILE_MODE ? 'assets/nav-auth.js' : '/assets/nav-auth.js';
-      document.body.appendChild(authScript);
 
       // URL 参数自动切换 tab
       var params = new URLSearchParams(window.location.search);
@@ -152,11 +164,11 @@
         document.querySelector('.tab[data-type="recruit"]').click();
       }
 
-      // 检查登录状态
-      if (!window.AuthState || !window.AuthState.isLoggedIn()) {
-        var dest = IS_FILE_MODE
-          ? 'publish.html' + window.location.search
-          : window.location.pathname + window.location.search;
+      // 检查登录状态。nav-auth.js 已在 head 中同步加载，AuthState 此刻必然可用；
+      // 这里仍保留防御性判断，脚本缺失时退化为未登录而不是白屏。
+      var authState = window.AuthState;
+      if (!authState || typeof authState.isLoggedIn !== 'function' || !authState.isLoggedIn()) {
+        var dest = 'publish.html' + window.location.search;
         window.location.href = LOGIN_PAGE + '?redirect=' + encodeURIComponent(dest);
         return;
       }
@@ -225,7 +237,25 @@
         }
 
         try {
-          const res = await fetch('/api/submit/' + type, {
+          await resolveMode();
+
+          if (IS_FILE_MODE) {
+            // 演示模式：没有后端可提交，内容存到本机浏览器
+            const storeKey = type === 'event' ? 'alliance_local_user_events' : 'alliance_local_user_recruits';
+            let list = [];
+            try { list = JSON.parse(localStorage.getItem(storeKey) || '[]'); } catch (e) { list = []; }
+            list.unshift(Object.assign({
+              id: Date.now(),
+              status: 'pending',
+              created_at: new Date().toISOString()
+            }, payload));
+            try { localStorage.setItem(storeKey, JSON.stringify(list.slice(0, 50))); } catch (e) {}
+            showNotice('success', '演示模式：内容已保存在本机浏览器（正式部署会提交到服务器并等待审核）。');
+            document.querySelector('.form-section.active').reset();
+            return;
+          }
+
+          const res = await fetch(API_BASE + '/submit/' + type, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

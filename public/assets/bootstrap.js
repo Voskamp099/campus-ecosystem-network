@@ -4,10 +4,27 @@
   var IS_FILE_MODE = window.location.protocol === "file:";
 
   function getAssetPath(path) {
-    var cleanPath = String(path || "").replace(/^\/+/, "");
-    // file:// 模式下 HTML 本身就位于 public/ 目录，相对路径直接以 assets/ 开头即可；
-    // 之前拼接成 public/assets/... 会导致浏览器解析为 public/public/assets/... 而 404。
-    return IS_FILE_MODE ? cleanPath : "/" + cleanPath;
+    // 一律返回相对路径。public/ 下的页面全部平铺在同一层，因此相对路径在三种部署下都成立：
+    // file:// 本地打开、Node 服务根路径、以及 GitHub Pages 的 /<repo>/ 子路径。
+    // 绝对路径 "/" 会在 Pages 子路径下 404。
+    return String(path || "").replace(/^\/+/, "");
+  }
+
+  // 探测后端是否存在：先试相对路径（Pages / 根路径部署），再试绝对路径（带挂载前缀的部署）。
+  // 结果缓存，避免多个脚本重复探测。
+  var backendProbe = null;
+  function detectBackend() {
+    if (backendProbe) return backendProbe;
+    var candidates = ["api/public/site-content", "/api/public/site-content"];
+    backendProbe = candidates.reduce(function (chain, candidate) {
+      return chain.then(function (found) {
+        if (found) return true;
+        return fetch(candidate, { headers: { Accept: "application/json" } })
+          .then(function (response) { return !!response.ok; })
+          .catch(function () { return false; });
+      });
+    }, Promise.resolve(false));
+    return backendProbe;
   }
 
   function appendHeadLink(options) {
@@ -127,6 +144,7 @@
 
   window.AllianceBootstrap = {
     isFileMode: IS_FILE_MODE,
+    detectBackend: detectBackend,
     getAssetPath: getAssetPath,
     initHead: initHead,
     loadScript: loadScript,

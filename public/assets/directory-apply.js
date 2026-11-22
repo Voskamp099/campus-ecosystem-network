@@ -13,7 +13,7 @@ const state = {
 };
 
 function getStatusPageUrl(trackingCode = "") {
-  const base = window.location.protocol === "file:" ? "directory-status.html" : "/directory-status";
+  const base = "directory-status.html";
   if (!trackingCode) return base;
   return `${base}?trackingCode=${encodeURIComponent(trackingCode)}`;
 }
@@ -28,8 +28,8 @@ function escapeHTML(value) {
 }
 
 function getApplyPageUrl(pathname) {
-  if (window.location.protocol === "file:") return pathname;
-  return pathname.replace(/\.html$/, "");
+  // 一律相对路径，兼容 file:// 与 GitHub Pages 子路径。
+  return String(pathname || "").replace(/^\/+/, "").replace(/\.html$/, "");
 }
 
 function showNotice(message, type = "") {
@@ -174,8 +174,12 @@ function validateContactFields() {
   return true;
 }
 
+const BACKEND_AVAILABLE = (window.AllianceBootstrap && typeof window.AllianceBootstrap.detectBackend === "function")
+  ? window.AllianceBootstrap.detectBackend()
+  : Promise.resolve(false);
+
 async function submitApplication(payload) {
-  if (window.location.protocol === "file:") {
+  if (!(await BACKEND_AVAILABLE)) {
     const items = readLocalApplications();
     const item = {
       id: Date.now(),

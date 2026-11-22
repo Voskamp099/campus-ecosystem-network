@@ -168,24 +168,22 @@ function getCategoryDetailData(slug) {
 }
 
 function getCategoryPageUrl(slug) {
-  const base = window.location.protocol === "file:" ? "categories.html" : "/categories.html";
+  const base = "categories.html";
   return `${base}?category=${encodeURIComponent(slug)}`;
 }
 
 function getDirectoryPageUrl(slug) {
-  const base = window.location.protocol === "file:" ? "directory.html" : "/directory.html";
+  const base = "directory.html";
   return `${base}?category=${encodeURIComponent(slug)}`;
 }
 
 function getPageUrl(path) {
-  if (!IS_FILE_MODE) return path;
   const [pathname, query = ""] = String(path || "").split("?");
   const localPath = LOCAL_PAGE_MAP[pathname] || pathname.replace(/^\//, "");
   return query ? `${localPath}?${query}` : localPath;
 }
 
 function fixSectionMoreLinks() {
-  if (!IS_FILE_MODE) return;
   document.querySelectorAll(".section-more[data-category]").forEach(link => {
     link.href = getCategoryPageUrl(link.dataset.category);
   });
@@ -195,7 +193,6 @@ function fixSectionMoreLinks() {
 }
 
 function fixLocalPageLinks() {
-  if (!IS_FILE_MODE) return;
   document.querySelectorAll('a[href^="/"]').forEach(link => {
     const href = link.getAttribute("href");
     if (!href || href.startsWith("//")) return;
@@ -212,7 +209,11 @@ function readLocalContent(key, fallback) {
 }
 
 async function loadSiteContent() {
-  if (IS_FILE_MODE) {
+  // 没有后端（file:// 本地预览、GitHub Pages 静态托管）时回落到内置默认内容。
+  const hasBackend = window.AllianceBootstrap && typeof window.AllianceBootstrap.detectBackend === "function"
+    ? await window.AllianceBootstrap.detectBackend()
+    : false;
+  if (!hasBackend) {
     state.content = {
       heroCarousel: readLocalContent("alliance_content_hero_carousel", defaultHeroCarousel),
       categories: readLocalContent("alliance_content_categories", defaultCategories),
@@ -654,7 +655,7 @@ function renderRecruitItems() {
   }));
   const items = [...adminItems, ...userItems];
   if (!items.length) {
-    grid.innerHTML = '<div class="section-empty">暂无实习实践内容，<a href="' + escapeHTML(getPageUrl("/publish.html")) + '" style="color:var(--brand);text-decoration:underline;">去发布</a>或等待管理员添加。</div>';
+    grid.innerHTML = '<div class="section-empty">暂无实习实践内容，<a href="' + escapeHTML(getPageUrl("publish.html")) + '" style="color:var(--brand);text-decoration:underline;">去发布</a>或等待管理员添加。</div>';
     return;
   }
   grid.innerHTML = items.map(item => (
@@ -693,7 +694,7 @@ function renderEvents() {
   }));
   const items = [...adminItems, ...userItems].slice(0, 12);
   if (!items.length) {
-    grid.innerHTML = '<div class="section-empty">暂无近期活动，<a href="' + escapeHTML(getPageUrl("/publish.html")) + '" style="color:var(--brand);text-decoration:underline;">去发布</a>或等待管理员添加。</div>';
+    grid.innerHTML = '<div class="section-empty">暂无近期活动，<a href="' + escapeHTML(getPageUrl("publish.html")) + '" style="color:var(--brand);text-decoration:underline;">去发布</a>或等待管理员添加。</div>';
     return;
   }
   grid.innerHTML = items.map(item => (
@@ -796,9 +797,7 @@ function initLegalModal() {
     link.addEventListener("click", event => {
       event.preventDefault();
       const href = link.getAttribute("href") || "";
-      const target = href.indexOf("privacy") !== -1
-        ? (IS_FILE_MODE ? "privacy.html" : "/privacy.html")
-        : (IS_FILE_MODE ? "terms.html" : "/terms.html");
+      const target = href.indexOf("privacy") !== -1 ? "privacy.html" : "terms.html";
       frame.src = target;
       openModal("legalModal");
     });

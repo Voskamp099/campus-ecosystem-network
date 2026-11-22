@@ -167,7 +167,10 @@ const HUB_CONTENT_SUBTABS = {
   }
 };
 
-const IS_FILE_MODE = window.location.protocol === "file:";
+const IS_FILE_PROTOCOL = window.location.protocol === "file:";
+// “离线模式”= 没有可用后端。除了 file:// 协议，静态托管（GitHub Pages）下同样没有
+// /api 路由，也必须走 localStorage 分支，否则后台页会一直停在未授权状态。
+let IS_FILE_MODE = IS_FILE_PROTOCOL;
 // 离线（file://）模式下的演示管理员账号：用户名与线上 .env 的 ADMIN_USERNAME 保持一致（admin）。
 // 密码不写死在代码里：首次使用时由使用者在这台电脑上设定，只保存在浏览器 localStorage。
 // 线上 server 模式以 .env 中的 ADMIN_PASSWORD 为准。
@@ -1492,6 +1495,24 @@ function bindEvents() {
 }
 
 async function init() {
+  if (!IS_FILE_PROTOCOL) {
+    // 优先用 runtime-mode.js（同步加载、带超时）；bootstrap.js 是动态注入的，
+    // 执行本脚本时通常还没加载完，不能依赖它做判断，否则静态托管下会误判为"有后端"。
+    if (window.AllianceRuntime && typeof window.AllianceRuntime.whenReady === "function") {
+      try {
+        await window.AllianceRuntime.whenReady();
+        IS_FILE_MODE = window.AllianceRuntime.isOffline();
+      } catch (error) {
+        IS_FILE_MODE = true;
+      }
+    } else if (window.AllianceBootstrap && typeof window.AllianceBootstrap.detectBackend === "function") {
+      try {
+        IS_FILE_MODE = !(await window.AllianceBootstrap.detectBackend());
+      } catch (error) {
+        IS_FILE_MODE = true;
+      }
+    }
+  }
   bindEvents();
   const authed = await checkAuth();
   if (authed) {

@@ -14,7 +14,7 @@
   <script>
     (function () {
       var script = document.createElement("script");
-      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "/assets/bootstrap.js";
+      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "assets/bootstrap.js";
       script.onload = function () { window.AllianceBootstrap.initHead(); };
       document.head.appendChild(script);
     })();
@@ -279,7 +279,7 @@
         </div>
         <div class="legal-footer">
           <div class="footer-links">
-            <a href="/terms.html">服务条款</a>
+            <a href="terms.html">服务条款</a>
           </div>
         </div>
       </div>

@@ -10,10 +10,11 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="zh_CN">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <script src="assets/runtime-mode.js"></script>
   <script>
     (function () {
       var script = document.createElement("script");
-      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "/assets/bootstrap.js";
+      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "assets/bootstrap.js";
       script.onload = function () { window.AllianceBootstrap.initHead(); };
       document.head.appendChild(script);
     })();
@@ -251,7 +252,7 @@
   </style>
 </head>
 <body>
-  <a href="/" class="back-link" id="registerBackHomeLink">← 返回首页</a>
+  <a href="index.html" class="back-link" id="registerBackHomeLink">← 返回首页</a>
   
   <div class="auth-page">
     <div class="auth-card">
@@ -354,10 +355,21 @@
 
   <script>
     (function() {
-      const IS_FILE_MODE = window.location.protocol === 'file:';
-      const API_BASE = IS_FILE_MODE ? 'http://localhost:3000/api' : '/api';
-      const MY_PAGE = IS_FILE_MODE ? 'my.html' : '/my.html';
+      // 运行形态：file:// 与"探测不到后端"（GitHub Pages 静态托管）都属于离线演示模式。
+      // 原来只看协议，静态托管下会把注册请求打到站点根目录的 /api → 404。
+      let IS_FILE_MODE = window.location.protocol === 'file:';
+      let API_BASE = IS_FILE_MODE ? 'http://localhost:3000/api' : 'api/';
+      const MY_PAGE = 'my.html';
       let csrfToken = '';
+
+      async function resolveMode() {
+        if (window.AllianceRuntime && typeof window.AllianceRuntime.whenReady === 'function') {
+          await window.AllianceRuntime.whenReady();
+          IS_FILE_MODE = window.AllianceRuntime.isOffline();
+          API_BASE = window.AllianceRuntime.apiBase() || '';
+        }
+        return IS_FILE_MODE;
+      }
 
       async function ensureCsrfToken() {
         if (IS_FILE_MODE) return '';
@@ -368,8 +380,9 @@
         return csrfToken;
       }
 
-      document.getElementById('registerBackHomeLink').href = IS_FILE_MODE ? 'index.html' : '/';
-      document.getElementById('registerLoginLink').href = IS_FILE_MODE ? 'login.html' : '/login.html';
+      // 一律相对路径：静态托管在子路径下，'/' 会跳出站点根目录（到你个人笔记站去了）
+      document.getElementById('registerBackHomeLink').href = 'index.html';
+      document.getElementById('registerLoginLink').href = 'login.html';
 
       // 法律条款弹窗：点击“服务条款 / 隐私政策”在站内弹窗显示，不跳转新页面
       (function initLegalModal() {
@@ -387,7 +400,7 @@
             const kind = link.getAttribute('data-legal');
             frame.src = IS_FILE_MODE
               ? (kind === 'privacy' ? 'privacy.html' : 'terms.html')
-              : (kind === 'privacy' ? '/privacy.html' : '/terms.html');
+              : (kind === 'privacy' ? 'privacy.html' : 'terms.html');
             open();
           });
         });
@@ -574,6 +587,8 @@
         notice.className = 'notice';
 
         try {
+          await resolveMode();
+
           const requestBody = JSON.stringify({
             realName,
             nickname: nickname || realName,
@@ -583,6 +598,28 @@
             orgName,
             orgRole
           });
+
+          // 演示/静态托管模式没有后端：账号只保存在本机浏览器
+          if (IS_FILE_MODE) {
+            const demoUser = {
+              id: Date.now(),
+              userId: Date.now(),
+              email,
+              nickname: nickname || realName || email,
+              real_name: realName || '',
+              org_name: orgName || '',
+              org_role: orgRole || '',
+              phone: phone || '',
+              isAdmin: false,
+              created_at: new Date().toISOString()
+            };
+            localStorage.setItem('alliance_token', 'local-user-token');
+            localStorage.setItem('alliance_user', JSON.stringify(demoUser));
+            notice.className = 'notice success';
+            notice.textContent = '演示模式：注册成功，账号已保存在本机浏览器（正式部署会提交到服务器）。';
+            setTimeout(() => { window.location.href = MY_PAGE; }, 1000);
+            return;
+          }
 
           let res = await fetch(`${API_BASE}/auth/register`, {
             method: 'POST',
@@ -642,7 +679,7 @@
     var script = document.createElement("script");
     script.src = window.location.protocol === "file:"
       ? "assets/nav-auth.js?v=202604201933"
-      : "/assets/nav-auth.js?v=202604201933";
+      : "assets/nav-auth.js?v=202604201933";
     document.body.appendChild(script);
   })();
 </script>

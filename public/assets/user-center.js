@@ -6,15 +6,28 @@
 
   var IS_FILE_MODE = window.location.protocol === 'file:';
   var API_BASE = IS_FILE_MODE ? 'http://localhost:3000' : '';
-  var LOGIN_PAGE = IS_FILE_MODE ? 'login.html' : '/login.html';
-  var DIRECTORY_APPLY_PAGE = IS_FILE_MODE ? 'directory-apply.html' : '/directory-apply.html';
-  var CATEGORIES_PAGE = IS_FILE_MODE ? 'categories.html' : '/categories.html';
-  var PUBLISH_PAGE = IS_FILE_MODE ? 'publish.html' : '/publish.html';
+  // 静态托管（GitHub Pages）用的是 https，但并没有 /api 路由。
+  // 只按协议判断会把它当成"有后端"，于是每个请求都打到站点根目录的 /api → 全部 404。
+  // 因此统一用 AllianceRuntime 探测：探测不到后端即视为离线，走本地分支。
+  async function resolveMode() {
+    if (window.AllianceRuntime && typeof window.AllianceRuntime.whenReady === 'function') {
+      await window.AllianceRuntime.whenReady();
+      IS_FILE_MODE = window.AllianceRuntime.isOffline();
+      if (!IS_FILE_MODE) API_BASE = '';
+    }
+    return IS_FILE_MODE;
+  }
+  // 一律相对路径：兼容 file:// 本地预览与静态托管子路径。
+  var LOGIN_PAGE = 'login.html';
+  var DIRECTORY_APPLY_PAGE = 'directory-apply.html';
+  var CATEGORIES_PAGE = 'categories.html';
+  var PUBLISH_PAGE = 'publish.html';
   var LOCAL_ADMIN_TOKEN_KEY = 'alliance_admin_token';
   var user = null;
 
   /* ====== 初始化 ====== */
   async function init() {
+    await resolveMode();
     await waitForAuthState();
     
     // 调试日志

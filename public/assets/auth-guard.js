@@ -13,7 +13,8 @@
     var dest = isFileMode
       ? window.location.pathname.split('/').pop() + window.location.search
       : window.location.pathname + window.location.search;
-    var loginPage = isFileMode ? 'login.html' : '/login.html';
+    // 相对路径：file:// 与静态托管子路径下都不会跳到站点根目录之外。
+    var loginPage = 'login.html';
     window.location.href = loginPage + '?redirect=' + encodeURIComponent(dest);
   }
 

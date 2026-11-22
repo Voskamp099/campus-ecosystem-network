@@ -66,7 +66,10 @@ function readLocalContent(key, fallback) {
 }
 
 async function loadContent() {
-  if (window.location.protocol === "file:") {
+  const hasBackend = window.AllianceBootstrap && typeof window.AllianceBootstrap.detectBackend === "function"
+    ? await window.AllianceBootstrap.detectBackend()
+    : false;
+  if (!hasBackend) {
     state.content.categoryDetails = {
       "food-fun": readLocalContent("alliance_content_category_details_food-fun", defaultCategoryDetails["food-fun"]),
       lifestyle: readLocalContent("alliance_content_category_details_lifestyle", defaultCategoryDetails.lifestyle),

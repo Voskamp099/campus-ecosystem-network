@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>联盟内容后台 | 北京校园生态合作联盟</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- runtime-mode.js 必须同步加载：admin.js 的 init() 靠它判断有没有后端，
+       而 bootstrap.js 是动态注入的（晚于 admin.js 执行），不能作为判断依据。 -->
+  <script src="assets/runtime-mode.js"></script>
   <script>
     (function () {
       var script = document.createElement("script");
-      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "/assets/bootstrap.js";
+      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "assets/bootstrap.js";
       script.onload = function () { window.AllianceBootstrap.initHead(); };
       document.head.appendChild(script);
     })();
@@ -567,7 +570,7 @@
     (function loadAdminScript() {
       const script = document.createElement("script");
       script.defer = true;
-      const basePath = window.location.protocol === "file:" ? "assets/admin.js" : "/assets/admin.js";
+      const basePath = window.location.protocol === "file:" ? "assets/admin.js" : "assets/admin.js";
       script.src = basePath + "?v=202607211710";
       document.body.appendChild(script);
     })();

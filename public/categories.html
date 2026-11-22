@@ -14,7 +14,7 @@
   <script>
     (function () {
       var script = document.createElement("script");
-      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "/assets/bootstrap.js";
+      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "assets/bootstrap.js";
       script.onload = function () { window.AllianceBootstrap.initHead(); };
       document.head.appendChild(script);
     })();
@@ -368,7 +368,7 @@
     (function loadCategoryHubScript() {
       const script = document.createElement("script");
       script.defer = true;
-      script.src = window.location.protocol === "file:" ? "assets/category-hub.js?v=202607211535" : "/assets/category-hub.js?v=202607211535";
+      script.src = window.location.protocol === "file:" ? "assets/category-hub.js?v=202607211535" : "assets/category-hub.js?v=202607211535";
       document.body.appendChild(script);
     })();
   </script>
@@ -376,7 +376,7 @@
   (function loadCategoryAuthScript() {
     const script = document.createElement("script");
     script.defer = true;
-    script.src = window.location.protocol === "file:" ? "assets/nav-auth.js" : "/assets/nav-auth.js";
+    script.src = window.location.protocol === "file:" ? "assets/nav-auth.js" : "assets/nav-auth.js";
     document.body.appendChild(script);
   })();
 </script>

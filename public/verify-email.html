@@ -13,7 +13,7 @@
   <script>
     (function () {
       var script = document.createElement("script");
-      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "/assets/bootstrap.js";
+      script.src = window.location.protocol === "file:" ? "assets/bootstrap.js" : "assets/bootstrap.js";
       script.onload = function () { window.AllianceBootstrap.initHead(); };
       document.head.appendChild(script);
     })();
@@ -137,7 +137,7 @@
     (function() {
       const IS_FILE_MODE = window.location.protocol === 'file:';
       const API_BASE = IS_FILE_MODE ? 'http://localhost:3000/api' : '/api';
-      const LOGIN_PAGE = IS_FILE_MODE ? 'login.html' : '/login.html';
+      const LOGIN_PAGE = IS_FILE_MODE ? 'login.html' : 'login.html';
 
       document.getElementById('loginBtn').href = LOGIN_PAGE;
 
@@ -192,7 +192,7 @@
     (function loadVerifyAuthScript() {
       const script = document.createElement("script");
       script.defer = true;
-      script.src = window.location.protocol === "file:" ? "assets/nav-auth.js" : "/assets/nav-auth.js";
+      script.src = window.location.protocol === "file:" ? "assets/nav-auth.js" : "assets/nav-auth.js";
       document.body.appendChild(script);
     })();
   </script>

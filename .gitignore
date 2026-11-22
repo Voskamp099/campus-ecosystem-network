@@ -63,3 +63,6 @@ db_backup_*.sql
 
 # 本地 agent 记忆目录，不随仓库公开
 .workbuddy/
+
+# 本地修改前备份目录，不进版本库
+.history/
