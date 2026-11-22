@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus Ecosystem Network · 站点架构图</title>
+<style>
+  :root {
+    --bg: #0a1020;
+    --bg-deep: #060a16;
+    --surface: rgba(190, 214, 255, 0.05);
+    --surface-strong: rgba(190, 214, 255, 0.095);
+    --border: rgba(160, 190, 255, 0.16);
+    --border-strong: rgba(160, 190, 255, 0.30);
+    --text: #eaf1ff;
+    --text-soft: rgba(234, 241, 255, 0.74);
+    --text-muted: rgba(234, 241, 255, 0.52);
+    --brand: #5b8def;
+    --brand-deep: #2a4fa8;
+    --accent: #f0885c;
+    --green: #4fb99c;
+    --violet: #8b7cf0;
+    --cyan: #38bdf8;
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0 0 80px;
+    background:
+      radial-gradient(ellipse 68% 46% at 16% -6%, rgba(91, 141, 239, 0.26), transparent 72%),
+      radial-gradient(ellipse 60% 44% at 88% 0%, rgba(139, 124, 240, 0.20), transparent 70%),
+      radial-gradient(ellipse 52% 38% at 52% -12%, rgba(56, 189, 248, 0.14), transparent 68%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+  /* ── 页头 ─────────────────────────────────────────── */
+  header { padding: 56px 0 28px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 7px 14px; border-radius: 999px;
+    background: rgba(91, 141, 239, 0.10);
+    border: 1px solid rgba(91, 141, 239, 0.32);
+    font-size: 12px; letter-spacing: 0.04em; color: var(--text-soft);
+  }
+  .eyebrow::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+    box-shadow: 0 0 0 4px rgba(91, 141, 239, 0.16);
+  }
+  h1 {
+    margin: 18px 0 6px; font-size: clamp(30px, 4.6vw, 54px);
+    line-height: 1.06; letter-spacing: -0.035em; font-weight: 700;
+  }
+  h1 .grad {
+    background: linear-gradient(100deg, #7fb0ff 0%, #a9bcff 48%, #d9a6ff 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent; -webkit-text-fill-color: transparent;
+  }
+  .lede { margin: 0; max-width: 720px; color: var(--text-soft); font-size: 16px; }
+
+  /* ── 视图切换 ─────────────────────────────────────── */
+  .tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0 8px; }
+  .tabs button {
+    font: inherit; font-size: 14px; cursor: pointer;
+    padding: 10px 18px; border-radius: 10px;
+    background: var(--surface); color: var(--text-soft);
+    border: 1px solid var(--border);
+    transition: all .18s ease;
+  }
+  .tabs button:hover { border-color: var(--border-strong); color: var(--text); }
+  .tabs button[aria-selected="true"] {
+    background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+    border-color: transparent; color: #fff; font-weight: 600;
+  }
+
+  .view { padding-top: 30px; }
+  .view[hidden] { display: none; }
+
+  h2.section {
+    font-size: 13px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--brand); font-weight: 600; margin: 0 0 4px;
+  }
+  h2.section + .hint { margin: 0 0 22px; color: var(--text-muted); font-size: 14px; }
+
+  /* ── 卡片 ─────────────────────────────────────────── */
+  .card {
+    background: linear-gradient(180deg, rgba(190, 214, 255, .07), rgba(190, 214, 255, .02)), rgba(10, 16, 32, .68);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px 20px; backdrop-filter: blur(12px);
+  }
+  .card h3 { margin: 0 0 5px; font-size: 16px; letter-spacing: -.01em; }
+  .card p { margin: 0; color: var(--text-soft); font-size: 13.5px; }
+  .file {
+    display: inline-block; margin-top: 9px; padding: 2px 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px; color: var(--text-muted);
+    background: rgba(0, 0, 0, .28); border-radius: 5px;
+  }
+  .tag {
+    display: inline-block; margin-right: 6px; padding: 2px 9px;
+    border-radius: 999px; font-size: 11px; letter-spacing: .02em;
+    border: 1px solid currentColor;
+  }
+  .t-open { color: var(--green); }
+  .t-login { color: var(--brand); }
+  .t-admin { color: var(--accent); }
+
+  /* ── 页面地图 ─────────────────────────────────────── */
+  .navbar-note {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 14px 20px; margin-bottom: 26px;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, rgba(42, 79, 168, .26), rgba(139, 124, 240, .16));
+    border: 1px solid rgba(91, 141, 239, .30);
+    font-size: 14px; color: var(--text);
+  }
+  .navbar-note b { font-weight: 600; }
+  .navbar-note .chips { display: flex; gap: 7px; flex-wrap: wrap; }
+  .navbar-note .chip {
+    padding: 3px 10px; border-radius: 999px; font-size: 12px;
+    background: rgba(0, 0, 0, .25); color: var(--text-soft);
+    font-family: ui-monospace, Menlo, monospace;
+  }
+
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
+  .col-head {
+    display: flex; align-items: center; gap: 9px;
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-head .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .col-head h3 { margin: 0; font-size: 15px; }
+  .col-head p { margin: 2px 0 0; font-size: 12.5px; color: var(--text-muted); }
+  .stack { display: grid; gap: 12px; }
+  .col-1 .dot { background: var(--green); }
+  .col-2 .dot { background: var(--brand); }
+  .col-3 .dot { background: var(--accent); }
+
+  .rel {
+    margin-top: 10px; padding-top: 9px;
+    border-top: 1px dashed var(--border);
+    font-size: 12.5px; color: var(--text-muted);
+  }
+  .rel b { color: var(--text-soft); font-weight: 500; }
+
+  /* ── 旅程 ─────────────────────────────────────────── */
+  .journey { position: relative; padding-left: 46px; }
+  .journey::before {
+    content: ""; position: absolute; left: 15px; top: 12px; bottom: 12px;
+    width: 2px; border-radius: 2px;
+    background: linear-gradient(180deg, var(--brand), var(--violet), var(--accent));
+  }
+  .step { position: relative; margin-bottom: 18px; }
+  .step::before {
+    content: attr(data-n); position: absolute; left: -46px; top: 12px;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 600; color: #fff;
+    background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+    border: 2px solid var(--bg); box-shadow: 0 0 0 4px rgba(91, 141, 239, .14);
+  }
+  .step h4 { margin: 0 0 4px; font-size: 16px; }
+  .step .who { color: var(--text-muted); font-size: 12.5px; margin-bottom: 7px; }
+  .step .who b { color: var(--accent); font-weight: 500; }
+  .step ul { margin: 8px 0 0; padding-left: 18px; color: var(--text-soft); font-size: 13.5px; }
+  .step li { margin-bottom: 3px; }
+  .step li b { color: var(--text); font-weight: 500; }
+  code {
+    font-family: ui-monospace, Menlo, monospace; font-size: 12.5px;
+    padding: 1px 6px; border-radius: 5px;
+    background: rgba(0, 0, 0, .3); color: #a9bcff;
+  }
+
+  /* ── 分层 ─────────────────────────────────────────── */
+  .layer {
+    display: grid; grid-template-columns: 190px 1fr; gap: 22px;
+    padding: 20px 22px; margin-bottom: 12px;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(190, 214, 255, .06), rgba(190, 214, 255, .015)), rgba(10, 16, 32, .6);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--brand);
+  }
+  .layer.l2 { border-left-color: var(--violet); }
+  .layer.l3 { border-left-color: var(--cyan); }
+  .layer.l4 { border-left-color: var(--accent); }
+  .layer h3 { margin: 0 0 4px; font-size: 15px; }
+  .layer .role { font-size: 12.5px; color: var(--text-muted); }
+  .layer .body { font-size: 13.5px; color: var(--text-soft); }
+  .layer .body b { color: var(--text); font-weight: 500; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .split .mini {
+    padding: 12px 14px; border-radius: 10px;
+    background: rgba(0, 0, 0, .22); border: 1px solid var(--border);
+  }
+  .split .mini h5 { margin: 0 0 4px; font-size: 13px; color: var(--text); }
+  .split .mini p { margin: 0; font-size: 12.5px; color: var(--text-muted); }
+
+  /* ── 表格 ─────────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); }
+  th { color: var(--text-muted); font-weight: 500; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+  td { color: var(--text-soft); }
+  td b { color: var(--text); font-weight: 500; }
+  td .mono { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #a9bcff; }
+
+  /* ── 附录 ─────────────────────────────────────────── */
+  .note-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+  .note-grid .card h3 { display: flex; align-items: center; gap: 8px; }
+  .note-grid .card h3 .num {
+    width: 22px; height: 22px; border-radius: 6px; flex: none;
+    display: grid; place-items: center; font-size: 12px; font-weight: 600;
+    background: linear-gradient(135deg, var(--brand-deep), var(--brand)); color: #fff;
+  }
+  .note-grid ol { margin: 10px 0 0; padding-left: 18px; font-size: 13px; color: var(--text-soft); }
+  .note-grid ol li { margin-bottom: 5px; }
+
+  footer { margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12.5px; }
+
+  @media (max-width: 900px) {
+    .cols, .split { grid-template-columns: 1fr; }
+    .layer { grid-template-columns: 1fr; gap: 10px; }
+  }
+  @media print {
+    body { background: #fff; color: #111; }
+    .tabs { display: none; }
+    .view[hidden] { display: block !important; }
+    .card, .layer { background: #fafbfd; border-color: #dde3ee; }
+    .card p, .layer .body { color: #333; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">Campus Ecosystem Network · 北京校园生态合作联盟</span>
+    <h1>这个站<span class="grad">是怎么搭起来的</span></h1>
+    <p class="lede">
+      15 个页面、一个可选的静态演示形态、一套带审核的后台。下面这份图不写代码，
+      只讲三件事：<b style="color:var(--text)">页面之间怎么连</b>、
+      <b style="color:var(--text)">一个用户从进门到办完事会经过什么</b>、
+      以及 <b style="color:var(--text)">背后由谁在干活</b>。
+    </p>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-view="map">① 页面地图</button>
+      <button role="tab" aria-selected="false" data-view="journey">② 一次完整旅程</button>
+      <button role="tab" aria-selected="false" data-view="stack">③ 背后发生什么</button>
+      <button role="tab" aria-selected="false" data-view="build">④ 怎么加新页面</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ══════════ 视图 1：页面地图 ══════════ -->
+    <section class="view" id="view-map">
+      <h2 class="section">页面地图</h2>
+      <p class="hint">
+        共 <b>15 个页面</b>，每个是一个独立的 HTML 文件，放在同一个目录下，靠链接互相跳转。
+        它们分成三个区——能不能进，取决于你有没有登录、以及你是不是管理员。
+      </p>
+
+      <div class="navbar-note">
+        <b>公共导航条</b>
+        <span style="color:var(--text-soft);font-size:13.5px"><b style="color:var(--text)">首页</b>顶部有完整导航条，是所有人的共同入口；其他页面顶部通常只有一个「返回首页」</span>
+        <div class="chips">
+          <span class="chip">资源分类</span><span class="chip">合作伙伴</span>
+          <span class="chip">生态对接名录</span><span class="chip">实习实践</span>
+          <span class="chip">近期活动</span><span class="chip">登录 / 注册</span>
+        </div>
+      </div>
+
+      <div class="cols">
+        <!-- 第一列：访客 -->
+        <div class="col-1">
+          <div class="col-head">
+            <span class="dot"></span>
+            <div>
+              <h3>访客直接能看</h3>
+              <p>不用登录，链接发给别人也能打开</p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <h3>首页 <span class="tag t-open">公开</span></h3>
+              <p>站点的门面。轮播、合作伙伴、权益中心、实习岗位、近期活动都在这里，首屏是整站给人的第一印象。</p>
+              <span class="file">index.html</span>
+              <div class="rel"><b>通向 →</b> 分类 · 名录 · 登录/注册 · 后台（仅管理员可见的入口） · 隐私政策 · 服务条款</div>
+            </div>
+            <div class="card">
+              <h3>分类浏览 <span class="tag t-open">公开</span></h3>
+              <p>按吃喝玩乐、衣食住行、学习提升、就业创业等生活场景，把权益分成四类展示，每类有独立的详情清单。</p>
+              <span class="file">categories.html</span>
+              <div class="rel"><b>通向 →</b> 首页</div>
+            </div>
+            <div class="card">
+              <h3>生态对接名录 <span class="tag t-open">公开</span></h3>
+              <p>整个平台的核心价值：高校、企业、政府三类合作方的名录，支持按类型筛选、按机构名或关键词搜索。</p>
+              <span class="file">directory.html</span>
+              <div class="rel"><b>通向 →</b> 首页</div>
+            </div>
+            <div class="card">
+              <h3>发起对接申请 <span class="tag t-open">公开</span></h3>
+              <p>在名录里选定一个合作方后填表提交。提交本身不需要登录——这是刻意留的，降低用户的第一次接触门槛。</p>
+              <span class="file">directory-apply.html</span>
+              <div class="rel"><b>通向 →</b> 名录 · 进度查询</div>
+            </div>
+            <div class="card">
+              <h3>进度查询 <span class="tag t-open">公开</span></h3>
+              <p>提交时会拿到一个查询编号。凭「编号 + 联系方式」就能查处理进度，不用注册账号也能跟进。</p>
+              <span class="file">directory-status.html</span>
+              <div class="rel"><b>通向 →</b> 名录 · 发起对接 · 个人中心（已登录）</div>
+            </div>
+            <div class="card">
+              <h3>隐私政策 / 服务条款 / 404 <span class="tag t-open">公开</span></h3>
+              <p>法律文本与错误页。条款与隐私政策也做了站内弹窗，不必跳转新页面。404 是一个独立页面（可直接访问），但服务端遇到未知地址时目前返回一段 JSON 错误，并不会自动跳到它。</p>
+              <span class="file">privacy.html · terms.html · 404.html</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 第二列：登录用户 -->
+        <div class="col-2">
+          <div class="col-head">
+            <span class="dot"></span>
+            <div>
+              <h3>登录之后才用得上</h3>
+              <p>需要账号，用来存自己的东西</p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <h3>登录 / 注册 <span class="tag t-login">入口</span></h3>
+              <p>整套账号体系的枢纽。登录后写入浏览器本地的一份凭证，之后所有请求都带着它，证明"我是谁"。</p>
+              <span class="file">login.html · register.html</span>
+              <div class="rel"><b>通向 →</b> 忘记密码 · 注册。邮箱验证页不在导航里，只有验证邮件里的链接能进；登录成功后会直接跳到个人中心。</div>
+            </div>
+            <div class="card">
+              <h3>个人中心 <span class="tag t-login">需登录</span></h3>
+              <p>我的申请、我的报名、我的投递记录集中在一处；也能改资料、传头像。管理员在这里多一个"进后台"的入口。</p>
+              <span class="file">my.html</span>
+              <div class="rel"><b>通向 →</b> 发布内容 · 发起对接 · 后台 · 登录页</div>
+            </div>
+            <div class="card">
+              <h3>发布内容 <span class="tag t-login">需登录</span></h3>
+              <p>发布活动或实习实践。提交后进入待审状态，管理员通过后才出现在首页。</p>
+              <span class="file">publish.html</span>
+              <div class="rel"><b>通向 →</b> 首页</div>
+            </div>
+            <div class="card">
+              <h3>找回密码 / 验证邮箱 <span class="tag t-login">配套</span></h3>
+              <p>密码重置走邮件链接；邮箱验证用于确认账号归属。</p>
+              <span class="file">forgot-password.html · verify-email.html</span>
+              <div class="rel"><b>通向 →</b> 登录</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 第三列：管理员 -->
+        <div class="col-3">
+          <div class="col-head">
+            <span class="dot"></span>
+            <div>
+              <h3>只有管理员能进</h3>
+              <p>内容、审核、用户、日志都归这里</p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <h3>后台管理 <span class="tag t-admin">管理员</span></h3>
+              <p><b>十二个页签</b>：首屏轮播图、资源分类、联盟权益中心内容、生态对接名录、对接申请、合作伙伴、用户列表、用户统计、活动报名、投递记录，以及<b style="color:var(--accent)">用户活动 / 用户实习</b>这两个审核页签。</p>
+              <span class="file">admin.html</span>
+              <div class="rel"><b>通向 →</b> 首页</div>
+            </div>
+            <div class="card">
+              <h3>操作日志 <span class="tag t-admin">写进库</span></h3>
+              <p>后台每次改动都留一条记录：谁、什么时候、改了什么、从哪个 IP。审计写在服务端的路由里，不依赖前端传值，日志写失败也不会影响主流程。</p>
+              <span class="file">admin_logs 表</span>
+            </div>
+            <div class="card">
+              <h3>审核状态机 <span class="tag t-admin">规则</span></h3>
+              <p>对接申请固定走五段：<code>pending → reviewing → matched → contacted → completed</code>，另有一条 <code>rejected</code> 作为不匹配的旁路。页面上每个状态都配了对应的说明文案。</p>
+              <span class="file">directory-status.js</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 视图 2：旅程 ══════════ -->
+    <section class="view" id="view-journey" hidden>
+      <h2 class="section">一次完整旅程</h2>
+      <p class="hint">
+        从一个陌生人第一次打开这个站，到一件事真正办完，中间发生了什么。
+        蓝色数字是步骤，深色小字说明当时是谁在操作。
+      </p>
+
+      <div class="journey">
+        <div class="step" data-n="1">
+          <h4>打开首页</h4>
+          <div class="who">操作者：<b>访客</b> · 页面：<code>index.html</code></div>
+          <ul>
+            <li>首屏是一句定位语 + 一个「注册加入联盟」按钮，右侧是展示位</li>
+            <li>往下滚能看到合作伙伴、权益分类、实习岗位、近期活动</li>
+            <li>右下角有一个悬浮的 EN / 中文 切换按钮，中文是默认</li>
+          </ul>
+        </div>
+
+        <div class="step" data-n="2">
+          <h4>进名录，挑一个合作方</h4>
+          <div class="who">操作者：<b>访客</b> · 页面：<code>directory.html</code></div>
+          <ul>
+            <li>名录分高校、企业、政府三类，可筛选</li>
+            <li>可以按机构名、方向、关键词搜</li>
+            <li>选中某个合作方后 → "发起对接"</li>
+          </ul>
+        </div>
+
+        <div class="step" data-n="3">
+          <h4>填表提交对接申请</h4>
+          <div class="who">操作者：<b>访客（可以还没注册）</b> · 页面：<code>directory-apply.html</code></div>
+          <ul>
+            <li>填合作目标、联系人、单位、手机号、微信号</li>
+            <li>提交后系统生成一个 <b>查询编号</b>，页面立刻显示</li>
+            <li>提交走的是公开接口 <code>/api/public/directory-applications</code>，不要求登录</li>
+          </ul>
+        </div>
+
+        <div class="step" data-n="4">
+          <h4>随时回来查进度</h4>
+          <div class="who">操作者：<b>访客</b> · 页面：<code>directory-status.html</code></div>
+          <ul>
+            <li>凭「编号 + 联系方式」查，不需要注册</li>
+            <li>每一步都有说明文案，比如"正在做基础信息核验与方向初筛"</li>
+            <li>在登录状态下提交会顺带绑定到账号，之后在个人中心能看到同一份记录；游客提交的记录不带账号，只能靠编号查</li>
+          </ul>
+        </div>
+
+        <div class="step" data-n="5">
+          <h4>管理员接单并推进</h4>
+          <div class="who">操作者：<b>管理员</b> · 页面：<code>admin.html</code></div>
+          <ul>
+            <li>后台「对接申请」页签看到新申请</li>
+            <li>推进状态：<code>pending → reviewing → matched → contacted → completed</code></li>
+            <li>每一步操作写入 <code>admin_logs</code>，谁改的、什么时候、从哪个 IP</li>
+          </ul>
+        </div>
+
+        <div class="step" data-n="6">
+          <h4>注册账号，发布自己的内容</h4>
+          <div class="who">操作者：<b>注册用户</b> · 页面：<code>register.html</code> → <code>my.html</code> → <code>publish.html</code></div>
+          <ul>
+            <li>注册只需邮箱 + 密码，昵称等资料可以之后补</li>
+            <li>发布活动或实习实践，状态是 <code>pending</code></li>
+            <li>没有后端时（静态演示形态），内容存在访客自己的浏览器里</li>
+          </ul>
+        </div>
+
+        <div class="step" data-n="7">
+          <h4>审核通过，内容公开</h4>
+          <div class="who">操作者：<b>管理员</b> → <b>所有人</b></div>
+          <ul>
+            <li>后台「用户活动」「用户实习」页签审核，通过或拒绝，拒绝可以附原因</li>
+            <li>通过的内容出现在首页的"近期活动"/"实习实践"区块</li>
+            <li>拒绝原因会被记录并由接口返回，但个人中心目前只显示「已拒绝」，还没把原因渲染出来</li>
+          </ul>
+        </div>
+
+        <div class="step" data-n="8">
+          <h4>站内投递与报名</h4>
+          <div class="who">操作者：<b>注册用户</b> · 页面：<code>categories.html</code> / 首页 · <code>my.html</code></div>
+          <ul>
+            <li>接口已经就绪，但<b>前台目前跳的是外部表单</b>，站内这条写入链路还没接通</li>
+            <li>管理员在后台仍能看到全部报名与投递记录</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 视图 3：背后 ══════════ -->
+    <section class="view" id="view-stack" hidden>
+      <h2 class="section">背后发生什么</h2>
+      <p class="hint">
+        从上到下四层。越往下越"重"，越往上越贴近人。
+      </p>
+
+      <div class="layer l1">
+        <div>
+          <h3>① 浏览器</h3>
+          <div class="role">访客 / 用户 / 管理员</div>
+        </div>
+        <div class="body">
+          <b>页面本身</b>：15 个 HTML 文件 + 一堆 CSS 和 JS，浏览器拿到就直接画出来，不需要先跟服务器打招呼。
+          <b>前端脚本</b>负责三件事——画内容、管登录状态、判断"现在能不能用后端"。
+          <div class="split">
+            <div class="mini">
+              <h5>assets/runtime-mode.js</h5>
+              <p>探测后端在不在。找不到就走"本地模式"，所有数据存浏览器里。这决定了静态演示形态能跑起来。（全站目前有三份探测实现并存，这个页面用的是其中之一。）</p>
+            </div>
+            <div class="mini">
+              <h5>assets/nav-auth.js</h5>
+              <p>统一管"我是谁"：登录状态、当前用户、退出。页面之间靠它共享同一份登录状态。</p>
+            </div>
+            <div class="mini">
+              <h5>assets/design-tokens.css</h5>
+              <p>全站配色和圆角的唯一来源。改配色只改这一个文件。</p>
+            </div>
+            <div class="mini">
+              <h5>assets/brand-layer.css</h5>
+              <p>把配色令牌落成看得见的品牌感：光晕、渐变标题、玻璃卡片。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="layer l2">
+        <div>
+          <h3>② 静态资源</h3>
+          <div class="role">public/ 目录</div>
+        </div>
+        <div class="body">
+          这一层就是 <b>public/</b> 目录的内容。它同时是三种部署形态的公共部分——
+          <b>Node 服务</b>把它当静态文件发出去，<b>GitHub Pages</b>把它整个发布成网站，
+          <b>本地双击</b>则直接从硬盘打开。
+          <br><br>
+          关键约束：<b>所有资源引用必须用相对路径</b>。写成 <code>/assets/x.js</code> 的话，
+          在子路径部署下会跳出站点根目录——而根域是用户自己的个人笔记站。
+        </div>
+      </div>
+
+      <div class="layer l3">
+        <div>
+          <h3>③ Node 服务</h3>
+          <div class="role">server/ · Express</div>
+        </div>
+        <div class="body">
+          <b>routes/</b> 只做解析和编排，<b>services/</b> 才写业务逻辑——所以同一个业务在 MySQL 和 JSON 两种存储下走的是同一条路径。
+          <div class="split">
+            <div class="mini">
+              <h5>认证</h5>
+              <p>JWT 放在请求头里，每个请求验一次。CSRF 用双提交 cookie。所有记录按 token 里的身份取，不认 URL 里的手机号。</p>
+            </div>
+            <div class="mini">
+              <h5>审核流</h5>
+              <p>用户发布 → pending → 管理员 approve/reject（可附原因）→ 通过才对外展示。</p>
+            </div>
+            <div class="mini">
+              <h5>输入与安全</h5>
+              <p>参数校验 + XSS 过滤 + 限流 + 安全响应头。密码 bcrypt 存储，日志里不出现哈希。</p>
+            </div>
+            <div class="mini">
+              <h5>可观测</h5>
+              <p>结构化日志、错误追踪、<code>/health</code> 健康检查、<code>/api-docs</code> 接口文档。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="layer l4">
+        <div>
+          <h3>④ 存储</h3>
+          <div class="role">MySQL 为主 · JSON 兜底</div>
+        </div>
+        <div class="body">
+          <b>主用 MySQL</b>：共 9 张表——用户、登录日志、活动报名、投递记录、用户发布的活动、用户发布的实习、内容、后台日志、对接申请。<b>名录卡片没有单独的表</b>，它存在内容表里用一个分区字段区分，所以后台改名录等于改内容。
+          <br>
+          <b>兜底 JSON</b>：数据库连不上时，服务自动改写 <code>data/</code> 目录下的 JSON 文件继续跑——
+          这就是静态演示形态和本地开箱即用的底气。
+          <br><br>
+          <b>邮件</b>是可选件：邮箱验证和密码重置要用，不配就发不出信，其余功能不受影响。
+        </div>
+      </div>
+
+      <h2 class="section" style="margin-top:34px">三种部署形态</h2>
+      <p class="hint">同一份代码，三种跑法。前端靠 runtime-mode.js 自动判断自己在哪一种形态下。</p>
+      <table>
+        <thead>
+          <tr><th>形态</th><th>跑在哪</th><th>后端</th><th>数据存在哪</th><th>适合</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>服务形态</b></td>
+            <td>Render / 自建服务器</td>
+            <td>有，完整 Express</td>
+            <td>MySQL（连不上则 JSON）</td>
+            <td>正式使用</td>
+          </tr>
+          <tr>
+            <td><b>静态形态</b></td>
+            <td>GitHub Pages 子路径</td>
+            <td>没有</td>
+            <td>访客浏览器本地</td>
+            <td>公开演示</td>
+          </tr>
+          <tr>
+            <td><b>本地形态</b></td>
+            <td>双击 index.html</td>
+            <td>没有</td>
+            <td>访客浏览器本地</td>
+            <td>开发调试</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ══════════ 视图 4：怎么加页面 ══════════ -->
+    <section class="view" id="view-build" hidden>
+      <h2 class="section">怎么加一个新页面</h2>
+      <p class="hint">
+        页面是平的——都在 public/ 目录下同级，加一个文件就是加一个页面。不需要注册路由，不需要改配置。
+      </p>
+
+      <div class="note-grid">
+        <div class="card">
+          <h3><span class="num">1</span>建文件</h3>
+          <p>在 <code>public/</code> 下新建一个 HTML，比如 <code>events.html</code>。</p>
+          <ol>
+            <li>复制一个现有页面当骨架最快</li>
+            <li>链接一律用相对路径（<code>events.html</code>，不是 <code>/events.html</code>）</li>
+            <li>引入 <code>assets/design-tokens.css</code> 和 <code>assets/brand-layer.css</code>，配色才统一</li>
+            <li>需要登录态就引入 <code>assets/nav-auth.js</code></li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3><span class="num">2</span>接进导航</h3>
+          <p>新页面要能被找到，两个地方：</p>
+          <ol>
+            <li>导航条加一个链接项（各页面都有）</li>
+            <li>如果它属于首页某个区块，加锚点 <code>#your-id</code></li>
+            <li>中文文案记得同步进 i18n 对照表</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3><span class="num">3</span>要数据的话</h3>
+          <p>页面本身不存数据，数据从服务端拿。</p>
+          <ol>
+            <li>先在 <code>server/routes/</code> 定义接口</li>
+            <li>业务逻辑放 <code>server/services/</code>，MySQL 和 JSON 两条路都写</li>
+            <li>前端用 <code>runtime-mode.js</code> 判断有没有后端，有就调接口，没有就本地兜底</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3><span class="num">4</span>中文界面 + 英文版</h3>
+          <p>中文是默认，英文是可选视图。</p>
+          <ol>
+            <li>中文文案直接写在页面里</li>
+            <li>把新文案补进 <code>scripts/zh_inventory.json</code></li>
+            <li>在 <code>scripts/build_i18n.py</code> 的英文列表里对齐补上</li>
+            <li>跑一次脚本，它会告诉你还有哪些中文没翻译</li>
+          </ol>
+        </div>
+      </div>
+
+      <h2 class="section" style="margin-top:34px">改现有页面时，别踩这几个坑</h2>
+      <table>
+        <thead><tr><th>坑</th><th>为什么</th><th>怎么做</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>资源写绝对路径</b></td>
+            <td>子路径部署下会跳出站点根目录</td>
+            <td>一律相对路径，或用 <code>getAssetPath()</code></td>
+          </tr>
+          <tr>
+            <td><b>手改 <span class="mono">i18n-en.js</span></b></td>
+            <td>它是生成产物，下次生成会被覆盖</td>
+            <td>改脚本，重跑脚本</td>
+          </tr>
+          <tr>
+            <td><b>在页面里定义颜色</b></td>
+            <td>十几个页面各写一套，早就出过一次不一致</td>
+            <td>颜色<b>尽量</b>写在 <span class="mono">design-tokens.css</span>（页面里还留有少量历史硬编码色值待收编）</td>
+          </tr>
+          <tr>
+            <td><b>把颜色写进 <span class="mono">:root</span></b></td>
+            <td>同上，每个页面的 <span class="mono">:root</span> 已被清空并统一引用令牌</td>
+            <td>需要新颜色就在令牌文件里加</td>
+          </tr>
+          <tr>
+            <td><b>忘了静态形态</b></td>
+            <td>没有后端时接口全 404，页面直接废掉</td>
+            <td>每个新接口都要有本地兜底分支</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer>
+    Campus Ecosystem Network · 北京校园生态合作联盟 ·
+    对应代码版本 <code>ca81971</code> ·
+    这张图是静态 HTML，双击即可打开，不依赖服务器
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var tabs = document.querySelectorAll('.tabs button');
+    var views = document.querySelectorAll('.view');
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = btn.getAttribute('data-view');
+        tabs.forEach(function (b) { b.setAttribute('aria-selected', String(b === btn)); });
+        views.forEach(function (v) { v.hidden = v.id !== 'view-' + target; });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  })();
+</script>
+</body>
+</html>
