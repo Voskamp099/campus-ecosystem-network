@@ -94,7 +94,60 @@ const CONFIG = {
     groupKey: null,
     fields: { meta: false, desc: false, link: false, items: false },
     placeholder: {}
+  },
+  logs: {
+    label: "操作日志",
+    desc: "查看后台管理员的操作记录，确认每次改动由谁在什么时候完成。",
+    sectionKey: null,
+    groupKey: null,
+    fields: { meta: false, desc: false, link: false, items: false },
+    placeholder: {}
   }
+};
+
+// 后台操作日志：action → 中文人话。键必须覆盖 server/routes/admin.js 里 audit() 用到的全部 action 取值。
+const LOG_ACTION_LABELS = {
+  "admin.login": "登录后台",
+  "admin.logout": "退出后台登录",
+  "content.create": "新增内容",
+  "content.update": "修改内容",
+  "content.delete": "删除内容",
+  "content.reorder": "调整内容排序",
+  "content.export": "导出内容",
+  "content.import": "导入内容",
+  "media.upload": "上传图片文件",
+  "directory_application.update": "更新生态对接申请",
+  "user_event.approve": "通过用户发布的活动",
+  "user_event.reject": "拒绝用户发布的活动",
+  "user_event.delete": "删除用户发布的活动",
+  "user_recruit.approve": "通过用户发布的实习实践",
+  "user_recruit.reject": "拒绝用户发布的实习实践",
+  "user_recruit.delete": "删除用户发布的实习实践"
+};
+
+// 操作对象类型 → 中文
+const LOG_TARGET_LABELS = {
+  content_item: "内容项",
+  directory_application: "对接申请项",
+  user_event: "用户活动",
+  user_recruit: "用户实习实践",
+  admin_session: "后台会话",
+  image: "图片文件"
+};
+
+// 动作色板：复用 design-tokens.css 里的分类色，未命中时用蓝色兜底
+const LOG_ACTION_COLORS = {
+  create: "var(--color-cat-teal)",
+  approve: "var(--color-cat-teal)",
+  update: "var(--color-cat-blue)",
+  upload: "var(--color-cat-blue)",
+  delete: "var(--color-cat-clay)",
+  reject: "var(--color-cat-pink)",
+  login: "var(--color-cat-violet)",
+  logout: "var(--color-cat-violet)",
+  reorder: "var(--color-cat-violet)",
+  export: "var(--color-cat-gold)",
+  import: "var(--color-cat-gold)"
 };
 
 const PARTNER_SUBTABS = {
@@ -246,7 +299,12 @@ const STATE = {
   items: [],
   users: [],
   userStats: null,
-  userSearchKeyword: ""
+  userSearchKeyword: "",
+  logs: [],
+  logTotal: 0,
+  logPage: 1,
+  logPageSize: 20,
+  logAction: ""
 };
 let csrfTokenCache = "";
 
@@ -777,6 +835,10 @@ function handleLogout() {
 }
 
 async function loadItems() {
+  if (STATE.mainTab === "logs") {
+    await loadLogs();
+    return;
+  }
   if (STATE.mainTab === "applications") {
     const data = await api("/api/admin/directory-applications", { method: "GET" });
     STATE.items = data.items || [];
@@ -1172,7 +1234,191 @@ function renderUserSubmissions(type) {
   });
 }
 
+// ── 操作日志 ─────────────────────────────────────────────
+// 日志是只读的独立列表：不走内容表，走 GET /api/admin/logs。
+// 服务端返回 { items, total, page, pageSize }，items 里已带 admin_name / action /
+// target_type / target_id / detail / ip / created_at。
+
+function formatLogDetail(detail) {
+  if (!detail) return "-";
+  let text = String(detail);
+  try {
+    const parsed = JSON.parse(text);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      const parts = Object.keys(parsed)
+        .filter(key => parsed[key] !== null && parsed[key] !== undefined && parsed[key] !== "")
+        .map(key => `${key}: ${String(parsed[key])}`);
+      if (parts.length) text = parts.join(" · ");
+    }
+  } catch (error) {}
+  return text.length > 120 ? `${text.slice(0, 120)}…` : text;
+}
+
+function formatLogTime(value) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleString("zh-CN");
+}
+
+async function loadLogs() {
+  const query = new URLSearchParams();
+  query.set("page", String(STATE.logPage || 1));
+  query.set("pageSize", String(STATE.logPageSize || 20));
+  if (STATE.logAction) query.set("action", STATE.logAction);
+  try {
+    const data = await api(`/api/admin/logs?${query.toString()}`, { method: "GET" });
+    const items = Array.isArray(data?.items) ? data.items : (Array.isArray(data) ? data : []);
+    STATE.logs = items;
+    STATE.logTotal = Number(data?.total) || items.length;
+    STATE.logPage = Number(data?.page) || STATE.logPage || 1;
+    renderLogs();
+  } catch (error) {
+    console.error("[Admin] loadLogs error:", error);
+    STATE.logs = [];
+    STATE.logTotal = 0;
+    renderLogsError(error);
+  }
+}
+
+function renderLogsFilterBar() {
+  const options = Object.keys(LOG_ACTION_LABELS).map(action => (
+    '<option value="' + escapeHTML(action) + '"' + (STATE.logAction === action ? " selected" : "") + ">" +
+      escapeHTML(LOG_ACTION_LABELS[action]) +
+    "</option>"
+  )).join("");
+
+  return (
+    '<div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">' +
+      '<label for="logActionFilter" style="color:var(--text-muted);font-size:13px;">按操作类型筛选</label>' +
+      '<select id="logActionFilter" class="mini-btn" style="min-width:180px;">' +
+        '<option value="">全部操作</option>' +
+        options +
+      "</select>" +
+      '<span style="color:var(--text-muted);font-size:13px;">' + escapeHTML(String(STATE.logTotal)) + " 条操作记录</span>" +
+    "</div>"
+  );
+}
+
+function renderLogs() {
+  const grid = document.getElementById("grid");
+  if (!grid) return;
+
+  const filterBar = renderLogsFilterBar();
+  const totalPages = Math.max(1, Math.ceil((STATE.logTotal || 0) / (STATE.logPageSize || 20)));
+
+  if (!STATE.logs.length) {
+    grid.innerHTML = filterBar +
+      '<div class="card empty"><div>暂无操作日志<br><span style="font-size:12px;">管理员在后台的每次改动都会记录在这里。</span></div></div>';
+    bindLogsEvents(totalPages);
+    return;
+  }
+
+  const rows = STATE.logs.map(log => {
+    const verb = String(log.action || "").split(".").pop();
+    const color = LOG_ACTION_COLORS[verb] || "var(--color-cat-blue)";
+    const actionLabel = LOG_ACTION_LABELS[log.action] || log.action_label || log.action || "-";
+    const targetLabel = LOG_TARGET_LABELS[log.target_type] || log.target_label || log.target_type || "-";
+    const targetId = log.target_id === null || log.target_id === undefined ? "-" : String(log.target_id);
+    return "<tr>" +
+      '<td style="padding:8px 12px;color:var(--text-soft);font-size:12px;white-space:nowrap;">' + escapeHTML(formatLogTime(log.created_at)) + "</td>" +
+      '<td style="padding:8px 12px;word-break:break-word;">' + escapeHTML(log.admin_name || "-") + "</td>" +
+      '<td style="padding:8px 12px;word-break:break-word;">' +
+        '<span style="display:inline-block;padding:2px 10px;border-radius:999px;border:1px solid ' + color + ";color:" + color + ";font-size:12px;white-space:nowrap;\">" +
+          escapeHTML(actionLabel) +
+        "</span>" +
+        ' <span style="color:var(--text-muted);font-size:11px;">' + escapeHTML(log.action || "") + "</span>" +
+      "</td>" +
+      '<td style="padding:8px 12px;color:var(--text-soft);font-size:13px;word-break:break-word;">' + escapeHTML(targetLabel) + "</td>" +
+      '<td style="padding:8px 12px;color:var(--text-muted);font-size:12px;word-break:break-word;">' + escapeHTML(targetId) + "</td>" +
+      '<td style="padding:8px 12px;color:var(--text-muted);font-size:12px;word-break:break-word;">' + escapeHTML(log.ip || "-") + "</td>" +
+      '<td style="padding:8px 12px;color:var(--text-soft);font-size:12px;word-break:break-word;">' + escapeHTML(formatLogDetail(log.detail)) + "</td>" +
+    "</tr>";
+  }).join("");
+
+  const prevDisabled = STATE.logPage <= 1;
+  const nextDisabled = STATE.logPage >= totalPages;
+
+  grid.innerHTML = filterBar +
+    '<div style="border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,0.02);overflow:auto;">' +
+      '<table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+        "<thead>" +
+          '<tr style="border-bottom:1px solid var(--line);text-align:left;">' +
+            '<th style="padding:10px 12px;color:var(--text-muted);font-size:12px;white-space:nowrap;">操作时间</th>' +
+            '<th style="padding:10px 12px;color:var(--text-muted);font-size:12px;white-space:nowrap;">操作人</th>' +
+            '<th style="padding:10px 12px;color:var(--text-muted);font-size:12px;white-space:nowrap;">操作</th>' +
+            '<th style="padding:10px 12px;color:var(--text-muted);font-size:12px;white-space:nowrap;">操作对象</th>' +
+            '<th style="padding:10px 12px;color:var(--text-muted);font-size:12px;white-space:nowrap;">对象编号</th>' +
+            '<th style="padding:10px 12px;color:var(--text-muted);font-size:12px;white-space:nowrap;">IP 地址</th>' +
+            '<th style="padding:10px 12px;color:var(--text-muted);font-size:12px;white-space:nowrap;">操作详情</th>' +
+          "</tr>" +
+        "</thead>" +
+        "<tbody>" + rows + "</tbody>" +
+      "</table>" +
+    "</div>" +
+    '<div style="margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">' +
+      '<button class="mini-btn" type="button" id="logPrevBtn"' + (prevDisabled ? " disabled style=\"opacity:0.4;cursor:not-allowed;\"" : "") + ">上一页</button>" +
+      '<span style="color:var(--text-muted);font-size:13px;">页码 ' + escapeHTML(String(STATE.logPage)) + " / " + escapeHTML(String(totalPages)) + "</span>" +
+      '<button class="mini-btn" type="button" id="logNextBtn"' + (nextDisabled ? " disabled style=\"opacity:0.4;cursor:not-allowed;\"" : "") + ">下一页</button>" +
+    "</div>";
+
+  bindLogsEvents(totalPages);
+}
+
+function bindLogsEvents(totalPages) {
+  const grid = document.getElementById("grid");
+  if (!grid) return;
+
+  const filter = grid.querySelector("#logActionFilter");
+  if (filter) {
+    filter.addEventListener("change", () => {
+      STATE.logAction = filter.value || "";
+      STATE.logPage = 1;
+      loadLogs();
+    });
+  }
+
+  const prev = grid.querySelector("#logPrevBtn");
+  if (prev) {
+    prev.addEventListener("click", () => {
+      if (STATE.logPage <= 1) return;
+      STATE.logPage -= 1;
+      loadLogs();
+    });
+  }
+
+  const next = grid.querySelector("#logNextBtn");
+  if (next) {
+    next.addEventListener("click", () => {
+      if (STATE.logPage >= totalPages) return;
+      STATE.logPage += 1;
+      loadLogs();
+    });
+  }
+}
+
+function renderLogsError(error) {
+  const grid = document.getElementById("grid");
+  if (!grid) return;
+
+  grid.innerHTML =
+    '<div class="card empty"><div>' +
+      '<div style="color:#ef4444;">加载操作日志失败</div>' +
+      '<div style="font-size:12px;margin-top:6px;">' + escapeHTML(error?.message || "未知错误") + "</div>" +
+      '<div style="margin-top:12px;"><button class="mini-btn" type="button" id="logRetryBtn">再试一次</button></div>' +
+    "</div></div>";
+
+  const retry = grid.querySelector("#logRetryBtn");
+  if (retry) {
+    retry.addEventListener("click", () => loadLogs());
+  }
+}
+
 function renderGrid() {
+  if (STATE.mainTab === "logs") {
+    renderLogs();
+    return;
+  }
   if (STATE.mainTab === "applications") {
     renderApplications();
     return;
@@ -1443,13 +1689,17 @@ async function renderUI() {
   renderTabs();
   renderSubTabs();
   renderPanelHead();
-  const hideAddBtn = STATE.mainTab === "applications" || STATE.mainTab === "users" || STATE.mainTab === "userStats" || STATE.mainTab === "activityRegs" || STATE.mainTab === "deliveryRecords" || STATE.mainTab === "userEvents" || STATE.mainTab === "userRecruits";
+  const hideAddBtn = STATE.mainTab === "applications" || STATE.mainTab === "users" || STATE.mainTab === "userStats" || STATE.mainTab === "activityRegs" || STATE.mainTab === "deliveryRecords" || STATE.mainTab === "userEvents" || STATE.mainTab === "userRecruits" || STATE.mainTab === "logs";
   document.getElementById("addBtn").classList.toggle("hidden", hideAddBtn);
   const grid = document.getElementById("grid");
   if (grid) grid.innerHTML = '<div style="padding:2rem;text-align:center;color:#94a3b8;">\u52a0\u8f7d\u4e2d\u2026</div>';
   try {
-    await loadItems();
-    renderGrid();
+    if (STATE.mainTab === "logs") {
+      await loadLogs();
+    } else {
+      await loadItems();
+      renderGrid();
+    }
   } catch (error) {
     console.error("[Admin] renderUI error:", error);
     if (grid) {
