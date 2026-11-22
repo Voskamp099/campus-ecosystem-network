@@ -1,0 +1,76 @@
+# Render 部署配置（Blueprint）
+#
+# 用法：Render 控制台 → New → Blueprint → 指向本仓库 → Apply。
+# 标了 syncFrom: false 的变量需要在 Render Dashboard 里手动填写，不会写进仓库。
+#
+# 说明：
+#   - 服务是 Node Web Service，跑的是 server/index.js，带 MySQL/JSON 双通道存储。
+#   - 前端构建脚本 npm run build 的产物（public/assets/dist）当前没有任何页面引用，
+#     所以 build 阶段只装运行时依赖，不跑 build。
+#   - 静态托管形态（GitHub Pages）不在本配置范围内，见 .github/workflows/pages.yml。
+services:
+  - type: web
+    name: campus-ecosystem-network
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: npm ci --omit=dev
+    startCommand: node server/index.js
+    healthCheckPath: /health
+    autoDeploy: true
+
+    envVars:
+      # ── 运行环境 ─────────────────────────────
+      - key: NODE_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: info
+      # Render 会自动注入 PORT，无需配置
+
+      # ── 安全密钥（必填，缺任一项服务拒绝启动）────
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CSRF_SECRET
+        generateValue: true
+      # 管理员账号：密码在 Dashboard 里设，不要用 123456（服务端会拒绝）
+      - key: ADMIN_USERNAME
+        value: gly
+      - key: ADMIN_PASSWORD
+        syncFrom: false
+      - key: ADMIN_EMAIL
+        syncFrom: false
+
+      # ── 站点地址（必须是 Render 分配的真实域名）────
+      # 用于邮件里的密码重置链接等，填错会让用户收到指向 localhost 的链接
+      - key: SITE_URL
+        syncFrom: false
+      - key: CORS_ORIGIN
+        syncFrom: false
+
+      # ── 数据库 ───────────────────────────────
+      # MySQL 不可用时服务会自动降级到本地 JSON 文件（data/ 目录）
+      - key: MYSQL_HOST
+        syncFrom: false
+      - key: MYSQL_PORT
+        value: "3306"
+      - key: MYSQL_USER
+        syncFrom: false
+      - key: MYSQL_PASSWORD
+        syncFrom: false
+      - key: MYSQL_DATABASE
+        value: alliance_website
+      - key: MYSQL_CONNECTION_LIMIT
+        value: "10"
+
+      # ── 邮件（可选，不配则发不出验证/重置邮件）────
+      - key: SMTP_HOST
+        syncFrom: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        syncFrom: false
+      - key: SMTP_PASS
+        syncFrom: false
+      - key: SMTP_FROM
+        syncFrom: false

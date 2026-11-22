@@ -158,19 +158,35 @@ node server/index.js
 也可以完全不起服务——直接在浏览器里打开 public/index.html，它会以本地模式运行，
 底层存储换成 localStorage。
 
-## 静态演示站
+## 部署
 
-同一份 `public/` 目录还可以不带后端直接发布到 GitHub Pages：
+站点以 Node Web Service 的形态跑在 Render 上。`render.yaml` 是 Render Blueprint：
+在 Render 控制台 **New → Blueprint** 指向本仓库，构建命令、健康检查和环境变量
+都会自动配好。
+
+`render.yaml` 里标了 `syncFrom: false` 的变量需要在 Render Dashboard 上手动填，
+其中最关键的是 `ADMIN_PASSWORD` 和 `SITE_URL`（填错会让密码重置邮件里的链接
+指向 localhost）。服务缺 `JWT_SECRET` 或 `CSRF_SECRET` 会拒绝启动，这两个由
+Blueprint 自动生成。不配置 MySQL 时服务会自动降级到 `data/` 下的 JSON 文件，
+演示够用，扛真实流量不行。
+
+### 静态演示站
+
+同一份 `public/` 目录也可以不带后端发布到 GitHub Pages。这个 workflow 只能手动
+触发，因为仓库没有启用 Pages——去 **Settings → Pages → Source → GitHub Actions**
+打开，然后在 Actions 页手动跑一次。
 
 ```
 https://voskamp099.github.io/campus-ecosystem-network/
 ```
 
 在这种托管下前端会主动探测后端是否存在（`public/assets/runtime-mode.js`），
-探测不到就自动切到本地模式，不需要任何配置。
+探测不到就自动切到本地模式。探测会区分"确实没有后端"（404）和"探测失败"
+（超时或 5xx）——后者一律按"后端存在"处理，所以服务冷启动时的慢响应不会
+把线上误降级成演示模式。
 
-站点提供两个演示账号，密码固定并直接印在登录页上——静态演示站没有服务端，
-这份凭据本身不保护任何东西：
+这种模式下站点提供两个演示账号，密码固定并直接印在登录页上——静态演示站没有
+服务端，这份凭据本身不保护任何东西：
 
 | 账号 | 密码 | 登录后进入 |
 | --- | --- | --- |
@@ -178,9 +194,6 @@ https://voskamp099.github.io/campus-ecosystem-network/
 | `test@alliance.local` | `demo2026` | 用户中心 |
 
 两者都使用保留域名 `.local`，且只在探测不到后端时生效，因此无法用于正式环境。
-
-启用方式：仓库 **Settings → Pages → Source → GitHub Actions**。
-开启后，每次推送触及 `public/` 就会由 `.github/workflows/pages.yml` 自动重新部署。
 
 ```bash
 npm test                  # 64 个测试

@@ -34,7 +34,15 @@
     promise: null
   };
 
-  function fetchOk(url) {
+  /**
+   * 探测一个候选地址，返回三态：
+   *   "found"   拿到 2xx —— 后端确实在
+   *   "absent"  明确 404 —— 这个地址下没有后端（静态托管的典型响应）
+   *   "unknown" 超时 / 网络错误 / 5xx —— 不能下结论
+   * 只有 "found" 和 "absent" 才用于判定，"unknown" 一律按"后端可能存在"处理，
+   * 避免服务端冷启动或网络抖动时线上被误判成演示模式。
+   */
+  function probe(url) {
     var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
     var timer = setTimeout(function () {
       if (controller) controller.abort();
@@ -44,11 +52,15 @@
     if (controller) options.signal = controller.signal;
 
     return fetch(url, options)
-      .then(function (response) { return !!response.ok; })
-      .catch(function () { return false; })
-      .then(function (ok) {
+      .then(function (response) {
+        if (response.ok) return "found";
+        if (response.status === 404) return "absent";
+        return "unknown";
+      })
+      .catch(function () { return "unknown"; })
+      .then(function (verdict) {
         clearTimeout(timer);
-        return ok;
+        return verdict;
       });
   }
 
@@ -65,20 +77,24 @@
     }
 
     state.promise = API_PREFIX_CANDIDATES.reduce(function (chain, prefix) {
-      return chain.then(function (found) {
-        if (found) return found;
-        return fetchOk(prefix + PROBE_PATH).then(function (ok) {
-          if (ok) {
-            state.prefix = prefix;
-            return true;
-          }
-          return false;
+      return chain.then(function (acc) {
+        // 已经确认有后端，不必再试下一个前缀
+        if (acc.verdict === "found") return acc;
+        return probe(prefix + PROBE_PATH).then(function (verdict) {
+          if (verdict === "found") state.prefix = prefix;
+          return {
+            verdict: verdict,
+            // 只要有一个前缀的结果不确定，整体就不能下"没有后端"的结论
+            unknown: acc.unknown || verdict === "unknown"
+          };
         });
       });
-    }, Promise.resolve(false)).then(function (found) {
+    }, Promise.resolve({ verdict: "unknown", unknown: false })).then(function (acc) {
       state.ready = true;
-      state.hasBackend = found;
-      return found;
+      // 全部候选都明确 404 且没有任何不确定项 → 判定为没有后端；
+      // 只要存在不确定项（超时/网络错误/5xx），一律按有后端处理，保持线上原有行为
+      state.hasBackend = !(acc.verdict === "absent" && !acc.unknown);
+      return state.hasBackend;
     });
 
     return state.promise;

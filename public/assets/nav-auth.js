@@ -52,25 +52,39 @@
   }
 
   /* ====== 运行形态探测 ====== */
+  // 与 runtime-mode.js 同样的三态判定：found / absent(404) / unknown(超时、5xx、网络错误)。
+  // 只有全部候选都明确 404 才认定"没有后端"；不确定时按有后端处理，
+  // 避免服务端冷启动时把线上误判成演示模式。
+  function probe(candidate) {
+    var timeoutMs = 2500;
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timer = setTimeout(function () { if (controller) controller.abort(); }, timeoutMs);
+    return fetch(candidate, {
+      headers: { Accept: 'application/json' },
+      cache: 'no-store',
+      signal: controller ? controller.signal : undefined
+    })
+      .then(function (res) {
+        if (res.ok) return 'found';
+        if (res.status === 404) return 'absent';
+        return 'unknown';
+      })
+      .catch(function () { return 'unknown'; })
+      .then(function (verdict) { clearTimeout(timer); return verdict; });
+  }
+
   function probeBackend() {
     var candidates = ['api/public/site-content', '/api/public/site-content'];
-    var timeoutMs = 2500;
-
     return candidates.reduce(function (chain, candidate) {
-      return chain.then(function (found) {
-        if (found) return true;
-        var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        var timer = setTimeout(function () { if (controller) controller.abort(); }, timeoutMs);
-        return fetch(candidate, {
-          headers: { Accept: 'application/json' },
-          cache: 'no-store',
-          signal: controller ? controller.signal : undefined
-        })
-          .then(function (res) { return !!res.ok; })
-          .catch(function () { return false; })
-          .then(function (ok) { clearTimeout(timer); return ok; });
+      return chain.then(function (acc) {
+        if (acc.verdict === 'found') return acc;
+        return probe(candidate).then(function (verdict) {
+          return { verdict: verdict, unknown: acc.unknown || verdict === 'unknown' };
+        });
       });
-    }, Promise.resolve(false));
+    }, Promise.resolve({ verdict: 'unknown', unknown: false })).then(function (acc) {
+      return !(acc.verdict === 'absent' && !acc.unknown);
+    });
   }
 
   async function resolveMode() {

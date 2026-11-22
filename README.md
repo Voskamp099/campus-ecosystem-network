@@ -171,31 +171,46 @@ The site is on `http://localhost:3000`, the console on `http://localhost:3000/ad
 You can also skip the server entirely — open `public/index.html` directly in a browser
 and it runs in local mode with `localStorage` as the backing store.
 
-## The static demo site
+## Deploying
 
-A second deployment shape ships the same `public/` directory to GitHub Pages with no
-backend at all:
+The site runs on Render as a Node web service. `render.yaml` is a Render
+Blueprint: point Render at this repository (**New → Blueprint**) and it wires up
+the build, the health check and the environment variables.
+
+Variables marked `syncFrom: false` in `render.yaml` have to be filled in on the
+Render dashboard — most importantly `ADMIN_PASSWORD` and `SITE_URL`. The server
+refuses to start without `JWT_SECRET` and `CSRF_SECRET`; Render generates both
+from the blueprint. If MySQL is not configured the service degrades to JSON
+files under `data/`, which is fine for a demo and not for real traffic.
+
+### The static demo site
+
+The same `public/` directory can also be published with no backend at all, via
+GitHub Pages. This workflow is manual-only, because the repository does not have
+Pages enabled — turn it on under **Settings → Pages → Source → GitHub Actions**,
+then trigger the workflow by hand.
 
 ```
 https://voskamp099.github.io/campus-ecosystem-network/
 ```
 
 On that host the frontend probes for a backend (`public/assets/runtime-mode.js`);
-finding none, it switches to local mode on its own — no configuration needed.
+finding none, it switches to local mode on its own. The probe distinguishes
+"there is no backend" (a 404) from "the probe failed" (a timeout or a 5xx) — the
+latter is treated as "the backend is there", so a slow cold start never demotes
+a live deployment into demo mode.
 
-Two demo accounts are available. The password is fixed and printed on the login
-page, because a static demo has no server-side credential to protect:
+Two demo accounts are available in that mode. The password is fixed and printed
+on the login page, because a static demo has no server-side credential to
+protect:
 
 | Account | Password | Lands on |
 | --- | --- | --- |
 | `gly` | `demo2026` | the admin console |
 | `test@alliance.local` | `demo2026` | the user centre |
 
-Both use the reserved `.local` domain and only work where no backend is reachable,
-so they cannot be used against a real deployment.
-
-To enable the site: repository **Settings → Pages → Source → GitHub Actions**.
-After that, every push touching `public/` redeploys via `.github/workflows/pages.yml`.
+Both use the reserved `.local` domain and only work where no backend is
+reachable, so they cannot be used against a real deployment.
 
 ```bash
 npm test                  # 64 tests

@@ -1,11 +1,14 @@
 name: Pages
 
+# 站点实际部署在 Render（见 render.yaml），日常部署不走这个 workflow。
+# 这里保留的是"无后端的静态演示站"发布能力：
+# 仓库没有启用 Pages 时 workflow 会失败，所以改为仅手动触发，不在每次 push 时跑。
+#
+# 使用前需要两步：
+#   1. 仓库 Settings → Pages → Source 选 "GitHub Actions"
+#   2. 在 Actions 页手动触发本 workflow
+# 发布地址：https://voskamp099.github.io/campus-ecosystem-network/
 on:
-  push:
-    branches: [main]
-    paths:
-      - "public/**"
-      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
