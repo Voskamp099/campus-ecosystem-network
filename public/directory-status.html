@@ -23,10 +23,10 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Noto Sans SC", sans-serif;
+      font-family: var(--font-sans);
       color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(91, 157, 255, 0.2), transparent 28%),
+        radial-gradient(circle at top left, rgba(79, 185, 156, 0.2), transparent 28%),
         linear-gradient(180deg, #071320, #081625 100%);
     }
     .page {
@@ -71,8 +71,8 @@
       align-items: center;
       padding: 8px 12px;
       border-radius: 999px;
-      border: 1px solid rgba(91, 157, 255, 0.24);
-      background: rgba(91, 157, 255, 0.08);
+      border: 1px solid rgba(79, 185, 156, 0.24);
+      background: rgba(79, 185, 156, 0.08);
       color: var(--brand);
       font-size: 12px;
       font-weight: 800;
@@ -125,7 +125,7 @@
     }
     input:focus {
       border-color: var(--line-strong);
-      box-shadow: 0 0 0 4px rgba(91, 157, 255, 0.12);
+      box-shadow: 0 0 0 4px rgba(79, 185, 156, 0.12);
     }
     .actions {
       margin-top: 18px;
@@ -149,7 +149,7 @@
     .btn-primary {
       color: white;
       background: linear-gradient(135deg, var(--brand-strong), var(--brand));
-      box-shadow: 0 14px 30px rgba(91, 157, 255, 0.28);
+      box-shadow: 0 14px 30px rgba(79, 185, 156, 0.28);
     }
     .btn-secondary {
       color: var(--text);
@@ -230,7 +230,7 @@
       margin-top: 16px;
       padding: 14px 16px;
       border-radius: 16px;
-      border: 1px solid rgba(91, 157, 255, 0.16);
+      border: 1px solid rgba(79, 185, 156, 0.16);
       background: rgba(255, 255, 255, 0.04);
       color: var(--text-soft);
       line-height: 1.7;
@@ -250,6 +250,7 @@
     }
   </style>
   <link rel="stylesheet" href="assets/design-tokens.css">
+    <link rel="stylesheet" href="assets/brand-layer.css">
   </head>
 <body>
   <div class="page">

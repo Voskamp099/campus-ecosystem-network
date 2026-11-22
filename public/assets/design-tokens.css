@@ -3,72 +3,103 @@
    --------------------------------------------------------------------------
    改配色只改这一份。所有页面都引用它，页面自己的 <style> 里不再定义颜色。
 
-   配色思路（原来"不好看"的根因是四套色相打架：深藏蓝底 + 蓝 + 紫 + 金，
-   而且 14 个页面各写一套 :root，--bg 有 4 个值、同一种次要文字有 3 种命名）：
-     · 底色统一为单一深蓝，比原来的 #091a33 略沉、更中性
-     · 主色只用品牌蓝，紫色的 #8b5cf6 全部退场
-     · 琥珀色降级为点缀（徽章、分隔线、数据强调），不与主色抢注意力
-     · 其余靠同色系不同明度做层次，而不是堆色相
+   配色家族取自 voskamp099.github.io（个人笔记站），两个站视觉统一：
+     · 暖调底色，不是冷蓝黑
+     · 双强调色冷暖对撞：松石绿（主）+ 陶土橙（副）
+     · 一整套分类色板，用在标签/分类上，颜色是"花"在细节里而不是全身
+     · 字体与个人站一致：Space Grotesk / IBM Plex Sans / IBM Plex Mono
+
+   之前那版"深蓝 + 浅蓝单色"的问题：四套色相（深藏蓝/蓝/紫/金）打架，
+   而且 14 个页面各写一套 :root，--bg 有 4 个值、同一种次要文字有 3 种命名。
    ========================================================================== */
 
 :root {
-  /* ── 背景层级 ───────────────────────────────────────────── */
-  --color-bg: #0a1626;                       /* 页面底 */
-  --color-bg-deep: #071120;                  /* 更深一层：页脚、凹陷区 */
-  --color-bg-raised: #0e1d31;                /* 抬起层：悬停卡片 */
+  /* ── 背景层级（暖调墨色，对应个人站的 --dark / --dark-fg）────────── */
+  --color-bg: #16151c;                       /* 页面底 */
+  --color-bg-deep: #0f0e14;                  /* 更深一层：页脚、凹陷区 */
+  --color-bg-raised: #1e1c26;                /* 抬起层：悬停卡片 */
+  --color-bg-paper: #faf8f3;                 /* 纸面亮色块：引用/引文/条款区 */
+  --color-bg-paper-soft: #f3efe6;            /* 次级纸面 */
 
-  /* ── 表面与描边 ─────────────────────────────────────────── */
-  --color-surface: rgba(255, 255, 255, 0.045);
-  --color-surface-strong: rgba(255, 255, 255, 0.085);
-  --color-surface-hover: rgba(255, 255, 255, 0.07);
-  --color-border: rgba(255, 255, 255, 0.10);
-  --color-border-strong: rgba(255, 255, 255, 0.18);
-  --color-border-brand: rgba(91, 157, 255, 0.35);
+  /* ── 表面与描边 ───────────────────────────────────────────── */
+  --color-surface: rgba(240, 236, 226, 0.045);
+  --color-surface-strong: rgba(240, 236, 226, 0.085);
+  --color-surface-hover: rgba(240, 236, 226, 0.07);
+  --color-border: rgba(233, 228, 216, 0.13);
+  --color-border-strong: rgba(233, 228, 216, 0.24);
+  --color-border-brand: rgba(79, 185, 156, 0.38);
 
-  /* ── 文字层级 ───────────────────────────────────────────── */
-  --color-text-primary: #eef3fb;             /* 16.4:1 on --color-bg */
-  --color-text-secondary: rgba(238, 243, 251, 0.72);  /* 8.8:1 */
-  --color-text-tertiary: rgba(238, 243, 251, 0.50);   /* 4.8:1 */
-  --color-text-inverse: #08111e;
+  /* ── 文字层级（米白系，对应个人站的 --dark-fg）────────────────── */
+  --color-text-primary: #f0ece2;             /* 15.1:1 on --color-bg */
+  --color-text-secondary: rgba(240, 236, 226, 0.72);  /* 8.3:1 */
+  --color-text-tertiary: rgba(240, 236, 226, 0.50);   /* 4.6:1 */
+  --color-text-inverse: #16151c;
+  --color-text-on-brand: #08201b;            /* 品牌色上的文字 */
 
-  /* ── 品牌色（唯一的冷色主色）───────────────────────────── */
-  --color-brand: #5b9dff;                    /* 6.7:1 on --color-bg */
-  --color-brand-strong: #3b82f6;
-  --color-brand-deep: #2563eb;
-  --color-brand-soft: rgba(91, 157, 255, 0.14);
-  --color-brand-glow: rgba(91, 157, 255, 0.32);
+  /* ── 双强调色（冷暖对撞）─────────────────────────────────────── */
+  --color-brand: #4fb99c;                    /* 松石绿 · 主色 7.6:1 */
+  --color-brand-strong: #2f6f5e;              /* 个人站的 --accent-2 */
+  --color-brand-deep: #245749;
+  --color-brand-soft: rgba(79, 185, 156, 0.14);
+  --color-brand-glow: rgba(79, 185, 156, 0.34);
 
-  /* ── 强调色（唯一的暖色，只做点缀）──────────────────────── */
-  --color-accent: #f0b85c;                   /* 10.2:1 on --color-bg */
-  --color-accent-soft: rgba(240, 184, 92, 0.14);
-  --color-accent-line: rgba(240, 184, 92, 0.30);
+  --color-accent: #e8703f;                   /* 陶土橙 · 副色 5.9:1 */
+  --color-accent-strong: #d9542b;            /* 个人站的 --accent */
+  --color-accent-deep: #b8562f;
+  --color-accent-soft: rgba(232, 112, 63, 0.14);
+  --color-accent-glow: rgba(232, 112, 63, 0.30);
 
-  /* ── 状态色 ─────────────────────────────────────────────── */
-  --color-success: #4ade80;
-  --color-success-soft: rgba(74, 222, 128, 0.14);
-  --color-warning: #fbbf24;
-  --color-warning-soft: rgba(251, 191, 36, 0.14);
-  --color-danger: #f87171;
-  --color-danger-soft: rgba(248, 113, 113, 0.14);
-  --color-info: #60a5fa;
+  /* ── 渐变（跨色相，冷→暖有序过渡，中间色相做桥）────────────────── */
+  --gradient-brand: linear-gradient(135deg, #2f6f5e 0%, #4fb99c 42%, #e8703f 100%);
+  --gradient-brand-soft: linear-gradient(135deg, rgba(47, 111, 94, 0.24), rgba(232, 112, 63, 0.16));
+  --gradient-cool: linear-gradient(135deg, #245749 0%, #4fb99c 100%);
+  --gradient-warm: linear-gradient(135deg, #d9542b 0%, #e8a33f 100%);
+  --gradient-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
+  /* 文字专用渐变：两端都保持足够亮度（10.1:1 / 8.6:1），保证可读 */
+  --gradient-text: linear-gradient(100deg, #6fd6b8 0%, #8ad9ff 50%, #f0a06a 100%);
 
-  /* ── 焦点与阴影 ─────────────────────────────────────────── */
-  --color-focus: #7db4ff;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.18);
-  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.24);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.30);
-  --shadow-brand: 0 10px 30px rgba(59, 130, 246, 0.26);
+  /* ── 氛围光晕（页面顶部的彩色弥散，替代千篇一律的纯色底）──────── */
+  --glow-brand: radial-gradient(ellipse 70% 46% at 18% -4%, rgba(79, 185, 156, 0.20), transparent 72%);
+  --glow-accent: radial-gradient(ellipse 62% 42% at 86% 2%, rgba(232, 112, 63, 0.15), transparent 70%);
+  --glow-violet: radial-gradient(ellipse 52% 38% at 52% 0%, rgba(154, 114, 224, 0.11), transparent 68%);
 
-  /* ── 圆角 ───────────────────────────────────────────────── */
+  /* ── 分类色板（颜色"花"在标签上，对应个人站的 category palette）──── */
+  --color-cat-blue: #4a8ad4;
+  --color-cat-gold: #d4a03a;
+  --color-cat-violet: #9a72e0;
+  --color-cat-teal: #3fb59c;
+  --color-cat-pink: #d9628f;
+  --color-cat-clay: #cd6a3f;
+
+  /* ── 状态色 ─────────────────────────────────────────────────── */
+  --color-success: #4fb99c;
+  --color-success-soft: rgba(79, 185, 156, 0.15);
+  --color-warning: #e8a33f;
+  --color-warning-soft: rgba(232, 163, 63, 0.15);
+  --color-danger: #e0705f;
+  --color-danger-soft: rgba(224, 112, 95, 0.15);
+  --color-info: #4a8ad4;
+  --color-info-soft: rgba(74, 138, 212, 0.15);
+
+  /* ── 焦点与阴影（真实存在的多层阴影，不用近乎不可见的偏移）──────── */
+  --color-focus: #6fd6b8;
+  --shadow-sm: 0 1px 2px rgba(8, 7, 12, 0.28), 0 6px 16px -10px rgba(8, 7, 12, 0.5);
+  --shadow-md: 0 2px 4px rgba(8, 7, 12, 0.3), 0 16px 34px -16px rgba(8, 7, 12, 0.6);
+  --shadow-lg: 0 3px 6px rgba(8, 7, 12, 0.32), 0 28px 56px -20px rgba(8, 7, 12, 0.66);
+  --shadow-brand: 0 10px 30px -8px rgba(47, 111, 94, 0.55);
+  --shadow-accent: 0 10px 30px -8px rgba(217, 84, 43, 0.5);
+
+  /* ── 圆角 ───────────────────────────────────────────────────── */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
 
-  /* ── 字体 ───────────────────────────────────────────────── */
-  --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* ── 字体（与个人站一致）───────────────────────────────────────── */
+  --font-display: "Space Grotesk", "Noto Sans SC", system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   --font-serif: "Noto Serif SC", "Songti SC", Georgia, serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --mono: var(--font-mono);
 
   /* ==========================================================================
@@ -91,7 +122,7 @@
   --text-muted: var(--color-text-tertiary);
   --muted: var(--color-text-secondary);
   --accent: var(--color-brand);
-  --accent-2: var(--color-brand-strong);
+  --accent-2: var(--color-accent);
   --brand: var(--color-brand);
   --brand-strong: var(--color-brand-strong);
   --brand-dim: var(--color-brand-soft);
