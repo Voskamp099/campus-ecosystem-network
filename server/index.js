@@ -305,7 +305,7 @@ if (config.env !== "test") {
     .catch((err) => logger.warn({ err }, "数据库初始化跳过（MySQL 不可用，将使用 JSON 降级）"))
     .finally(() => {
       app.listen(config.port, () => {
-        logger.info(`Alliance website server running at http://localhost:${config.port}`);
+        logger.info(`Campus Ecosystem Network server running at http://localhost:${config.port}`);
         logger.info(`Environment: ${config.env}`);
         logger.info(`Database: ${config.mysql.host}:${config.mysql.port}/${config.mysql.database}`);
       });
