@@ -21,22 +21,15 @@
   </script>
   <style>
     :root {
-      --bg: #091a33;
-      --text: #e6f0ff;
-      --muted: #9fb3d0;
-      --accent: #60a5fa;
-      --accent-2: #8b5cf6;
-      --panel: rgba(255,255,255,0.06);
-      --line: rgba(255,255,255,0.12);
-    }
+}
     .auth-page {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: radial-gradient(1200px 800px at 70% -10%, rgba(96,165,250,0.18), transparent),
-                  radial-gradient(900px 600px at -10% 60%, rgba(139,92,246,0.15), transparent),
+      background: radial-gradient(1200px 800px at 70% -10%, rgba(91, 157, 255, 0.18), transparent),
+                  radial-gradient(900px 600px at -10% 60%, rgba(59, 130, 246, 0.15), transparent),
                   var(--bg);
     }
     .auth-card {
@@ -87,7 +80,7 @@
       padding: 12px 16px;
       border: 1px solid var(--line);
       border-radius: 12px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text);
       font-size: 15px;
       transition: all 0.2s;
@@ -96,10 +89,10 @@
     .form-group input:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+      box-shadow: 0 0 0 3px rgba(91, 157, 255, 0.15);
     }
     .form-group input::placeholder {
-      color: rgba(159,179,208,0.5);
+      color: rgba(159, 179, 208, 0.5);
     }
     .input-wrapper {
       position: relative;
@@ -125,7 +118,7 @@
     .password-strength {
       margin-top: 8px;
       height: 4px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 2px;
       overflow: hidden;
     }
@@ -136,7 +129,7 @@
     }
     .password-strength-bar.weak { width: 33%; background: #ef4444; }
     .password-strength-bar.medium { width: 66%; background: #f59e0b; }
-    .password-strength-bar.strong { width: 100%; background: #10b981; }
+    .password-strength-bar.strong { width: 100%; background: var(--color-success); }
     .password-hint {
       font-size: 12px;
       color: var(--muted);
@@ -168,7 +161,7 @@
     }
     .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(96,165,250,0.35);
+      box-shadow: 0 8px 24px rgba(91, 157, 255, 0.35);
     }
     .btn-primary:disabled {
       opacity: 0.6;
@@ -199,14 +192,14 @@
     }
     .notice.error {
       display: block;
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.3);
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
       color: #fca5a5;
     }
     .notice.success {
       display: block;
-      background: rgba(34,197,94,0.12);
-      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
       color: #86efac;
     }
     .terms {
@@ -231,7 +224,7 @@
       padding: 10px 16px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text);
       text-decoration: none;
       font-size: 14px;
@@ -250,7 +243,8 @@
       }
     }
   </style>
-</head>
+  <link rel="stylesheet" href="assets/design-tokens.css">
+  </head>
 <body>
   <a href="index.html" class="back-link" id="registerBackHomeLink">← 返回首页</a>
   
@@ -338,10 +332,10 @@
 
   <!-- 法律条款弹窗（内联显示，不跳转新页面） -->
   <style>
-    .legal-modal-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(4,10,19,0.78); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: 0.2s ease; z-index: 300; }
+    .legal-modal-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(4, 10, 19, 0.78); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: 0.2s ease; z-index: 300; }
     .legal-modal-overlay.open { opacity: 1; pointer-events: auto; }
-    .legal-modal-box { width: min(720px, 94vw); max-height: 92vh; display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: linear-gradient(180deg, rgba(11,27,52,0.98), rgba(8,22,37,0.98)); border: 1px solid rgba(147,197,253,0.18); }
-    .legal-modal-close { width: 36px; height: 36px; border-radius: 12px; border: 1px solid rgba(147,197,253,0.18); background: rgba(255,255,255,0.06); color: #fff; font-size: 20px; cursor: pointer; line-height: 1; }
+    .legal-modal-box { width: min(720px, 94vw); max-height: 92vh; display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: linear-gradient(180deg, rgba(11, 27, 52, 0.98), rgba(8, 22, 37, 0.98)); border: 1px solid rgba(147, 197, 253, 0.18); }
+    .legal-modal-close { width: 36px; height: 36px; border-radius: 12px; border: 1px solid rgba(147, 197, 253, 0.18); background: rgba(255, 255, 255, 0.06); color: #fff; font-size: 20px; cursor: pointer; line-height: 1; }
     .legal-modal-frame { width: 100%; height: 74vh; border: 0; background: #fff; }
   </style>
   <div class="legal-modal-overlay" id="legalModal" aria-hidden="true">

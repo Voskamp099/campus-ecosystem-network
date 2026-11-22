@@ -8,7 +8,7 @@
   <meta property="og:title" content="我的 | 北京校园生态合作联盟">
   <meta property="og:description" content="查看我的申请和报名状态。">
   <meta property="og:type" content="website">
-  <meta name="theme-color" content="#091a33">
+  <meta name="theme-color" content="var(--color-bg)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <script src="assets/runtime-mode.js"></script>
   <script>
@@ -23,18 +23,9 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #071425;
       --sidebar-w: 150px;
       --topbar-h: 56px;
-      --panel: rgba(11,27,52,0.85);
-      --line: rgba(130,175,255,0.14);
-      --text: #eff6ff;
-      --text-soft: rgba(239,246,255,0.65);
-      --text-muted: rgba(191,219,254,0.45);
-      --brand: #60a5fa;
-      --brand-dim: rgba(96,165,250,0.12);
-      --radius: 14px;
-    }
+}
 
     html, body {
       height: 100%;
@@ -42,8 +33,8 @@
       font-family: "Noto Sans SC", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 0% 0%, rgba(37,99,235,0.18) 0%, transparent 40%),
-        linear-gradient(180deg, #071425 0%, #091a33 100%);
+        radial-gradient(circle at 0% 0%, rgba(91, 157, 255, 0.18) 0%, transparent 40%),
+        linear-gradient(180deg, #071425 0%, var(--color-bg) 100%);
     }
 
     /* ── 顶栏 ─────────────────────────────── */
@@ -55,7 +46,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 24px;
-      background: rgba(7,20,37,0.92);
+      background: rgba(7, 20, 37, 0.92);
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(12px);
       z-index: 100;
@@ -96,7 +87,7 @@
     .user-avatar {
       width: 32px; height: 32px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--brand), #8b5cf6);
+      background: linear-gradient(135deg, var(--brand), var(--color-brand-strong));
       display: flex; align-items: center; justify-content: center;
       font-size: 13px; font-weight: 700; color: #fff;
       flex-shrink: 0;
@@ -117,7 +108,7 @@
       font-family: inherit;
       transition: color .2s, border-color .2s;
     }
-    .btn-logout:hover { color: #fca5a5; border-color: rgba(239,68,68,0.4); }
+    .btn-logout:hover { color: #fca5a5; border-color: rgba(239, 68, 68, 0.4); }
 
     /* ── 主体布局 ─────────────────────────── */
     .layout {
@@ -132,7 +123,7 @@
       flex-shrink: 0;
       height: 100%;
       overflow: hidden;
-      background: rgba(7,20,37,0.7);
+      background: rgba(7, 20, 37, 0.7);
       border-right: 1px solid var(--line);
       display: flex;
       flex-direction: column;
@@ -160,7 +151,7 @@
     .menu-item.active {
       background: var(--brand-dim);
       color: var(--brand);
-      border-color: rgba(96,165,250,0.2);
+      border-color: rgba(91, 157, 255, 0.2);
       font-weight: 600;
     }
     .menu-icon { font-size: 16px; flex-shrink: 0; }
@@ -179,7 +170,7 @@
     }
     .content::-webkit-scrollbar { width: 6px; }
     .content::-webkit-scrollbar-track { background: transparent; }
-    .content::-webkit-scrollbar-thumb { background: rgba(96,165,250,0.2); border-radius: 3px; }
+    .content::-webkit-scrollbar-thumb { background: rgba(91, 157, 255, 0.2); border-radius: 3px; }
 
     /* ── 面板 ─────────────────────────────── */
     .panel {
@@ -208,7 +199,7 @@
       margin-bottom: 12px;
       transition: border-color .2s;
     }
-    .record-card:hover { border-color: rgba(96,165,250,0.3); }
+    .record-card:hover { border-color: rgba(91, 157, 255, 0.3); }
     .record-row {
       display: flex;
       align-items: center;
@@ -228,9 +219,9 @@
       font-weight: 700;
       flex-shrink: 0;
     }
-    .badge-pending  { background: rgba(245,158,11,0.15); color: #fbbf24; }
-    .badge-approved { background: rgba(34,197,94,0.15);  color: #4ade80; }
-    .badge-rejected { background: rgba(239,68,68,0.15);  color: #fca5a5; }
+    .badge-pending  { background: rgba(245, 158, 11, 0.15); color: var(--color-accent); }
+    .badge-approved { background: rgba(34, 197, 94, 0.15);  color: #4ade80; }
+    .badge-rejected { background: rgba(239, 68, 68, 0.15);  color: #fca5a5; }
     .record-meta {
       font-size: 12px;
       color: var(--text-muted);
@@ -288,8 +279,8 @@
       margin-top: 12px;
       padding: 14px 20px;
       border-radius: var(--radius);
-      background: linear-gradient(135deg, rgba(37,99,235,0.18), rgba(59,130,246,0.12));
-      border: 1px solid rgba(96,165,250,0.3);
+      background: linear-gradient(135deg, rgba(91, 157, 255, 0.18), rgba(91, 157, 255, 0.12));
+      border: 1px solid rgba(91, 157, 255, 0.3);
       color: #93c5fd;
       text-decoration: none;
       font-size: 14px;
@@ -297,8 +288,8 @@
       transition: border-color .2s, background .2s;
     }
     .admin-link-card:hover {
-      border-color: #60a5fa;
-      background: linear-gradient(135deg, rgba(37,99,235,0.28), rgba(59,130,246,0.2));
+      border-color: var(--color-brand);
+      background: linear-gradient(135deg, rgba(91, 157, 255, 0.28), rgba(91, 157, 255, 0.2));
     }
   
     /* ── 管理员入口 ─────────────────────── */
@@ -309,8 +300,8 @@
       margin-top: 14px;
       padding: 12px 18px;
       border-radius: 14px;
-      background: linear-gradient(135deg, rgba(37,99,235,0.22), rgba(59,130,246,0.14));
-      border: 1px solid rgba(96,165,250,0.32);
+      background: linear-gradient(135deg, rgba(91, 157, 255, 0.22), rgba(91, 157, 255, 0.14));
+      border: 1px solid rgba(91, 157, 255, 0.32);
       color: #93c5fd;
       text-decoration: none;
       font-size: 14px;
@@ -318,9 +309,9 @@
       transition: border-color .2s, background .2s;
     }
     .admin-link-btn:hover {
-      border-color: #60a5fa;
-      background: linear-gradient(135deg, rgba(37,99,235,0.32), rgba(59,130,246,0.22));
-      color: #bfdbfe;
+      border-color: var(--color-brand);
+      background: linear-gradient(135deg, rgba(91, 157, 255, 0.32), rgba(91, 157, 255, 0.22));
+      color: var(--color-text-tertiary);
     }
   .profile-card {
       background: var(--panel);
@@ -332,7 +323,7 @@
     .profile-avatar-lg {
       width: 64px; height: 64px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--brand), #8b5cf6);
+      background: linear-gradient(135deg, var(--brand), var(--color-brand-strong));
       display: flex; align-items: center; justify-content: center;
       font-size: 24px; font-weight: 700; color: #fff;
       margin-bottom: 16px;
@@ -369,7 +360,7 @@
       width: 100px;
       height: 100px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--brand), #8b5cf6);
+      background: linear-gradient(135deg, var(--brand), var(--color-brand-strong));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -381,11 +372,11 @@
       transition: transform .2s, box-shadow .2s;
       background-size: cover;
       background-position: center;
-      border: 3px solid rgba(96,165,250,0.3);
+      border: 3px solid rgba(91, 157, 255, 0.3);
     }
     .profile-avatar-lg:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(96,165,250,0.4);
+      box-shadow: 0 0 20px rgba(91, 157, 255, 0.4);
     }
     .btn-change-avatar {
       padding: 8px 16px;
@@ -430,7 +421,7 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.7);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -485,7 +476,7 @@
       padding: 12px 16px;
       border: 1px solid var(--line);
       border-radius: 10px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text);
       font-size: 14px;
       font-family: inherit;
@@ -525,7 +516,7 @@
       padding: 12px;
       border-radius: 10px;
       border: none;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: linear-gradient(135deg, var(--color-brand-deep), #1d4ed8);
       color: #fff;
       font-size: 14px;
       font-weight: 600;
@@ -541,14 +532,14 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(7,20,37,0.96);
+      background: rgba(7, 20, 37, 0.96);
       z-index: 200;
       align-items: center;
       justify-content: center;
     }
     .login-wall.show { display: flex; }
     .login-box {
-      background: rgba(11,27,52,0.9);
+      background: rgba(11, 27, 52, 0.9);
       border: 1px solid var(--line);
       border-radius: 20px;
       padding: 48px 40px;
@@ -565,7 +556,7 @@
       padding: 13px;
       border-radius: 10px;
       border: none;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: linear-gradient(135deg, var(--color-brand-deep), #1d4ed8);
       color: #fff;
       font-size: 15px;
       font-weight: 700;
@@ -598,7 +589,8 @@
       .user-name-top { display: none; }
     }
   </style>
-</head>
+  <link rel="stylesheet" href="assets/design-tokens.css">
+  </head>
 <body>
 
   <!-- 未登录遮罩 -->

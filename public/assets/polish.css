@@ -9,10 +9,10 @@
 body {
   background-image:
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.05'/></svg>"),
-    radial-gradient(circle at 12% -6%, rgba(37, 99, 235, 0.28), transparent 34%),
-    radial-gradient(circle at 88% 4%, rgba(251, 191, 36, 0.10), transparent 28%),
+    radial-gradient(circle at 12% -6%, rgba(91, 157, 255, 0.28), transparent 34%),
+    radial-gradient(circle at 88% 4%, rgba(240, 184, 92, 0.10), transparent 28%),
     radial-gradient(circle at 50% 108%, rgba(14, 165, 233, 0.10), transparent 42%),
-    linear-gradient(180deg, #061223 0%, #091a33 42%, #07131f 100%);
+    linear-gradient(180deg, #061223 0%, var(--color-bg) 42%, #07131f 100%);
   background-attachment: fixed;
 }
 
@@ -44,7 +44,7 @@ html {
   width: 26px;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--gold), rgba(251, 191, 36, 0));
+  background: linear-gradient(90deg, var(--gold), rgba(240, 184, 92, 0));
 }
 
 .section-title {
@@ -63,7 +63,7 @@ html {
   border-radius: 28px;
   border: 1px solid rgba(147, 197, 253, 0.16);
   background:
-    linear-gradient(165deg, rgba(30, 58, 102, 0.72) 0%, rgba(9, 26, 51, 0.86) 52%, rgba(6, 18, 35, 0.94) 100%);
+    linear-gradient(165deg, rgba(30, 58, 102, 0.72) 0%, rgba(10, 22, 38, 0.86) 52%, rgba(6, 18, 35, 0.94) 100%);
   box-shadow:
     0 40px 90px -30px rgba(0, 0, 0, 0.65),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -75,7 +75,7 @@ html {
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
-  background: radial-gradient(120% 80% at 100% 0%, rgba(251, 191, 36, 0.13), transparent 58%);
+  background: radial-gradient(120% 80% at 100% 0%, rgba(240, 184, 92, 0.13), transparent 58%);
 }
 
 .hero-card-grid {
@@ -132,8 +132,8 @@ html {
   align-self: flex-start;
   padding: 5px 11px;
   border-radius: 999px;
-  border: 1px solid rgba(251, 191, 36, 0.34);
-  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(240, 184, 92, 0.34);
+  background: rgba(240, 184, 92, 0.12);
   color: #fcd34d;
   font-size: 11px;
   font-weight: 800;
@@ -215,12 +215,12 @@ html {
 .btn-primary {
   position: relative;
   transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
-  box-shadow: 0 14px 30px -14px rgba(37, 99, 235, 0.85);
+  box-shadow: 0 14px 30px -14px rgba(91, 157, 255, 0.85);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px -16px rgba(37, 99, 235, 0.95);
+  box-shadow: 0 20px 40px -16px rgba(91, 157, 255, 0.95);
 }
 
 .btn-primary svg {
@@ -275,11 +275,11 @@ textarea:focus-visible {
 
 /* ── 10. 首屏小徽章：金线描边，跟品牌色呼应 ── */
 .hero-badge {
-  border-color: rgba(251, 191, 36, 0.22);
-  background: rgba(251, 191, 36, 0.08);
+  border-color: rgba(240, 184, 92, 0.22);
+  background: rgba(240, 184, 92, 0.08);
 }
 
 .hero-badge-dot {
   background: var(--gold);
-  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.16);
+  box-shadow: 0 0 0 4px rgba(240, 184, 92, 0.16);
 }

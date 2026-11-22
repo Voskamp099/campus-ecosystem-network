@@ -21,22 +21,15 @@
   </script>
   <style>
     :root {
-      --bg: #091a33;
-      --text: #e6f0ff;
-      --muted: #9fb3d0;
-      --accent: #60a5fa;
-      --accent-2: #8b5cf6;
-      --panel: rgba(255,255,255,0.06);
-      --line: rgba(255,255,255,0.12);
-    }
+}
     .auth-page {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: radial-gradient(1200px 800px at 70% -10%, rgba(96,165,250,0.18), transparent),
-                  radial-gradient(900px 600px at -10% 60%, rgba(139,92,246,0.15), transparent),
+      background: radial-gradient(1200px 800px at 70% -10%, rgba(91, 157, 255, 0.18), transparent),
+                  radial-gradient(900px 600px at -10% 60%, rgba(59, 130, 246, 0.15), transparent),
                   var(--bg);
     }
     .auth-card {
@@ -78,7 +71,7 @@
       padding: 12px 16px;
       border: 1px solid var(--line);
       border-radius: 12px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text);
       font-size: 15px;
       transition: all 0.2s;
@@ -87,10 +80,10 @@
     .form-group input:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+      box-shadow: 0 0 0 3px rgba(91, 157, 255, 0.15);
     }
     .form-group input::placeholder {
-      color: rgba(159,179,208,0.5);
+      color: rgba(159, 179, 208, 0.5);
     }
     .input-wrapper {
       position: relative;
@@ -165,7 +158,7 @@
     }
     .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(96,165,250,0.35);
+      box-shadow: 0 8px 24px rgba(91, 157, 255, 0.35);
     }
     .btn-primary:disabled {
       opacity: 0.6;
@@ -196,14 +189,14 @@
     }
     .notice.error {
       display: block;
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.3);
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
       color: #fca5a5;
     }
     .notice.success {
       display: block;
-      background: rgba(34,197,94,0.12);
-      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
       color: #86efac;
     }
     .back-link {
@@ -216,7 +209,7 @@
       padding: 10px 16px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text);
       text-decoration: none;
       font-size: 14px;
@@ -234,9 +227,9 @@
     .demo-hint {
       margin: 0 0 18px;
       padding: 14px 16px;
-      border: 1px solid rgba(96,165,250,0.28);
+      border: 1px solid rgba(91, 157, 255, 0.28);
       border-radius: 12px;
-      background: rgba(96,165,250,0.08);
+      background: rgba(91, 157, 255, 0.08);
       font-size: 13px;
       line-height: 1.6;
       color: var(--muted);
@@ -249,22 +242,23 @@
       align-items: center;
       gap: 8px;
       padding: 7px 12px;
-      border: 1px solid rgba(255,255,255,0.14);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 9px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text);
       font: inherit;
       font-size: 12px;
       cursor: pointer;
       transition: background .15s ease, border-color .15s ease;
     }
-    .demo-chip:hover { background: rgba(96,165,250,0.16); border-color: rgba(96,165,250,0.45); }
+    .demo-chip:hover { background: rgba(91, 157, 255, 0.16); border-color: rgba(91, 157, 255, 0.45); }
     .demo-role { color: var(--accent); }
     .demo-id { font-family: var(--mono, monospace); }
     .demo-pwd { color: var(--muted); font-family: var(--mono, monospace); }
     .demo-note { margin: 10px 0 0; font-size: 12px; opacity: .78; }
   </style>
-</head>
+  <link rel="stylesheet" href="assets/design-tokens.css">
+  </head>
 <body>
   <a href="index.html" class="back-link" id="backHomeLink">← 返回首页</a>
   

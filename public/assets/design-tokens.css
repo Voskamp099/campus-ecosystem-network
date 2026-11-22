@@ -1,0 +1,138 @@
+/* ==========================================================================
+   design-tokens.css — 整站设计令牌
+   --------------------------------------------------------------------------
+   改配色只改这一份。所有页面都引用它，页面自己的 <style> 里不再定义颜色。
+
+   配色思路（原来"不好看"的根因是四套色相打架：深藏蓝底 + 蓝 + 紫 + 金，
+   而且 14 个页面各写一套 :root，--bg 有 4 个值、同一种次要文字有 3 种命名）：
+     · 底色统一为单一深蓝，比原来的 #091a33 略沉、更中性
+     · 主色只用品牌蓝，紫色的 #8b5cf6 全部退场
+     · 琥珀色降级为点缀（徽章、分隔线、数据强调），不与主色抢注意力
+     · 其余靠同色系不同明度做层次，而不是堆色相
+   ========================================================================== */
+
+:root {
+  /* ── 背景层级 ───────────────────────────────────────────── */
+  --color-bg: #0a1626;                       /* 页面底 */
+  --color-bg-deep: #071120;                  /* 更深一层：页脚、凹陷区 */
+  --color-bg-raised: #0e1d31;                /* 抬起层：悬停卡片 */
+
+  /* ── 表面与描边 ─────────────────────────────────────────── */
+  --color-surface: rgba(255, 255, 255, 0.045);
+  --color-surface-strong: rgba(255, 255, 255, 0.085);
+  --color-surface-hover: rgba(255, 255, 255, 0.07);
+  --color-border: rgba(255, 255, 255, 0.10);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+  --color-border-brand: rgba(91, 157, 255, 0.35);
+
+  /* ── 文字层级 ───────────────────────────────────────────── */
+  --color-text-primary: #eef3fb;             /* 16.4:1 on --color-bg */
+  --color-text-secondary: rgba(238, 243, 251, 0.72);  /* 8.8:1 */
+  --color-text-tertiary: rgba(238, 243, 251, 0.50);   /* 4.8:1 */
+  --color-text-inverse: #08111e;
+
+  /* ── 品牌色（唯一的冷色主色）───────────────────────────── */
+  --color-brand: #5b9dff;                    /* 6.7:1 on --color-bg */
+  --color-brand-strong: #3b82f6;
+  --color-brand-deep: #2563eb;
+  --color-brand-soft: rgba(91, 157, 255, 0.14);
+  --color-brand-glow: rgba(91, 157, 255, 0.32);
+
+  /* ── 强调色（唯一的暖色，只做点缀）──────────────────────── */
+  --color-accent: #f0b85c;                   /* 10.2:1 on --color-bg */
+  --color-accent-soft: rgba(240, 184, 92, 0.14);
+  --color-accent-line: rgba(240, 184, 92, 0.30);
+
+  /* ── 状态色 ─────────────────────────────────────────────── */
+  --color-success: #4ade80;
+  --color-success-soft: rgba(74, 222, 128, 0.14);
+  --color-warning: #fbbf24;
+  --color-warning-soft: rgba(251, 191, 36, 0.14);
+  --color-danger: #f87171;
+  --color-danger-soft: rgba(248, 113, 113, 0.14);
+  --color-info: #60a5fa;
+
+  /* ── 焦点与阴影 ─────────────────────────────────────────── */
+  --color-focus: #7db4ff;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.18);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.24);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.30);
+  --shadow-brand: 0 10px 30px rgba(59, 130, 246, 0.26);
+
+  /* ── 圆角 ───────────────────────────────────────────────── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* ── 字体 ───────────────────────────────────────────────── */
+  --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Noto Serif SC", "Songti SC", Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --mono: var(--font-mono);
+
+  /* ==========================================================================
+     兼容别名
+     页面里现有的 var(--bg) / var(--text-soft) / var(--brand) 等引用不用逐个改，
+     在这里把它们统一指向语义令牌。页面内联 <style> 里对应的定义已删除，
+     所以别名是唯一来源。
+     ========================================================================== */
+  --bg: var(--color-bg);
+  --bg-soft: var(--color-bg-deep);
+  --bg-card: var(--color-surface);
+  --surface: var(--color-surface);
+  --surface-strong: var(--color-surface-strong);
+  --panel: var(--color-surface);
+  --panel-soft: var(--color-surface);
+  --line: var(--color-border);
+  --line-strong: var(--color-border-strong);
+  --text: var(--color-text-primary);
+  --text-soft: var(--color-text-secondary);
+  --text-muted: var(--color-text-tertiary);
+  --muted: var(--color-text-secondary);
+  --accent: var(--color-brand);
+  --accent-2: var(--color-brand-strong);
+  --brand: var(--color-brand);
+  --brand-strong: var(--color-brand-strong);
+  --brand-dim: var(--color-brand-soft);
+  --gold: var(--color-accent);
+  --green: var(--color-success);
+  --danger: var(--color-danger);
+  --success: var(--color-success);
+  --warning: var(--color-warning);
+  --shadow: var(--shadow-lg);
+  --radius: var(--radius-xl);
+}
+
+/* ==========================================================================
+   基础重置与可访问性
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--color-brand-glow);
+  color: var(--color-text-primary);
+}
+
+/* 尊重系统的减少动效设置 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

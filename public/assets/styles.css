@@ -7,27 +7,6 @@
 
 /* ── 设计变量（所有页面共享） ─────────────────────────────── */
 :root {
-  --bg: #091a33;
-  --bg-soft: #10264a;
-  --panel: rgba(11, 27, 52, 0.8);
-  --panel-soft: rgba(255, 255, 255, 0.05);
-  --surface: rgba(255, 255, 255, 0.06);
-  --surface-strong: rgba(255, 255, 255, 0.1);
-  --line: rgba(130, 175, 255, 0.18);
-  --line-strong: rgba(130, 175, 255, 0.32);
-  --text: #eff6ff;
-  --text-soft: rgba(239, 246, 255, 0.74);
-  --text-muted: rgba(191, 219, 254, 0.54);
-  --brand: #60a5fa;
-  --brand-strong: #2563eb;
-  --gold: #fbbf24;
-  --green: #34d399;
-  --danger: #fb7185;
-  --success: #34d399;
-  --shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
-  --radius: 24px;
-  --radius-md: 18px;
-  --radius-sm: 14px;
   --container: 1180px;
 }
 
@@ -47,9 +26,9 @@ body {
   font-family: "Noto Sans SC", sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), transparent 30%),
-    radial-gradient(circle at top right, rgba(251, 191, 36, 0.08), transparent 26%),
-    linear-gradient(180deg, #071425 0%, #091a33 40%, #081624 100%);
+    radial-gradient(circle at top left, rgba(91, 157, 255, 0.22), transparent 30%),
+    radial-gradient(circle at top right, rgba(240, 184, 92, 0.08), transparent 26%),
+    linear-gradient(180deg, #071425 0%, var(--color-bg) 40%, #081624 100%);
   line-height: 1.7;
   overflow-x: hidden;
 }
@@ -87,7 +66,7 @@ img {
   left: 8%;
   right: 8%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.16), transparent);
+  background: linear-gradient(90deg, transparent, rgba(91, 157, 255, 0.16), transparent);
 }
 
 .section-header {
@@ -141,7 +120,7 @@ img {
 
 .section-more:hover {
   border-color: var(--brand);
-  background: rgba(96, 165, 250, 0.08);
+  background: rgba(91, 157, 255, 0.08);
   color: var(--brand);
 }
 
@@ -153,8 +132,8 @@ img {
   z-index: 300;
   width: 0;
   height: 3px;
-  background: linear-gradient(90deg, #2563eb, #60a5fa, #fbbf24);
-  box-shadow: 0 0 18px rgba(96, 165, 250, 0.4);
+  background: linear-gradient(90deg, var(--color-brand-deep), var(--color-brand), var(--color-accent));
+  box-shadow: 0 0 18px rgba(91, 157, 255, 0.4);
   pointer-events: none;
 }
 
@@ -190,11 +169,11 @@ img {
 .btn-primary {
   color: #fff;
   background: linear-gradient(135deg, var(--brand-strong), var(--brand));
-  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.28);
+  box-shadow: 0 14px 30px rgba(91, 157, 255, 0.28);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 18px 36px rgba(37, 99, 235, 0.36);
+  box-shadow: 0 18px 36px rgba(91, 157, 255, 0.36);
 }
 
 .btn-ghost {
@@ -209,8 +188,8 @@ img {
 
 .btn-danger {
   color: #fff;
-  background: linear-gradient(135deg, #be123c, #e11d48);
-  box-shadow: 0 8px 20px rgba(225, 29, 72, 0.28);
+  background: linear-gradient(135deg, #be123c, var(--color-danger));
+  box-shadow: 0 8px 20px rgba(248, 113, 113, 0.28);
 }
 
 /* ── 徽章 / Tag ──────────────────────────────────────────── */
@@ -230,7 +209,7 @@ img {
   margin-top: 16px;
   padding: 14px 16px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(96, 165, 250, 0.12);
+  border: 1px solid rgba(91, 157, 255, 0.12);
   background: rgba(255, 255, 255, 0.04);
   color: var(--text-soft);
   font-size: 13px;
@@ -244,8 +223,8 @@ img {
 }
 
 .notice.success {
-  border-color: rgba(52, 211, 153, 0.22);
-  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(74, 222, 128, 0.22);
+  background: rgba(74, 222, 128, 0.08);
   color: #d1fae5;
 }
 
@@ -278,7 +257,7 @@ img {
 .field select:focus,
 .field textarea:focus {
   border-color: var(--line-strong);
-  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.12);
+  box-shadow: 0 0 0 4px rgba(91, 157, 255, 0.12);
 }
 
 .field .field-error input,

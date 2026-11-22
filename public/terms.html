@@ -9,7 +9,7 @@
   <meta property="og:description" content="北京校园生态合作联盟服务条款，规范联盟平台服务秩序，保障联盟成员的合法权益。">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="zh_CN">
-  <meta name="theme-color" content="#091a33">
+  <meta name="theme-color" content="var(--color-bg)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <script>
     (function () {
@@ -21,18 +21,7 @@
   </script>
   <style>
     :root {
-      --bg: #091a33;
-      --bg-soft: #10264a;
-      --text: #eff6ff;
-      --text-soft: rgba(239, 246, 255, 0.74);
-      --text-muted: rgba(191, 219, 254, 0.54);
-      --accent: #60a5fa;
-      --accent-2: #8b5cf6;
-      --panel: rgba(11, 27, 52, 0.8);
-      --surface: rgba(255, 255, 255, 0.06);
-      --line: rgba(130, 175, 255, 0.18);
-      --line-strong: rgba(130, 175, 255, 0.32);
-    }
+}
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: "Noto Sans SC", system-ui, -apple-system, sans-serif;
@@ -44,8 +33,8 @@
     .legal-page {
       min-height: 100vh;
       padding: 48px 24px 64px;
-      background: radial-gradient(1200px 800px at 70% -10%, rgba(96,165,250,0.12), transparent),
-                  radial-gradient(900px 600px at -10% 60%, rgba(139,92,246,0.10), transparent),
+      background: radial-gradient(1200px 800px at 70% -10%, rgba(91, 157, 255, 0.12), transparent),
+                  radial-gradient(900px 600px at -10% 60%, rgba(59, 130, 246, 0.10), transparent),
                   var(--bg);
     }
     .legal-container {
@@ -191,7 +180,8 @@
       .legal-section h2 { font-size: 17px; }
     }
   </style>
-</head>
+  <link rel="stylesheet" href="assets/design-tokens.css">
+  </head>
 <body>
   <div class="legal-page">
     <div class="legal-container">

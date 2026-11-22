@@ -197,7 +197,7 @@
 /* 记录卡片骨架屏 */
 .skeleton-record-card {
   background: var(--panel, rgba(11, 27, 52, 0.85));
-  border: 1px solid var(--line, rgba(130, 175, 255, 0.14));
+  border: 1px solid var(--line, rgba(91, 157, 255, 0.14));
   border-radius: var(--radius, 14px);
   padding: 18px 20px;
   margin-bottom: 12px;
@@ -354,7 +354,7 @@
   margin-top: 16px;
   padding: 10px 20px;
   border-radius: 999px;
-  border: 1px solid var(--line, rgba(130, 175, 255, 0.18));
+  border: 1px solid var(--line, rgba(91, 157, 255, 0.18));
   background: rgba(255, 255, 255, 0.04);
   color: var(--text-soft);
   font-size: 13px;
@@ -364,6 +364,6 @@
 }
 
 .error-state-retry:hover {
-  border-color: var(--brand, #60a5fa);
-  background: rgba(96, 165, 250, 0.08);
+  border-color: var(--brand, var(--color-brand));
+  background: rgba(91, 157, 255, 0.08);
 }
