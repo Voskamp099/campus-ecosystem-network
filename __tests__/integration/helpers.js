@@ -20,6 +20,7 @@ export async function client() {
     agent,
     post: (url) => withCsrf(agent.post(url)),
     put: (url) => withCsrf(agent.put(url)),
+    patch: (url) => withCsrf(agent.patch(url)),
     del: (url) => withCsrf(agent.delete(url)),
     get: (url) => agent.get(url),
   };

@@ -5,6 +5,20 @@ const DIRECTORY_TYPE_MAP = {
 };
 
 const APPLICATION_STORAGE_KEY = "alliance_directory_applications";
+const AUTH_TOKEN_KEY = "alliance_token";
+
+/**
+ * 读登录令牌。
+ * 已登录就把令牌带上，服务端据此把这条对接申请绑定到账号上（个人中心里能查到）；
+ * 没登录 / 读不到令牌就当游客，提交照常成功，不影响「不用登录也能发起对接」这个设计。
+ */
+function getAuthToken() {
+  try {
+    return localStorage.getItem(AUTH_TOKEN_KEY) || "";
+  } catch (error) {
+    return "";
+  }
+}
 
 const state = {
   directoryType: new URLSearchParams(window.location.search).get("category") || "campus",
@@ -197,12 +211,19 @@ async function submitApplication(payload) {
     };
   }
 
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  };
+  const authToken = getAuthToken();
+  if (authToken) {
+    // 已登录：带上令牌，服务端会把申请绑到这个账号
+    headers.Authorization = `Bearer ${authToken}`;
+  }
+
   const response = await fetch("/api/public/directory-applications", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
+    headers,
     body: JSON.stringify(payload)
   });
   const result = await response.json();

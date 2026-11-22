@@ -31,6 +31,28 @@ function mapRow(row) {
   };
 }
 
+/**
+ * 后台列表用的映射：额外带上 user_id，方便运营知道哪些申请是登录用户提交的。
+ * 只给后台看，公开接口（提交回执 / 进度查询）不返回这个字段。
+ */
+function mapAdminRow(row) {
+  return {
+    ...mapRow(row),
+    userId: row.user_id ?? null
+  };
+}
+
+/**
+ * 把 user_id 规整成正整数。
+ * 拿不到（游客提交）、或者传进来个非法值，一律当成 null —— 游客提交绝不能因此失败。
+ */
+function normalizeUserId(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const num = Number(value);
+  if (!Number.isInteger(num) || num <= 0) return null;
+  return num;
+}
+
 function normalizePhone(value) {
   return String(value || "").trim().replace(/\s+/g, "");
 }
@@ -111,15 +133,24 @@ function getNextId(apps) {
   return Math.max(...apps.map(a => a.id)) + 1;
 }
 
-export async function createDirectoryApplication(payload) {
+/**
+ * 新建一条生态对接申请
+ *
+ * @param {object} payload  表单内容
+ * @param {number|null} userId  提交人 id。游客提交时传 null / undefined，
+ *        申请照样建得起来，只是 user_id 为空；登录用户传进来才会绑定账号。
+ */
+export async function createDirectoryApplication(payload, userId = null) {
   const data = validatePayload(payload);
-  
+  const bindUserId = normalizeUserId(userId);
+
   if (!(await isDatabaseAvailable())) {
     // JSON 文件持久化
     const apps = loadApplications();
     const now = new Date().toISOString();
     const item = {
       id: getNextId(apps),
+      user_id: bindUserId,
       directory_type: data.directoryType,
       tracking_code: generateTrackingCode(),
       target_title: data.targetTitle,
@@ -139,16 +170,17 @@ export async function createDirectoryApplication(payload) {
     };
     apps.push(item);
     saveApplications(apps);
-    logger.info({ targetTitle: data.targetTitle, applicantName: data.applicantName }, "新对接申请（JSON 模式）");
+    logger.info({ targetTitle: data.targetTitle, applicantName: data.applicantName, userId: bindUserId }, "新对接申请（JSON 模式）");
     return mapRow(item);
   }
-  
+
   const [result] = await pool.query(
     `INSERT INTO directory_applications (
-      directory_type, tracking_code, target_title, target_meta, applicant_name, applicant_org, applicant_role,
+      user_id, directory_type, tracking_code, target_title, target_meta, applicant_name, applicant_org, applicant_role,
       phone, wechat, email, cooperation_intent, message, status, status_note
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', '')`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', '')`,
     [
+      bindUserId,
       data.directoryType,
       generateTrackingCode(),
       data.targetTitle,
@@ -169,17 +201,17 @@ export async function createDirectoryApplication(payload) {
 
 export async function listDirectoryApplications() {
   if (!(await isDatabaseAvailable())) {
-    return loadApplications().map(mapRow);
+    return loadApplications().map(mapAdminRow);
   }
   try {
     const [rows] = await pool.query(
       "SELECT * FROM directory_applications ORDER BY created_at DESC, id DESC"
     );
-    return rows.map(mapRow);
+    return rows.map(mapAdminRow);
   } catch (dbErr) {
     logger.warn({ err: dbErr }, "listDirectoryApplications \u67e5\u8be2\u5931\u8d25\uff0c\u964d\u7ea7\u5230 JSON");
     invalidateDbCache();
-    return loadApplications().map(mapRow);
+    return loadApplications().map(mapAdminRow);
   }
 }
 

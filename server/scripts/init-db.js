@@ -44,6 +44,11 @@ const REQUIRED_COLUMNS = {
     ["opportunity_type", "VARCHAR(32) NOT NULL DEFAULT 'internship'"],
     ["reviewed_at", "TIMESTAMP NULL"],
   ],
+  // 只补列、不动数据：老库里没有 user_id 列的话，绑定账号的 INSERT 会直接报
+  // Unknown column，历史数据保持 NULL，等用户自己重新提交。
+  directory_applications: [
+    ["user_id", "BIGINT UNSIGNED NULL"],
+  ],
   admin_logs: [
     ["admin_id", "BIGINT UNSIGNED NULL"],
     ["admin_name", "VARCHAR(128) NOT NULL DEFAULT ''"],

@@ -481,3 +481,29 @@ export function verifyToken(req, res, next) {
     return res.status(401).json({ success: false, message: "登录已过期，请重新登录" });
   }
 }
+
+/**
+ * 可选的登录态解析：给「游客也能用、但登录了更好用」的公开接口用。
+ *
+ * 和 verifyToken 的区别只有一条：**永远不返回 401**。
+ * 没有令牌、令牌过期、令牌是伪造的、甚至令牌是后台管理员令牌（里面没有 userId），
+ * 一律当作游客继续往下走，绝不能让公开提交因为 token 的问题失败。
+ */
+export function optionalAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next();
+  }
+
+  try {
+    const config = getConfig();
+    const decoded = jwt.verify(authHeader.slice(7), config.jwtSecret);
+    // 后台令牌没有 userId，这种情况同样按游客处理
+    if (decoded && decoded.userId) {
+      req.user = { userId: decoded.userId, email: decoded.email, role: decoded.role };
+    }
+  } catch (err) {
+    // 令牌无效就当游客，忽略即可
+  }
+  return next();
+}

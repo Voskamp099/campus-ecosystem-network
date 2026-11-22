@@ -101,7 +101,12 @@ export async function getUserDirectoryApplications(phone, userId) {
   const apps = loadJson("directory_applications.json", []);
   let filtered = apps;
   if (userId) {
-    filtered = apps.filter(a => a.user_id === userId);
+    // user_id 在库里是数字，JWT 里的 userId 也是数字，但两边都归一化一次，
+    // 免得出现 "3" vs 3 这种类型差异，导致永远匹配不上。
+    const targetUserId = Number(userId);
+    filtered = apps.filter(a =>
+      a.user_id !== null && a.user_id !== undefined && Number(a.user_id) === targetUserId
+    );
   } else {
     const normalizedPhone = normalizePhone(phone);
     if (normalizedPhone) {
@@ -110,6 +115,7 @@ export async function getUserDirectoryApplications(phone, userId) {
   }
   return filtered.map(row => ({
     id: row.id,
+    userId: row.user_id ?? null,
     directoryType: row.directory_type,
     trackingCode: row.tracking_code,
     targetTitle: row.target_title,
