@@ -1,8 +1,8 @@
 # Campus Ecosystem Network
 
-**北京校园生态合作联盟** — a full-stack platform that connects university students,
-companies and campus organizations, so that internships, events and collaboration
-requests actually get matched instead of sitting in a WeChat group.
+**北京校园生态合作联盟** — a platform connecting universities, companies and government
+partners, so that internships, events and collaboration requests actually get matched
+instead of sitting in a WeChat group.
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
@@ -27,13 +27,14 @@ requests actually get matched instead of sitting in a WeChat group.
 | --- | --- |
 | 首页 Home | Hero carousel, partner matrix, benefits hub, featured jobs and events |
 | 联盟权益中心 Benefits hub | Benefits grouped by life scenario, each with its own detail list |
-| 生态对接名录 Directory | University and company partners, filterable and searchable |
+| 生态对接名录 Directory | University, company and government partners, filterable and searchable |
 | 对接申请 Applications | Users file an application against a listed partner; the system issues a tracking code and drives it through a five-stage workflow |
 | 用户发布 User posts | Registered users publish events and internships; admins approve or reject with a reason |
 | 个人中心 Personal centre | Applications, event registrations and job submissions in one place |
 | 后台管理 Admin | Full CRUD and ordering for every content section, plus moderation, user list, statistics and an audit log |
 
-The interface is Chinese; the module names above are the real names used in the UI.
+The interface is Chinese by default and switches to English with the EN button; the module
+names above are the real names used in the UI.
 
 ## Engineering highlights
 

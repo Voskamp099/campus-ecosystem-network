@@ -47,7 +47,7 @@ en = [
 "Business secrets, technical data, student privacy information and unpublished research results learned during interaction on the Platform are all confidential.",
 "You can switch between campus and company partners here, or search directly by organization name, collaboration focus, time, location or keyword.",
 "If you represent a student organization, government platform or company team, write your full entity name in “Organization” so we can follow up.",
-"Connecting universities, companies, founders and student organizations so that internships, event collaboration, resource sharing and community matching happen faster.",
+"A platform connecting universities, companies and government partners, so that internships, event collaboration, resource sharing and community matching happen faster.",
 "If service is interrupted or data is lost due to force majeure such as natural disaster, war, cyberattack or government action, the Network bears no liability for breach.",
 "We may engage third-party providers (such as cloud or SMS services) and will require them to observe strict confidentiality.",
 "Applicants must be higher-education institutions, research institutes, companies or government bodies with legal operating or corporate status.",
