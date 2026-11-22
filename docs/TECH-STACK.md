@@ -251,11 +251,21 @@ Render: autoDeploy 触发 → npm ci --omit=dev → node server/index.js
 ### 5.2 改页面文案（特别注意）
 
 ```
-改中文源 → 跑 scripts/build_i18n.py 重新生成 public/assets/i18n-en.js → 提交两个文件
+改中文源 → 跑 scripts/build_i18n.py 重新生成 public/assets/i18n-en.js → 提交三个文件
+         （scripts/zh_inventory.json + scripts/build_i18n.py 的 en 列表 + 生成的 i18n-en.js）
 ```
 
 **不要手改 `i18n-en.js`**：它是生成产物，手改会被下一次生成覆盖。
-**不要改中文源之外的地方加文案**：不在对照表里的中文，在默认英文界面下会原样显示中文。
+
+**语言规则**：中文是默认，英文是可选视图。判定优先级为
+`?lang=en/zh` 参数 → `localStorage.alliance_lang` 里记住的选择 → 默认中文。
+选择会写进 localStorage，所以站内跳转（注册、登录、名录）时语言不会因为
+链接不带 `?lang` 参数而丢失。
+
+**`scripts/build_i18n.py` 自带漏译检查**：生成后会扫描 `public/` 下实际可见的
+中文（跳过脚本块、样式块和代码注释），跟对照表比对，把没进表的中文报出来。
+新加的文案如果不在表里，英文界面下会原样显示中文——跑一次脚本就能看到清单。
+中文清单放在 `scripts/zh_inventory.json`（已纳入版本库），脚本不再依赖 /tmp 临时文件。
 
 ### 5.3 关于 `npm run build`
 

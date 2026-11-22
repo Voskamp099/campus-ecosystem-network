@@ -91,30 +91,52 @@
       });
     }
 
-    // English presentation layer is active by default. Simplified Chinese is
-    // opt-in via ?lang=zh. The layer only rewrites text nodes/attributes.
-    var isChinese = new URLSearchParams(window.location.search).get("lang") === "zh";
-    if (!isChinese && !document.querySelector('script[data-alliance-i18n="true"]')) {
+    // 语言：中文是默认，英文是可选视图。
+    // 选择会记在 localStorage 里，所以在站内跳转（注册、登录、名录……）时
+    // 语言不会因为链接不带 ?lang 参数而丢失——这正是之前"选了中文、
+    // 点注册又变回英文"的原因。
+    var lang = resolveLang();
+    if (lang === "en" && !document.querySelector('script[data-alliance-i18n="true"]')) {
       var i18n = document.createElement("script");
       i18n.src = getAssetPath("assets/i18n-en.js");
       i18n.setAttribute("data-alliance-i18n", "true");
       document.head.appendChild(i18n);
     }
 
-    // Language switch: English default shows a 中文 entry; the opt-in Chinese
-    // view shows an EN entry that returns to the default English build.
+    // Language switch: the Chinese view offers EN, the English view offers 中文.
     document.addEventListener("DOMContentLoaded", function () {
+      var isChinese = lang === "zh";
       var btnId = isChinese ? "alliance-lang-en" : "alliance-lang-zh";
       if (document.getElementById(btnId)) return;
       var a = document.createElement("a");
       a.id = btnId;
-      a.href = isChinese ? addLangParam(window.location.href, "en")
-                         : addLangParam(window.location.href, "zh");
+      a.href = addLangParam(window.location.href, isChinese ? "en" : "zh");
       a.textContent = isChinese ? "EN" : "中文";
       a.setAttribute("aria-label", isChinese ? "View in English" : "查看中文版");
-      a.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:3000;font:700 12px/1 system-ui,sans-serif;color:#fff;background:#0a6e4f;padding:7px 12px;border-radius:20px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.3)";
+      // 记住选择：跳转之后仍然保持同一种语言
+      a.addEventListener("click", function () {
+        try {
+          localStorage.setItem("alliance_lang", isChinese ? "en" : "zh");
+        } catch (e) {}
+      });
+      a.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:3000;font:700 12px/1 system-ui,sans-serif;color:#fff;background:var(--color-brand-strong,#2f6f5e);padding:7px 12px;border-radius:20px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.3)";
       document.body.appendChild(a);
     });
+  }
+
+  /**
+   * 解析当前语言。
+   * 优先级：URL 参数 ?lang= > localStorage 里记住的选择 > 默认中文。
+   */
+  function resolveLang() {
+    var explicit = new URLSearchParams(window.location.search).get("lang");
+    if (explicit === "en") return "en";
+    if (explicit === "zh") return "zh";
+    try {
+      var saved = localStorage.getItem("alliance_lang");
+      if (saved === "en" || saved === "zh") return saved;
+    } catch (e) {}
+    return "zh";
   }
 
   function addLangParam(url, value) {
@@ -148,6 +170,7 @@
     getAssetPath: getAssetPath,
     initHead: initHead,
     loadScript: loadScript,
-    loadScripts: loadScripts
+    loadScripts: loadScripts,
+    resolveLang: resolveLang
   };
 })();

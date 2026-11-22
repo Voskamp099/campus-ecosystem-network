@@ -2,13 +2,18 @@
 """Generate public/assets/i18n-en.js from the full visible-text inventory.
 
 The English layer is a pure presentation overlay: it never touches app logic,
-only text nodes and a fixed set of attributes. Active by default; Simplified
-Chinese is opt-in via ?lang=zh.
+only text nodes and a fixed set of attributes. Chinese is the default; English
+is opt-in via ?lang=en or by picking EN once (remembered in localStorage).
+
+The Chinese side lives in scripts/zh_inventory.json so this script is
+self-contained — it used to read /tmp, which meant it could not be run by
+anyone else. After generating, the script cross-checks the inventory against
+the Chinese currently present in public/ and reports anything untranslated.
 """
-import json, os
+import json, os, re, glob
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-INV = "/tmp/zh_full_inventory.json"
+INV = os.path.join(BASE, "scripts", "zh_inventory.json")
 
 zh = json.load(open(INV, encoding="utf-8"))
 
@@ -446,16 +451,165 @@ en = [
 "home",
 "D",
 "entries",
+"does not affect the live service",
+"Zhongguancun Youth Innovation Service Platform",
+"Yunfan Technology campus partnership team",
+"students interested in the product",
+"stored only in this browser",
+"enterprise and government ecosystem partners",
+"manage all three categories of directory cards on the enterprise side",
+"browse and search across the whole directory",
+"You can also track progress on-site with your reference number",
+"Your application has been routed to the matching collaboration track",
+"Could not save the search history",
+"protect the lawful rights of Alliance members",
+"startup support and shared campus resources",
+"Could not load the category content",
+"Could not load the ecosystem directory",
+"Could not load the site content",
+"Peking University Student Activity Center",
+"Alliance member services center",
+"Beijing Campus Ecosystem Alliance directory",
+"Beijing Campus Ecosystem Alliance privacy policy",
+"Beijing Economic-Technological Development Area talent service desk",
+"Post activities or internship opportunities",
+"Posted content appears publicly only after an administrator approves it",
+"only active locally or on a static host",
+"collaboration focus and contact details",
+"the administrator can add a detail link",
+"The administrator has not uploaded any directory entries of this kind yet",
+"You can submit another application later if you have new requests",
+"Image saved locally",
+"Upload a section image here",
+"We will follow up as soon as you have filled this in",
+"users who signed in within the period",
+"store and share your personal information",
+"internships and startup support",
+"view internships and upcoming events in one place",
+"internship partnerships and joint regional events",
+"matching practice opportunities and campus resource partnerships",
+"Review internship posts submitted by members",
+"Review activity posts submitted by members",
+"Once approved it is shown to every member",
+"The collaboration request was saved to this browser",
+"Back up your data before importing or exporting",
+"an exchange event on putting the tooling into practice",
+"Here is the latest progress we found for you",
+"Try adjusting the direction and submit again",
+"Nothing matches this category yet",
+"This request matches the currently available resources only loosely",
+"Find a collaboration direction quickly and start a request",
+"We have received your request",
+"or wait for an administrator to add one",
+"or look at these recommendations",
+"That phone number format is not valid",
+"Registration status and application progress",
+"The three categories of government ecosystem partners",
+"Government agency name or a keyword in that field",
+"Policy briefings and youth project resource matching",
+"Database and object storage",
+"No internship opportunities yet",
+"No event registrations yet",
+"No collaboration requests yet",
+"No new collaboration requests at the moment",
+"No registered users at the moment",
+"No backend service detected",
+"No application records in local mode",
+"No event registrations in local mode",
+"Nothing has been posted in local mode yet",
+"This request is not supported in local mode",
+"New this month, counted by registration date",
+"See your requests and registrations",
+"See my collaboration requests",
+"See my requests and registrations",
+"See every registered user",
+"See the latest progress on collaboration requests",
+"See internship applications submitted by members",
+"See event registrations submitted by members",
+"See sign-up and sign-in statistics",
+"See collaboration requests submitted on the site",
+"University–company events and practice roles",
+"Running basic checks and a first pass on the direction",
+"Detecting the current mode",
+"Waiting for further feedback",
+"Reading the collaboration target",
+"Verifying your email",
+"No matching collaboration request was found",
+"No matching results",
+"Register a Beijing Campus Ecosystem Alliance account",
+"It will appear here once you register",
+"Event registrations and internships",
+"Status of event registrations and application records",
+"Joint events and city resource collaboration",
+"Match event resources against collaboration needs faster",
+"Youth development platforms in Haidian District",
+"Consumer discounts and lifestyle service benefits",
+"Could not clear the search history",
+"Click any account to fill it in",
+"Click the right-hand side to see the details",
+"A platform for ecosystem collaboration and startup resources",
+"What members submit appears here automatically",
+"The request status is being updated",
+"Sign in to your Beijing Campus Ecosystem Alliance account",
+"Once signed in you can edit the server content directly",
+"Sign in to see your request records",
+"Delete this item?",
+"Community building and resource links",
+"manages the content to the right of the homepage title",
+"Priority sign-up for offline meetups",
+"manage food, fun and local leisure in one place",
+"The collaboration target is missing",
+"The Alliance or the matching partner has started talking to you",
+"All your Alliance benefits in one place",
+"The Alliance is matching your needs against the target",
+"The Alliance routes and follows up on it for you",
+"keep the order of service on the Alliance platform",
+"so more people see your opportunity",
+"content gathered from papers and study groups",
+"assess the best way to move forward",
+"Try switching the category or changing the keyword",
+"describe the event in detail",
+"describe the work in detail",
+"Set a local administrator password for this computer",
+"Describe the collaboration goal for the selected target",
+"Please add a link in the admin console",
+"Please enter a contact name",
+"Check the reference number and contact details",
+"Check your connection and try again",
+"Confirm which target you are applying to",
+"Go back to the directory and start again",
+"Could not read the search history",
+"Type a keyword to start searching",
+"Six kinds of upcoming events and activities",
+"These demo credentials are public",
+"This collaboration flow is essentially complete",
+"Good for uploading event photos",
+"Good for spreading talent-policy information",
+"Good for recruiting startup projects",
+"Good for co-organising innovation events",
+"Good for youth development programmes",
+"Submit a collaboration request through the Beijing Campus Ecosystem Alliance",
+"via the reference number and contact details",
+"Reset your Alliance account password",
+"Verify your email address",
 ]
 
 assert len(en) == len(zh), "alignment error: %d en vs %d zh" % (len(en), len(zh))
 pairs = [{"zh": z, "en": e} for z, e in zip(zh, en) if z != e]
 
 js = """/* Generated by scripts/build_i18n.py — English presentation layer.
-   Active by default; Simplified Chinese is opt-in via ?lang=zh. Never changes app logic, only text nodes/attributes. */
+   Chinese is the default; English is opt-in via ?lang=en or by picking EN once
+   (the choice is remembered in localStorage, so it survives page navigation).
+   Never changes app logic, only text nodes/attributes. */
 (function () {
   "use strict";
-  if (new URLSearchParams(window.location.search).get("lang") === "zh") return;
+  function shouldApplyEnglish() {
+    var explicit = new URLSearchParams(window.location.search).get("lang");
+    if (explicit === "en") return true;
+    if (explicit === "zh") return false;
+    try { return localStorage.getItem("alliance_lang") === "en"; } catch (e) { return false; }
+  }
+  if (!shouldApplyEnglish()) return;
   document.documentElement.lang = "en";
 
   var PAIRS = %s;
@@ -555,3 +709,56 @@ out = os.path.join(BASE, "public", "assets", "i18n-en.js")
 open(out, "w", encoding="utf-8").write(js)
 print("wrote", out)
 print("pairs:", len(pairs), "zh entries:", len(zh))
+
+# ── 漏译检查 ────────────────────────────────────────────────────────
+# 扫描页面与脚本里"会显示给用户看"的中文，跟清单对比。清单外的文案在英文
+# 界面下会原样显示中文——这是静默的视觉缺陷，所以在这里显式报出来。
+# 代码注释里的中文不算，注释不显示在页面上。
+CJK = re.compile(r"[一-鿿]+")
+known_norm = {re.sub(r"\s+", "", t) for t in zh}
+
+
+def visible_chinese(path):
+    """抽出页面上真正会显示的中文：跳过脚本块、样式块和注释。"""
+    src = open(path, encoding="utf-8").read()
+    if path.endswith(".html"):
+        src = re.sub(r"<script\b[^>]*>.*?</script>", " ", src, flags=re.S | re.I)
+        src = re.sub(r"<style\b[^>]*>.*?</style>", " ", src, flags=re.S | re.I)
+        src = re.sub(r"<!--.*?-->", " ", src, flags=re.S)
+    else:
+        # JS：去掉行注释与块注释，只留下字符串字面量里的中文
+        src = re.sub(r"/\*.*?\*/", " ", src, flags=re.S)
+        src = re.sub(r"(?m)^\s*//.*$", " ", src)
+        src = re.sub(r"(?<![:'\"])//[^\n]*$", " ", src, flags=re.M)
+    out = set()
+    for m in CJK.finditer(src):
+        frag = m.group(0)
+        if len(frag) >= 2:
+            out.add(frag)
+    return out
+
+
+untranslated = set()
+for path in sorted(glob.glob(os.path.join(BASE, "public", "*.html"))) + \
+        sorted(glob.glob(os.path.join(BASE, "public", "assets", "*.js"))):
+    if path.endswith("i18n-en.js"):
+        continue
+    for frag in visible_chinese(path):
+        norm = re.sub(r"\s+", "", frag)
+        if norm in known_norm:
+            continue
+        # 片段是某条已翻译长句的一部分 → 忽略
+        if any(norm in k for k in known_norm if len(k) >= 6):
+            continue
+        # 短碎片多是长句被标签切开的残片，报出来全是噪音，只看整句级的
+        if len(norm) < 8:
+            continue
+        untranslated.add(frag)
+
+if untranslated:
+    print("\n未进入清单的中文文案（英文界面下会保持中文）：")
+    for frag in sorted(untranslated)[:40]:
+        print("  -", frag[:70])
+    print("  提示：把这些文案补进 scripts/zh_inventory.json，并在 en 列表里对齐翻译")
+else:
+    print("\n✓ 页面上的可见中文都已进入对照表")
