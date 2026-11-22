@@ -9,8 +9,8 @@
 body {
   background-image:
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.05'/></svg>"),
-    radial-gradient(circle at 12% -6%, rgba(79, 185, 156, 0.28), transparent 34%),
-    radial-gradient(circle at 88% 4%, rgba(232, 112, 63, 0.10), transparent 28%),
+    radial-gradient(circle at 12% -6%, rgba(91, 141, 239, 0.28), transparent 34%),
+    radial-gradient(circle at 88% 4%, rgba(240, 136, 92, 0.10), transparent 28%),
     radial-gradient(circle at 50% 108%, rgba(14, 165, 233, 0.10), transparent 42%),
     linear-gradient(180deg, #061223 0%, var(--color-bg) 42%, #07131f 100%);
   background-attachment: fixed;
@@ -44,7 +44,7 @@ html {
   width: 26px;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--gold), rgba(232, 112, 63, 0));
+  background: linear-gradient(90deg, var(--gold), rgba(240, 136, 92, 0));
 }
 
 .section-title {
@@ -61,9 +61,9 @@ html {
   overflow: hidden;
   padding: 0;
   border-radius: 28px;
-  border: 1px solid rgba(233, 228, 216, 0.16);
+  border: 1px solid rgba(160, 190, 255, 0.16);
   background:
-    linear-gradient(165deg, rgba(36, 87, 73, 0.72) 0%, rgba(10, 22, 38, 0.86) 52%, rgba(15, 14, 20, 0.94) 100%);
+    linear-gradient(165deg, rgba(31, 58, 124, 0.72) 0%, rgba(10, 22, 38, 0.86) 52%, rgba(8, 13, 26, 0.94) 100%);
   box-shadow:
     0 40px 90px -30px rgba(0, 0, 0, 0.65),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -75,7 +75,7 @@ html {
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
-  background: radial-gradient(120% 80% at 100% 0%, rgba(232, 112, 63, 0.13), transparent 58%);
+  background: radial-gradient(120% 80% at 100% 0%, rgba(240, 136, 92, 0.13), transparent 58%);
 }
 
 .hero-card-grid {
@@ -132,8 +132,8 @@ html {
   align-self: flex-start;
   padding: 5px 11px;
   border-radius: 999px;
-  border: 1px solid rgba(232, 112, 63, 0.34);
-  background: rgba(232, 112, 63, 0.12);
+  border: 1px solid rgba(240, 136, 92, 0.34);
+  background: rgba(240, 136, 92, 0.12);
   color: #fcd34d;
   font-size: 11px;
   font-weight: 800;
@@ -189,7 +189,7 @@ html {
 
 .partner-chip:hover {
   background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(233, 228, 216, 0.34);
+  border-color: rgba(160, 190, 255, 0.34);
   transform: translateY(-2px);
 }
 
@@ -207,7 +207,7 @@ html {
 .recruit-card:hover,
 .event-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(233, 228, 216, 0.38);
+  border-color: rgba(160, 190, 255, 0.38);
   box-shadow: 0 26px 54px -26px rgba(10, 9, 14, 0.9);
 }
 
@@ -215,12 +215,12 @@ html {
 .btn-primary {
   position: relative;
   transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
-  box-shadow: 0 14px 30px -14px rgba(79, 185, 156, 0.85);
+  box-shadow: 0 14px 30px -14px rgba(91, 141, 239, 0.85);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px -16px rgba(79, 185, 156, 0.95);
+  box-shadow: 0 20px 40px -16px rgba(91, 141, 239, 0.95);
 }
 
 .btn-primary svg {
@@ -245,7 +245,7 @@ textarea:focus-visible {
 /* ── 9. 底部三栏：拆成三格，中间加竖线 ── */
 .trust-bar {
   border-radius: 22px;
-  border: 1px solid rgba(233, 228, 216, 0.14);
+  border: 1px solid rgba(160, 190, 255, 0.14);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
 }
 
@@ -260,7 +260,7 @@ textarea:focus-visible {
   top: 12%;
   bottom: 12%;
   width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(233, 228, 216, 0.22), transparent);
+  background: linear-gradient(180deg, transparent, rgba(160, 190, 255, 0.22), transparent);
 }
 
 .trust-item strong {
@@ -275,11 +275,11 @@ textarea:focus-visible {
 
 /* ── 10. 首屏小徽章：金线描边，跟品牌色呼应 ── */
 .hero-badge {
-  border-color: rgba(232, 112, 63, 0.22);
-  background: rgba(232, 112, 63, 0.08);
+  border-color: rgba(240, 136, 92, 0.22);
+  background: rgba(240, 136, 92, 0.08);
 }
 
 .hero-badge-dot {
   background: var(--gold);
-  box-shadow: 0 0 0 4px rgba(232, 112, 63, 0.16);
+  box-shadow: 0 0 0 4px rgba(240, 136, 92, 0.16);
 }

@@ -26,8 +26,8 @@ body {
   font-family: var(--font-sans);
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(79, 185, 156, 0.22), transparent 30%),
-    radial-gradient(circle at top right, rgba(232, 112, 63, 0.08), transparent 26%),
+    radial-gradient(circle at top left, rgba(91, 141, 239, 0.22), transparent 30%),
+    radial-gradient(circle at top right, rgba(240, 136, 92, 0.08), transparent 26%),
     linear-gradient(180deg, #071425 0%, var(--color-bg) 40%, #081624 100%);
   line-height: 1.7;
   overflow-x: hidden;
@@ -66,7 +66,7 @@ img {
   left: 8%;
   right: 8%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(79, 185, 156, 0.16), transparent);
+  background: linear-gradient(90deg, transparent, rgba(91, 141, 239, 0.16), transparent);
 }
 
 .section-header {
@@ -120,7 +120,7 @@ img {
 
 .section-more:hover {
   border-color: var(--brand);
-  background: rgba(79, 185, 156, 0.08);
+  background: rgba(91, 141, 239, 0.08);
   color: var(--brand);
 }
 
@@ -133,7 +133,7 @@ img {
   width: 0;
   height: 3px;
   background: linear-gradient(90deg, var(--color-brand-deep), var(--color-brand), var(--color-accent));
-  box-shadow: 0 0 18px rgba(79, 185, 156, 0.4);
+  box-shadow: 0 0 18px rgba(91, 141, 239, 0.4);
   pointer-events: none;
 }
 
@@ -169,11 +169,11 @@ img {
 .btn-primary {
   color: #fff;
   background: linear-gradient(135deg, var(--brand-strong), var(--brand));
-  box-shadow: 0 14px 30px rgba(79, 185, 156, 0.28);
+  box-shadow: 0 14px 30px rgba(91, 141, 239, 0.28);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 18px 36px rgba(79, 185, 156, 0.36);
+  box-shadow: 0 18px 36px rgba(91, 141, 239, 0.36);
 }
 
 .btn-ghost {
@@ -209,7 +209,7 @@ img {
   margin-top: 16px;
   padding: 14px 16px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(79, 185, 156, 0.12);
+  border: 1px solid rgba(91, 141, 239, 0.12);
   background: rgba(255, 255, 255, 0.04);
   color: var(--text-soft);
   font-size: 13px;
@@ -257,7 +257,7 @@ img {
 .field select:focus,
 .field textarea:focus {
   border-color: var(--line-strong);
-  box-shadow: 0 0 0 4px rgba(79, 185, 156, 0.12);
+  box-shadow: 0 0 0 4px rgba(91, 141, 239, 0.12);
 }
 
 .field .field-error input,
