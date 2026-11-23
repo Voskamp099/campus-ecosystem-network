@@ -10,7 +10,7 @@
 #   - 静态托管形态（GitHub Pages）不在本配置范围内，见 .github/workflows/pages.yml。
 services:
   - type: web
-    name: campus-ecosystem-network
+    name: beijing-alliance
     runtime: node
     plan: free
     region: singapore

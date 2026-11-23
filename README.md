@@ -180,7 +180,7 @@ the build, the health check and the environment variables. The service name in
 that file fixes the address:
 
 ```
-https://campus-ecosystem-network.onrender.com
+https://beijing-alliance.onrender.com
 ```
 
 Variables marked `syncFrom: false` in `render.yaml` have to be filled in on the

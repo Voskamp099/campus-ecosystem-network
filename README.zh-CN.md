@@ -165,7 +165,7 @@ node server/index.js
 都会自动配好。该文件里的服务名决定了访问地址：
 
 ```
-https://campus-ecosystem-network.onrender.com
+https://beijing-alliance.onrender.com
 ```
 
 `render.yaml` 里标了 `syncFrom: false` 的变量需要在 Render Dashboard 上手动填，
