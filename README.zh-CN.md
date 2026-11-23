@@ -162,7 +162,11 @@ node server/index.js
 
 站点以 Node Web Service 的形态跑在 Render 上。`render.yaml` 是 Render Blueprint：
 在 Render 控制台 **New → Blueprint** 指向本仓库，构建命令、健康检查和环境变量
-都会自动配好。
+都会自动配好。该文件里的服务名决定了访问地址：
+
+```
+https://campus-ecosystem-network.onrender.com
+```
 
 `render.yaml` 里标了 `syncFrom: false` 的变量需要在 Render Dashboard 上手动填，
 其中最关键的是 `ADMIN_PASSWORD` 和 `SITE_URL`（填错会让密码重置邮件里的链接

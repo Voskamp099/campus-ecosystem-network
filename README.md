@@ -176,7 +176,12 @@ and it runs in local mode with `localStorage` as the backing store.
 
 The site runs on Render as a Node web service. `render.yaml` is a Render
 Blueprint: point Render at this repository (**New → Blueprint**) and it wires up
-the build, the health check and the environment variables.
+the build, the health check and the environment variables. The service name in
+that file fixes the address:
+
+```
+https://campus-ecosystem-network.onrender.com
+```
 
 Variables marked `syncFrom: false` in `render.yaml` have to be filled in on the
 Render dashboard — most importantly `ADMIN_PASSWORD` and `SITE_URL`. The server
