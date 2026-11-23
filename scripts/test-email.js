@@ -1,15 +1,18 @@
 /**
  * 测试邮件服务配置
+ *
+ * 凭据一律从环境变量读取，与生产路径（server/config.js）保持一致。
+ * 复制 .env.example 为 .env 并填入本地值即可运行。
  */
 import nodemailer from "nodemailer";
 
 const config = {
-  host: "smtp.exmail.qq.com",
-  port: 465,
+  host: process.env.SMTP_HOST || "smtp.exmail.qq.com",
+  port: Number(process.env.SMTP_PORT) || 465,
   secure: true, // 465 端口使用 SSL
   auth: {
-    user: "noreply@alliance.local",
-    pass: "otFXjoLrrPLszt5C"
+    user: process.env.SMTP_USER || "noreply@alliance.local",
+    pass: process.env.SMTP_PASS || ""
   }
 };
 

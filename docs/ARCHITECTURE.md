@@ -87,13 +87,18 @@ alliance-website/
 │   └── migrations/          # 迁移脚本
 │
 ├── deploy/                  # 部署配置
-│   ├── nginx.alliance.conf.example
-│   └── ecosystem.config.cjs
+│   └── nginx.alliance.conf.example
+│
+├── scripts/                 # 运维与构建脚本
+│   ├── build_i18n.py        # 中英文案构建
+│   ├── optimize-frontend.js # 前端资源优化
+│   ├── test-email.js        # SMTP 连通性自测
+│   └── zh_inventory.json    # 中文原文清单
 │
 ├── .github/                 # CI/CD配置
 │   └── workflows/
 │       ├── ci.yml           # 持续集成
-│       └── cd.yml           # 持续部署
+│       └── pages.yml        # 静态站发布
 │
 ├── __tests__/               # 测试文件
 │   ├── unit/                # 单元测试
