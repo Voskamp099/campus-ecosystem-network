@@ -1,6 +1,6 @@
+// 只展示两类伙伴。政府类条目仍存在数据里（后台可管理），但不再作为一类对外呈现。
 const DIRECTORY_TABS = [
   { slug: "campus", title: "校园方" },
-  { slug: "government", title: "政府方" },
   { slug: "company", title: "企业方" }
 ];
 

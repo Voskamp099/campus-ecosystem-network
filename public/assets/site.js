@@ -363,8 +363,7 @@ function renderPartnerGrid(type) {
         '<div class="logo-top">' +
           avatar +
           '<span class="logo-kind">' + (
-            type === "university" ? "高校" :
-            type === "government" ? "政府" : "企业"
+            type === "university" ? "高校" : "企业"
           ) + "</span>" +
         "</div>" +
         '<h3 class="logo-name">' + escapeHTML(item.name) + "</h3>" +
@@ -715,8 +714,7 @@ function renderEvents() {
 function initHeroPartners() {
   const allPartners = [
     ...(state.content.partners.university || []),
-    ...(state.content.partners.company || []),
-    ...(state.content.partners.government || [])
+    ...(state.content.partners.company || [])
   ];
   const seen = new Set();
   const unique = allPartners.filter(item => {
