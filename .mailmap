@@ -1,17 +1,17 @@
 # 提交身份归并（mailmap）
 #
-# 两个早期提交曾用 `raelynn@users.noreply.github.com` 提交。那个邮箱属于另一个
-# GitHub 账号（Portland 的 Raelynn Keron），于是 GitHub 把那两个提交记到了他名下，
-# 并非经过他同意。历史已改写为正确的身份，这一行保留作为防御。
+# 这个仓库的历史里曾出现过三个不属于你的署名身份：
+#   raelynn@users.noreply.github.com —— 属于另一个 GitHub 账号（Portland 的 Raelynn Keron）
+#   raelynn_0612@163.com            —— 你本人的 163 邮箱，但没绑定到 GitHub 账号，会显示成灰色条目
+#   MintMuse                        —— 笔名，邮箱是对的
+# 用这些邮箱提交，GitHub 会把提交记到对应账号名下，不需要账号主人同意，也不会有任何提示。
 #
-# 为什么还需要它：任何人在任何机器上误用了那个邮箱提交，GitHub 都会算到那个账号
-# 头上，且没有任何提示。有了这行，归并会把它拉回本仓库的账号。
+# 历史已经改写为 Voskamp099，这里保留这几行作为防御：将来任何机器上误用了这些邮箱，
+# 归并都会把它们拉回你的账号。
 #
 # 格式：显示身份 <显示邮箱> <提交里实际使用的邮箱>
-# GitHub 官方支持 .mailmap 归并贡献者身份，无需改写提交历史。
-#
 # 参考：https://docs.github.com/en/contributing/setting-up-and-managing-your-github-user-account/managing-commit-email-addresses
 
 Voskamp099 <voskamp099@users.noreply.github.com> Raelynn <raelynn@users.noreply.github.com>
-Raelynn <141211105+Voskamp099@users.noreply.github.com> MintMuse <141211105+Voskamp099@users.noreply.github.com>
-
+Voskamp099 <voskamp099@users.noreply.github.com> Raelynn Zhao <raelynn_0612@163.com>
+Voskamp099 <voskamp099@users.noreply.github.com> MintMuse <141211105+Voskamp099@users.noreply.github.com>
