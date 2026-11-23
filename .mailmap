@@ -1,0 +1,12 @@
+# 提交身份归并（mailmap）
+#
+# 两个早期提交使用了另一个 GitHub 身份。GitHub 会按 commit 里的 email
+# 把作者关联到对应账号，于是仓库的 Contributors 列表里会多出一个并非
+# 本人的名字。这里把那个身份归并回本仓库的账号名下。
+#
+# 格式：显示身份 <显示邮箱> <提交里实际使用的邮箱>
+# GitHub 官方支持 .mailmap 归并贡献者身份，无需改写提交历史。
+#
+# 参考：https://docs.github.com/en/contributing/setting-up-and-managing-your-github-user-account/managing-commit-email-addresses
+
+Voskamp099 <voskamp099@users.noreply.github.com> Raelynn <raelynn@users.noreply.github.com>
