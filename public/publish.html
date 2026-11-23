@@ -160,42 +160,75 @@
         document.querySelector('.tab[data-type="recruit"]').click();
       }
 
-      // 检查登录状态。nav-auth.js 已在 head 中同步加载，AuthState 此刻必然可用；
-      // 这里仍保留防御性判断，脚本缺失时退化为未登录而不是白屏。
-      var authState = window.AuthState;
-      if (!authState || typeof authState.isLoggedIn !== 'function' || !authState.isLoggedIn()) {
-        var dest = 'publish.html' + window.location.search;
-        window.location.href = LOGIN_PAGE + '?redirect=' + encodeURIComponent(dest);
-        return;
-      }
-
-      const tabs = document.querySelectorAll('.tab');
-      const forms = document.querySelectorAll('.form-section');
       const noticeEl = document.getElementById('notice');
 
-      // Tab 切换
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          const type = tab.dataset.type;
-          forms.forEach(f => {
-            f.classList.toggle('active', f.id === type + 'Form');
+      // 检查登录状态：区分"就绪且已登录" / "就绪且未登录" / "尚未就绪"三种状态。
+      // nav-auth.js 已在 head 中同步加载，AuthState 通常此刻就绪；
+      // 但不能把"尚未就绪"当成"未登录"——否则脚本慢一点加载，已登录用户也会被踢回登录页。
+      waitForAuthState(2000).then(function (authState) {
+        if (!authState) {
+          // 未就绪：无法断定用户是否登录，所以不跳转，只提示并停在这里
+          showNotice('error', '登录状态加载失败，请刷新页面重试。');
+          return;
+        }
+        if (!authState.isLoggedIn()) {
+          var dest = 'publish.html' + window.location.search;
+          window.location.href = LOGIN_PAGE + '?redirect=' + encodeURIComponent(dest);
+          return;
+        }
+        bindPublishUI();
+      });
+
+      // 有上限地等 AuthState 就绪（避免无限轮询）
+      function waitForAuthState(timeoutMs) {
+        if (window.AuthState && typeof window.AuthState.isLoggedIn === 'function') {
+          return Promise.resolve(window.AuthState);
+        }
+        return new Promise(function (resolve) {
+          var deadline = Date.now() + (timeoutMs || 2000);
+          (function poll() {
+            if (window.AuthState && typeof window.AuthState.isLoggedIn === 'function') {
+              resolve(window.AuthState);
+              return;
+            }
+            if (Date.now() >= deadline) {
+              resolve(null);
+              return;
+            }
+            setTimeout(poll, 50);
+          })();
+        });
+      }
+
+      // 表单只在确认已登录后才绑定
+      function bindPublishUI() {
+        const tabs = document.querySelectorAll('.tab');
+        const forms = document.querySelectorAll('.form-section');
+
+        // Tab 切换
+        tabs.forEach(tab => {
+          tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const type = tab.dataset.type;
+            forms.forEach(f => {
+              f.classList.toggle('active', f.id === type + 'Form');
+            });
           });
         });
-      });
 
-      // 提交活动
-      document.getElementById('eventForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await submit('event');
-      });
+        // 提交活动
+        document.getElementById('eventForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          await submit('event');
+        });
 
-      // 提交实习
-      document.getElementById('recruitForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await submit('recruit');
-      });
+        // 提交实习
+        document.getElementById('recruitForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          await submit('recruit');
+        });
+      }
 
       async function submit(type) {
         const btn = document.querySelector('.form-section.active .submit-btn');
