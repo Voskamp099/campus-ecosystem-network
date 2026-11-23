@@ -143,6 +143,7 @@ html {
 .hero-slide-title {
   margin: 0;
   font-family: var(--font-display);
+  font-weight: 700;
   font-size: 25px;
   line-height: 1.32;
   color: #ffffff;
