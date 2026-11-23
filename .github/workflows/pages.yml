@@ -53,7 +53,11 @@ jobs:
       - name: 上传站点产物
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          # public/assets/dist 是压缩产物，但没有任何页面引用它（目录里的文件是旧的
+          # 视觉代码），发布上去只会让静态站带上死文件。
+          path: |
+            public
+            !public/assets/dist
 
       - name: 发布
         id: deployment
