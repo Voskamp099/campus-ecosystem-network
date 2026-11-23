@@ -1,120 +1,125 @@
 /* ==========================================================================
    brand-layer.css — 品牌视觉层
    --------------------------------------------------------------------------
-   放在 design-tokens.css 之后、所有页面内联样式之前，负责把令牌落成"看得见的
-   品牌感"：页面光晕、渐变标题、质感按钮、分类色标签、渐变标识。
+   放在 design-tokens.css 之后，负责把令牌落成"看得见的品牌感"。
 
-   设计约束（来自个人笔记站的视觉家族）：
-     · 渐变只做装饰，不承载正文文字 —— 渐变上要放字的地方另配纯色
-     · 主色松石绿 #2f6f5e 承载白字（5.9:1），渐变品牌色只用于大字与图形
+   C′ 电光蓝的设计纪律（这一层就是纪律的守门人）：
+     · 没有玻璃拟态（不使用背景模糊）
+     · 没有发光阴影（没有带品牌色的彩色投影）
+     · 没有渐变装饰线、没有渐变标题
+     · 渐变只由 --gradient-brand 提供，且只给三处用：
+       主标题里的「连接」、主按钮、1500+ 这个数字
+     · 圆角一律 2px，块面靠 22px 对角切角（--chamfer）而不是大圆角
+
+   注意加载顺序：brand-layer.css 在 styles.css 之前，两者同时命中的属性
+   以 styles.css 为准，所以公共组件（.btn / .panel / body）在 styles.css
+   里也写成了同一套 C′ 形态，不会打架。
    ========================================================================== */
 
-/* ── 页面氛围：顶部三团弥散彩色光斑 ────────────────────────────── */
+/* ── 页面底：纯色，不加任何弥散光斑 ─────────────────────────────── */
 body {
   background-color: var(--color-bg);
-  background-image:
-    radial-gradient(ellipse 70% 46% at 18% -6%, rgba(91, 141, 239, 0.22), transparent 72%),
-    radial-gradient(ellipse 62% 42% at 86% 0%, rgba(240, 136, 92, 0.16), transparent 70%),
-    radial-gradient(ellipse 54% 40% at 52% -10%, rgba(154, 114, 224, 0.12), transparent 68%);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  background-image: none;
   color: var(--color-text-primary);
 }
 
-/* ── 导航标识：渐变方块 ──────────────────────────────────────────── */
-.nav-logo-badge,
-.nav-logo img,
-.logo-badge {
-  background-image: var(--gradient-brand);
-  background-size: 160% 160%;
-  border: 0;
-  box-shadow: var(--shadow-brand);
-}
-
-/* ── 标题：渐变文字（字号够大、对比度够高才用）───────────────────── */
-.hero-card-title,
-.hero-slide-title,
-.hero-card-kicker,
-.section-title,
-.brand-gradient-text {
-  background-image: var(--gradient-text);
-  background-size: 100% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-}
-
 /* ── 标题字形：几何感 display 字体（中文自动回落 Noto Sans SC）────── */
-.hero-card-title,
-.hero-slide-title,
-.section-title,
+/* font-synthesis:none 让中文标题用 Noto Sans SC 900 本身撑起几何重字，
+   而不是浏览器拿 800 去伪粗体。 */
 h1,
-h2 {
+h2,
+h3,
+.hero-title,
+.section-title {
   font-family: var(--font-display);
-  letter-spacing: -0.015em;
+  font-synthesis: none;
 }
 
-/* 等宽点缀：数字与代码用 IBM Plex Mono，与个人站一致 */
-code, kbd, pre, .mono {
+/* ── 等宽点缀：编号、眉题、标签 ─────────────────────────────────── */
+code,
+kbd,
+pre,
+.mono,
+.num,
+.eyebrow {
   font-family: var(--font-mono);
 }
 
-/* ── 主按钮：纯色承载白字 + 悬停微动 ───────────────────────────── */
+/* ── 主按钮：渐变实底 + 深色字（渐变三处之一）───────────────────── */
 .btn-primary,
 .btn.btn-primary {
-  background-image: none;
-  background-color: var(--color-brand-strong);
-  color: #ffffff;
+  background-image: var(--gradient-brand);
+  background-color: transparent;
+  color: #06121e;
   border-color: transparent;
-  box-shadow: var(--shadow-brand);
-  transition: transform 0.18s ease, box-shadow 0.24s ease, background-color 0.24s ease;
+  box-shadow: none;
+  transition: filter 0.2s ease;
 }
 
 .btn-primary:hover,
 .btn.btn-primary:hover {
-  background-color: var(--color-brand-deep);
-  transform: translateY(-1px);
-  box-shadow: 0 16px 36px -12px rgba(31, 58, 124, 0.7);
+  filter: brightness(1.1);
+  transform: none;
+  box-shadow: none;
 }
 
-/* 次要按钮：描边 + 轻微暖调，区别于主按钮 */
+/* ── 次要按钮：透明底 + hairline 描边 ───────────────────────────── */
 .btn-secondary,
-.btn.btn-secondary {
-  background-color: var(--color-surface);
+.btn.btn-secondary,
+.btn-ghost,
+.btn.btn-ghost {
+  background-color: transparent;
+  background-image: none;
   border-color: var(--color-border-strong);
   color: var(--color-text-primary);
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  box-shadow: none;
+  transition: border-color 0.2s ease;
 }
 
 .btn-secondary:hover,
-.btn.btn-secondary:hover {
-  border-color: var(--color-border-brand);
-  background-color: var(--color-brand-soft);
+.btn.btn-secondary:hover,
+.btn-ghost:hover,
+.btn.btn-ghost:hover {
+  border-color: rgba(239, 242, 247, 0.5);
+  background-color: transparent;
 }
 
-/* ── 金色按钮 → 改为暖色渐变（沿用旧的 .btn-gold 语义）──────────── */
+/* ── 金色按钮 → 历史名：纯色表面（admin.html 在用）─────────────────
+   渐变严格只给三处（标题「连接」、主按钮、1500+），这里的"导入数据"
+   不属于主按钮，所以不给渐变，用纯色表面 + hairline 描边。 */
 .btn-gold,
 .btn.btn-gold {
-  background-image: var(--gradient-warm);
-  background-color: transparent;
-  color: #2a1206;
-  border-color: transparent;
-  box-shadow: var(--shadow-accent);
+  background-image: none;
+  background-color: var(--color-surface-strong);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+  box-shadow: none;
 }
 
 .btn-gold:hover,
 .btn.btn-gold:hover {
-  filter: brightness(1.06);
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border-brand);
 }
 
-/* ── 标签 / 徽章：中性底 + 彩色描边，不再是灰扑扑一片 ───────────── */
+/* ── 危险按钮：实色，不用渐变 ───────────────────────────────────── */
+.btn-danger,
+.btn.btn-danger {
+  background-image: none;
+  background-color: var(--color-danger);
+  color: #1a0a08;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* ── 标签 / 徽章：中性底 + hairline 描边 ───────────────────────── */
 .tag,
 .pill,
 .badge {
   background-color: var(--color-surface);
   border-color: var(--color-border);
   color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
   transition: border-color 0.2s ease, color 0.2s ease;
 }
 
@@ -125,7 +130,7 @@ code, kbd, pre, .mono {
   color: var(--color-text-primary);
 }
 
-/* ── 分类色：给语义明确的区块用，各取一色 ───────────────────────── */
+/* ── 分类色：给语义明确的区块用，全部落在蓝—青区间内 ───────────── */
 .cat-campus {
   --cat-color: var(--color-cat-blue);
 }
@@ -160,44 +165,34 @@ code, kbd, pre, .mono {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 3px;
+  height: 2px;
   background: var(--cat-color, var(--color-brand));
 }
 
-/* ── 卡片：顶缘渐变 + 悬停抬升 ─────────────────────────────────── */
+/* ── 卡片：纯色表面 + 1px hairline 描边，边缘要硬 ─────────────────── */
 .lift-card,
-.hero-card,
 .content-card,
 .directory-card {
   position: relative;
-  overflow: hidden;
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.28s ease;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition: border-color 0.22s ease, background-color 0.22s ease;
 }
 
-.lift-card::after,
-.hero-card::after {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 2px;
-  background-image: var(--gradient-brand);
-  opacity: 0;
-  transition: opacity 0.26s ease;
+.lift-card:hover,
+.content-card:hover,
+.directory-card:hover {
+  border-color: var(--color-border-brand);
 }
 
-.lift-card:hover::after,
-.hero-card:hover::after {
-  opacity: 1;
-}
-
-/* ── 分隔线：品牌渐变细线，比纯白描边更有品牌感 ─────────────────── */
+/* ── 分隔线：实心 hairline，不用渐变 ───────────────────────────── */
 .brand-rule {
   height: 1px;
   border: 0;
-  background-image: linear-gradient(90deg, transparent, var(--color-brand-glow), transparent);
+  background: var(--color-border);
 }
 
-/* ── 链接与强调文字 ─────────────────────────────────────────────── */
+/* ── 链接 ───────────────────────────────────────────────────────── */
 a {
   transition: color 0.18s ease;
 }
@@ -206,7 +201,7 @@ a:hover {
   color: var(--color-brand);
 }
 
-/* ── 滚动条：跟着品牌走 ─────────────────────────────────────────── */
+/* ── 滚动条：纯色细条 ───────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -217,154 +212,30 @@ a:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-brand-strong);
-  border-radius: 999px;
+  background: #2a3244;
+  border-radius: 0;
   border: 2px solid var(--color-bg-deep);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-brand);
+  background: #3a465e;
 }
 
-/* ==========================================================================
-   排版强化
-   --------------------------------------------------------------------------
-   原首屏主标题只有 38px 上限、用的还是衬线体，在 1440px 屏上偏小偏"模板"。
-   这里把标题放大、换成几何 display 字体、收紧字距，并给章节和卡片
-   加上层次线索（装饰线、eyebrow、玻璃层、发光）。
-   ========================================================================== */
-
-/* ── 首屏主标题 ───────────────────────────────────────────────────── */
-.hero-title {
-  font-family: var(--font-display);
-  font-size: clamp(34px, 5.4vw, 72px) !important;
-  line-height: 1.04;
-  letter-spacing: -0.035em;
-  font-weight: 700;
-  margin: 18px 0 22px !important;
-  position: relative;
-}
-
-/* 第二行用渐变文字，配合下面的装饰线 */
-.hero-title .accent {
-  background-image: var(--gradient-text);
-  background-size: 100% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  padding-right: 0.08em;
-}
-
-/* 标题下方的渐变装饰线 */
-.hero-title::after {
-  content: "";
-  display: block;
-  width: 96px;
-  height: 3px;
-  margin-top: 22px;
-  border-radius: 999px;
-  background-image: var(--gradient-brand);
-}
-
-/* ── 首屏徽标：渐变描边胶囊 ───────────────────────────────────────── */
-.hero-badge {
-  background: rgba(91, 141, 239, 0.10) !important;
-  border-color: rgba(91, 141, 239, 0.34) !important;
-  color: var(--color-text-primary) !important;
-  padding: 9px 16px !important;
-  letter-spacing: 0.01em;
-}
-
-.hero-badge-dot {
-  background-image: var(--gradient-brand) !important;
-  box-shadow: 0 0 0 4px rgba(91, 141, 239, 0.16);
-}
-
-/* ── 首屏副标题 ───────────────────────────────────────────────────── */
-.hero-sub {
-  font-size: 19px !important;
-  line-height: 1.72;
-  max-width: 620px;
-  color: var(--color-text-secondary) !important;
-}
-
-/* ── 主按钮：渐变 + 发光 + 悬停位移 ───────────────────────────────── */
-.btn-primary {
-  background-image: var(--gradient-cool) !important;
-  background-color: transparent !important;
-  color: #ffffff !important;
-  box-shadow: 0 12px 30px -10px rgba(42, 79, 168, 0.75) !important;
-  padding: 14px 26px !important;
-  font-size: 15px !important;
-  letter-spacing: 0.02em;
-}
-
-.btn-primary:hover {
-  background-image: var(--gradient-brand) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 18px 40px -12px rgba(91, 141, 239, 0.85) !important;
-}
-
-/* ── 章节标题 ─────────────────────────────────────────────────────── */
-.section-title {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 3.6vw, 46px) !important;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-}
-
-/* 章节标题前的短标尺，给每个 section 一个统一的视觉起点 */
-.section-title::before {
-  content: "";
-  display: inline-block;
-  width: 26px;
-  height: 3px;
-  margin-right: 14px;
-  vertical-align: middle;
-  border-radius: 999px;
-  background-image: var(--gradient-brand);
-}
-
-/* ── 首屏右侧卡片：玻璃层 + 渐变顶边 ─────────────────────────────── */
-.hero-card {
-  background:
-    linear-gradient(180deg, rgba(190, 214, 255, 0.07), rgba(190, 214, 255, 0.02)),
-    rgba(10, 16, 32, 0.72) !important;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-color: rgba(160, 190, 255, 0.20) !important;
-  box-shadow: 0 30px 70px -28px rgba(2, 6, 18, 0.85) !important;
-}
-
-.hero-card::after {
-  opacity: 1 !important;
-  height: 3px;
-}
-
-/* 卡片里的 kicker 用小字 + 字距，像刊头 */
-.hero-card-kicker {
-  font-size: 11px !important;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-brand) !important;
-  font-weight: 500;
-}
-
-/* ── 合作伙伴滚动条 ───────────────────────────────────────────────── */
-.hero-marquee-label {
-  color: var(--color-text-tertiary) !important;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-size: 12px !important;
-}
-
-/* ── 数字与统计：等宽字体，像仪表盘 ───────────────────────────────── */
+/* ── 数字与统计：等宽字体 ───────────────────────────────────────── */
 .stat-value,
 .stat-number,
-.hero-stat strong {
+.countup {
   font-family: var(--font-mono);
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
+}
+
+/* ── 章节小标：等宽 + 字距，像刊头 ─────────────────────────────── */
+.section-tag,
+.hero-card-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-brand);
 }

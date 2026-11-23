@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>桌面版视觉预览 · 北京校园生态合作联盟</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:'DM Sans','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;-webkit-font-smoothing:antialiased}
+.switcher{position:fixed;top:0;left:0;right:0;height:48px;z-index:99;display:flex;align-items:center;justify-content:center;gap:10px;background:#0b0b0e;border-bottom:1px solid #24242a;color:#8b8b95;font-size:12px;letter-spacing:.04em}
+.switcher b{font-weight:600;color:#d8d8de;margin-right:8px}
+.switcher button{font: inherit;font-size:12px;padding:6px 14px;border:1px solid #33333c;background:transparent;color:#9b9ba5;border-radius:2px;cursor:pointer}
+.switcher button.on{background:#f0f0f5;color:#0b0b0e;border-color:#f0f0f5;font-weight:700}
+.preview{display:none;padding-top:48px}
+.preview.on{display:block}
+.wrap{max-width:1240px;margin:0 auto;padding:0 72px}
+
+/* ---------- A' 深蓝 ---------- */
+.a{--bg:#0A0E19;--surface:#121826;--text:#F2F4F8;--sub:#9AA6BC;--dim:#7C89A2;--accent:#3B7DFF;--line:rgba(242,244,248,.10);--line2:rgba(242,244,248,.06)}
+.a .nav{border-bottom-color:var(--line)}
+.a .btn-p{background:var(--accent);color:#fff}
+.a .btn-p:hover{background:#5B95FF}
+.a .btn-s{color:var(--text);border-color:rgba(255,255,255,.24)}
+.a .num,.a .eyebrow,.a .metric-num{color:var(--accent)}
+.a .metric{background:var(--surface);clip-path:none}
+.a .bandhead{background:var(--surface);clip-path:none}
+.a .grad{color:var(--text)}
+
+/* ---------- C' 电光蓝 ---------- */
+.c{--bg:#090B12;--surface:#111725;--text:#EFF2F7;--sub:#9BA6BA;--dim:#768199;--accent:#5B8CFF;--line:rgba(239,242,247,.10);--line2:rgba(239,242,247,.06)}
+.c .nav{border-bottom-color:var(--line)}
+.c .btn-p{background:linear-gradient(100deg,#4C7DFF 0%,#2DD4EA 100%);color:#06121E}
+.c .btn-p:hover{filter:brightness(1.1)}
+.c .btn-s{color:var(--text);border-color:rgba(255,255,255,.24)}
+.c .num,.c .eyebrow{color:var(--accent)}
+.c .metric{background:var(--surface);clip-path:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px)}
+.c .metric-num{background:linear-gradient(100deg,#4C7DFF 0%,#2DD4EA 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.c .bandhead{background:var(--surface);clip-path:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px)}
+.c .grad{background:linear-gradient(100deg,#4C7DFF 0%,#2DD4EA 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+/* ---------- 共用版式 ---------- */
+.surface{background:var(--bg);color:var(--text)}
+.nav{height:88px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid}
+.brand{display:flex;align-items:center;gap:12px;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.dot{width:10px;height:10px;display:inline-block;flex:0 0 auto}
+.a .dot{background:#3B7DFF}
+.c .dot{background:#4C7DFF;transform:skewX(-12deg)}
+.navlinks{display:flex;align-items:center;gap:34px;font-size:13px;color:var(--sub)}
+.navlinks span:first-child{color:var(--text);font-weight:600}
+.navlogin{font-size:13px;color:var(--text);border:1px solid var(--line);padding:9px 16px;border-radius:2px}
+
+.hero{padding:118px 0 0}
+.eyebrow{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin:0}
+h1.title{font-family:'Syne','Noto Sans SC','PingFang SC',sans-serif;font-weight:800;font-size:clamp(64px,7.4vw,104px);line-height:1.02;letter-spacing:-.045em;margin:26px 0 0}
+h1.title span{display:block}
+.sub{font-size:17px;line-height:1.85;color:var(--sub);max-width:660px;margin:34px 0 0}
+.actions{display:flex;gap:14px;margin:46px 0 0}
+.btn{font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.02em;padding:16px 28px;border-radius:2px;border:1px solid transparent;cursor:pointer;white-space:nowrap}
+.btn-s{background:transparent}
+.btn-s:hover{border-color:rgba(255,255,255,.5)}
+
+.metric{margin:104px 0 0;padding:44px 56px;display:flex;align-items:center;gap:56px}
+.metric-num{font-family:'Syne','Noto Sans SC',sans-serif;font-weight:800;font-size:88px;line-height:1;letter-spacing:-.05em}
+.metric-rule{width:1px;height:72px;background:var(--line)}
+.metric-txt h3{font-size:18px;font-weight:700;margin:0 0 8px}
+.metric-txt p{font-size:14px;color:var(--sub);line-height:1.7;margin:0;max-width:480px}
+
+.section{margin:150px 0 0}
+.bandhead{padding:48px 56px;margin:0 0 12px}
+.bandhead h2{font-family:'Syne','Noto Sans SC',sans-serif;font-weight:800;font-size:46px;line-height:1.08;letter-spacing:-.04em;margin:20px 0 0}
+.bandhead h2 span{display:block}
+.lead{font-size:15px;color:var(--sub);line-height:1.75;margin:22px 0 0;max-width:600px}
+.row{display:grid;grid-template-columns:88px 260px 1fr;align-items:baseline;gap:16px;padding:34px 0;border-bottom:1px solid var(--line)}
+.row:first-child{border-top:1px solid var(--line)}
+.num{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:14px}
+.rname{font-family:'Syne','Noto Sans SC',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em;margin:0}
+.desc{font-size:15px;color:var(--sub);line-height:1.75;margin:0}
+
+.cta{margin:150px 0 0;padding:92px 0 110px;border-top:1px solid var(--line)}
+.cta h2{font-family:'Syne','Noto Sans SC',sans-serif;font-weight:800;font-size:58px;line-height:1.1;letter-spacing:-.04em;margin:24px 0 0}
+.cta h2 span{display:block}
+.cta p{font-size:15px;color:var(--sub);margin:22px 0 34px;line-height:1.75}
+footer{padding:34px 0 60px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
+.note{max-width:1240px;margin:0 auto;padding:0 72px 70px;color:#7d7d88;font-size:12px;line-height:1.8}
+</style>
+</head>
+<body>
+
+<div class="switcher">
+  <b>桌面版预览</b>
+  <button class="on" onclick="sw('a')">A′ 深蓝 · 单一强调色</button>
+  <button onclick="sw('c')">C′ 电光蓝 · 三处渐变</button>
+</div>
+
+<!-- ============ A' ============ -->
+<div class="preview on surface a" id="pa">
+  <div class="wrap">
+    <nav class="nav">
+      <div class="brand"><span class="dot"></span>北京校园生态合作联盟</div>
+      <div class="navlinks"><span>资源分类</span><span>合作伙伴</span><span>生态对接名录</span><span>实习实践</span><span>近期活动</span></div>
+      <div class="navlogin">登录 / 注册</div>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">北京地区校园生态合作平台</p>
+      <h1 class="title"><span>让校园生态</span><span>真正<span class="grad">连接</span></span><span>起来。</span></h1>
+      <p class="sub">从“看起来很热闹”变成“真的能落地”——把高校、企业与政府放进同一个能真正对接的协作网络。</p>
+      <div class="actions">
+        <button class="btn btn-p">注册加入联盟 →</button>
+        <button class="btn btn-s">浏览资源分类</button>
+      </div>
+    </header>
+
+    <div class="metric">
+      <div class="metric-num">1500+</div>
+      <div class="metric-rule"></div>
+      <div class="metric-txt"><h3>活跃成员</h3><p>学生、企业伙伴与公共机构在同一个网络里真实对接，而不是只停留在名录上。</p></div>
+    </div>
+
+    <section class="section">
+      <div class="bandhead">
+        <p class="eyebrow">ECOSYSTEM / 生态角色</p>
+        <h2><span>五类角色，</span><span>一个网络。</span></h2>
+        <p class="lead">每条信息只说一件事——从资源到落地，联盟把生态拆成五个可对接的角色。</p>
+      </div>
+      <div class="row"><span class="num">01</span><h3 class="rname">校园</h3><p class="desc">高校开放场地、设备与学生团队，对接真实项目需求。</p></div>
+      <div class="row"><span class="num">02</span><h3 class="rname">企业</h3><p class="desc">企业发布真实需求与岗位，找到可落地的校园合作。</p></div>
+      <div class="row"><span class="num">03</span><h3 class="rname">政府</h3><p class="desc">政府提供政策与场景，推动区域生态协同运转。</p></div>
+      <div class="row"><span class="num">04</span><h3 class="rname">招募</h3><p class="desc">招募信息精准触达校园人才，缩短筛选与匹配周期。</p></div>
+      <div class="row"><span class="num">05</span><h3 class="rname">实践</h3><p class="desc">把合作变成可交付的成果，沉淀可复用的经验。</p></div>
+    </section>
+
+    <section class="section">
+      <div class="bandhead">
+        <p class="eyebrow">CATEGORIES / 生态版图</p>
+        <h2><span>五大分类，</span><span>一个联盟。</span></h2>
+      </div>
+      <div class="row"><span class="num">01</span><h3 class="rname">校园资源</h3><p class="desc">开放场地、实验室与学生团队，让校园能力被看见、被调用。</p></div>
+      <div class="row"><span class="num">02</span><h3 class="rname">企业伙伴</h3><p class="desc">真实需求与产业资源进场，与校园形成可交付的合作。</p></div>
+      <div class="row"><span class="num">03</span><h3 class="rname">政府协同</h3><p class="desc">政策、场景与公共力量联动，推动区域生态成规模运转。</p></div>
+      <div class="row"><span class="num">04</span><h3 class="rname">招募对接</h3><p class="desc">岗位与人才精准匹配，把招聘周期压缩到真正高效。</p></div>
+      <div class="row"><span class="num">05</span><h3 class="rname">实践落地</h3><p class="desc">从一次次合作中沉淀方法，让成果可复制、可延续。</p></div>
+    </section>
+
+    <section class="cta">
+      <p class="eyebrow">JOIN US / 注册加入联盟</p>
+      <h2><span>合作从这里开始。</span><span>三步，进入网络。</span></h2>
+      <p>注册账号 → 完善个人资料 → 开始对接资源</p>
+      <div class="actions"><button class="btn btn-p">立即注册 →</button><button class="btn btn-s">了解合作方式</button></div>
+    </section>
+
+    <footer><span>© 2026 北京校园生态合作联盟</span><span>隐私政策 · 服务条款 · 企业微信</span></footer>
+  </div>
+</div>
+
+<!-- ============ C' ============ -->
+<div class="preview surface c" id="pc">
+  <div class="wrap">
+    <nav class="nav">
+      <div class="brand"><span class="dot"></span>北京校园生态合作联盟</div>
+      <div class="navlinks"><span>资源分类</span><span>合作伙伴</span><span>生态对接名录</span><span>实习实践</span><span>近期活动</span></div>
+      <div class="navlogin">登录 / 注册</div>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">北京地区校园生态合作平台</p>
+      <h1 class="title"><span>让校园生态</span><span>真正<span class="grad">连接</span></span><span>起来。</span></h1>
+      <p class="sub">从“看起来很热闹”变成“真的能落地”——把高校、企业与政府放进同一个能真正对接的协作网络。</p>
+      <div class="actions">
+        <button class="btn btn-p">注册加入联盟 →</button>
+        <button class="btn btn-s">浏览资源分类</button>
+      </div>
+    </header>
+
+    <div class="metric">
+      <div class="metric-num">1500+</div>
+      <div class="metric-rule"></div>
+      <div class="metric-txt"><h3>活跃成员</h3><p>学生、企业伙伴与公共机构在同一个网络里真实对接，而不是只停留在名录上。</p></div>
+    </div>
+
+    <section class="section">
+      <div class="bandhead">
+        <p class="eyebrow">ECOSYSTEM / 生态角色</p>
+        <h2><span>五类角色，</span><span>一个网络。</span></h2>
+        <p class="lead">每条信息只说一件事——从资源到落地，联盟把生态拆成五个可对接的角色。</p>
+      </div>
+      <div class="row"><span class="num">01</span><h3 class="rname">校园</h3><p class="desc">高校开放场地、设备与学生团队，对接真实项目需求。</p></div>
+      <div class="row"><span class="num">02</span><h3 class="rname">企业</h3><p class="desc">企业发布真实需求与岗位，找到可落地的校园合作。</p></div>
+      <div class="row"><span class="num">03</span><h3 class="rname">政府</h3><p class="desc">政府提供政策与场景，推动区域生态协同运转。</p></div>
+      <div class="row"><span class="num">04</span><h3 class="rname">招募</h3><p class="desc">招募信息精准触达校园人才，缩短筛选与匹配周期。</p></div>
+      <div class="row"><span class="num">05</span><h3 class="rname">实践</h3><p class="desc">把合作变成可交付的成果，沉淀可复用的经验。</p></div>
+    </section>
+
+    <section class="section">
+      <div class="bandhead">
+        <p class="eyebrow">CATEGORIES / 生态版图</p>
+        <h2><span>五大分类，</span><span>一个联盟。</span></h2>
+      </div>
+      <div class="row"><span class="num">01</span><h3 class="rname">校园资源</h3><p class="desc">开放场地、实验室与学生团队，让校园能力被看见、被调用。</p></div>
+      <div class="row"><span class="num">02</span><h3 class="rname">企业伙伴</h3><p class="desc">真实需求与产业资源进场，与校园形成可交付的合作。</p></div>
+      <div class="row"><span class="num">03</span><h3 class="rname">政府协同</h3><p class="desc">政策、场景与公共力量联动，推动区域生态成规模运转。</p></div>
+      <div class="row"><span class="num">04</span><h3 class="rname">招募对接</h3><p class="desc">岗位与人才精准匹配，把招聘周期压缩到真正高效。</p></div>
+      <div class="row"><span class="num">05</span><h3 class="rname">实践落地</h3><p class="desc">从一次次合作中沉淀方法，让成果可复制、可延续。</p></div>
+    </section>
+
+    <section class="cta">
+      <p class="eyebrow">JOIN US / 注册加入联盟</p>
+      <h2><span>合作从这里开始。</span><span>三步，进入网络。</span></h2>
+      <p>注册账号 → 完善个人资料 → 开始对接资源</p>
+      <div class="actions"><button class="btn btn-p">立即注册 →</button><button class="btn btn-s">了解合作方式</button></div>
+    </section>
+
+    <footer><span>© 2026 北京校园生态合作联盟</span><span>隐私政策 · 服务条款 · 企业微信</span></footer>
+  </div>
+</div>
+
+<div class="note">这是独立的视觉预览文件，与正在开发中的网页完全隔离。顶部按钮切换 A′ / C′ 两套配色，DOM 结构与文案一致，只改颜色。</div>
+
+<script>
+function sw(k){
+  document.getElementById('pa').className = 'preview surface a' + (k==='a'?' on':'');
+  document.getElementById('pc').className = 'preview surface c' + (k==='c'?' on':'');
+  var bs=document.querySelectorAll('.switcher button');
+  bs[0].classList.toggle('on',k==='a');
+  bs[1].classList.toggle('on',k==='c');
+}
+</script>
+</body>
+</html>

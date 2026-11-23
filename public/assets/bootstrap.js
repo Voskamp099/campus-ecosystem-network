@@ -54,7 +54,11 @@
 
       var fontLink = document.createElement("link");
       fontLink.rel = "stylesheet";
-      fontLink.href = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700;900&display=swap";
+      // C′ 电光蓝字体三件套：Syne（Display 几何体）/ DM Sans（正文）/
+      // JetBrains Mono（编号·眉题·标签）。Noto Sans SC 补中文，900 用来撑
+      // 中文 Display 的几何重字（配合 font-synthesis:none，避免伪粗体）。
+      // 衬线体与上一版的展示字体已整站移除。
+      fontLink.href = "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700;900&display=swap";
       document.head.appendChild(fontLink);
     }
 
