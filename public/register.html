@@ -39,7 +39,6 @@
       border: 1px solid var(--line);
       border-radius: 20px;
       padding: 40px 32px;
-      backdrop-filter: blur(8px);
     }
     .auth-header {
       text-align: center;
@@ -333,7 +332,7 @@
 
   <!-- 法律条款弹窗（内联显示，不跳转新页面） -->
   <style>
-    .legal-modal-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(4, 10, 19, 0.78); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: 0.2s ease; z-index: 300; }
+    .legal-modal-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(4, 8, 16, 0.92); opacity: 0; pointer-events: none; transition: 0.2s ease; z-index: 300; }
     .legal-modal-overlay.open { opacity: 1; pointer-events: auto; }
     .legal-modal-box { width: min(720px, 94vw); max-height: 92vh; display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: linear-gradient(180deg, rgba(18, 28, 51, 0.98), rgba(8, 22, 37, 0.98)); border: 1px solid rgba(160, 190, 255, 0.18); }
     .legal-modal-close { width: 36px; height: 36px; border-radius: 12px; border: 1px solid rgba(160, 190, 255, 0.18); background: rgba(255, 255, 255, 0.06); color: #fff; font-size: 20px; cursor: pointer; line-height: 1; }
@@ -353,7 +352,7 @@
       // 运行形态：file:// 与"探测不到后端"（GitHub Pages 静态托管）都属于离线演示模式。
       // 原来只看协议，静态托管下会把注册请求打到站点根目录的 /api → 404。
       let IS_FILE_MODE = window.location.protocol === 'file:';
-      let API_BASE = IS_FILE_MODE ? 'http://localhost:3000/api' : 'api/';
+      let API_BASE = 'api';
       const MY_PAGE = 'my.html';
       let csrfToken = '';
 

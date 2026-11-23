@@ -46,9 +46,8 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 24px;
-      background: rgba(7, 20, 37, 0.92);
+      background: var(--color-surface-strong);
       border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(12px);
       z-index: 100;
     }
     .topbar-left {
@@ -421,12 +420,11 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(4, 8, 16, 0.92);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 300;
-      backdrop-filter: blur(4px);
     }
     .modal-content {
       background: var(--panel);
@@ -776,6 +774,19 @@
         if (adminMenuItemLink) adminMenuItemLink.href = "admin.html";
       }
 
+      // 运行形态：file:// 与"探测不到后端"（静态托管）都没有 /api 路由，
+      // 统一走 AllianceRuntime 判定，接口前缀也由它给出（子路径部署下相对路径才对）。
+      function apiBase() {
+        if (window.AllianceRuntime) return window.AllianceRuntime.apiBase() || 'api';
+        return 'api';
+      }
+
+      async function isOfflineMode() {
+        if (!window.AllianceRuntime) return window.location.protocol === "file:";
+        await window.AllianceRuntime.whenReady();
+        return window.AllianceRuntime.isOffline();
+      }
+
       function esc(value) {
         return String(value || "")
           .replace(/&/g, "&amp;")
@@ -929,7 +940,7 @@
           avatarInput.click();
         });
 
-        avatarInput.addEventListener("change", function(e) {
+        avatarInput.addEventListener("change", async function(e) {
           var file = e.target.files[0];
           if (!file) return;
 
@@ -958,7 +969,7 @@
           formData.append("avatar", file);
 
           // 演示/静态托管模式没有后端：头像只保存在本机
-          if (window.AllianceRuntime && window.AllianceRuntime.isOffline()) {
+          if (await isOfflineMode()) {
             var localUser = JSON.parse(localStorage.getItem("alliance_user") || "{}");
             localUser.avatar_url = reader.result;
             localStorage.setItem("alliance_user", JSON.stringify(localUser));
@@ -967,7 +978,7 @@
           }
 
           var token = localStorage.getItem("alliance_token");
-          fetch("/api/user/avatar", {
+          fetch(apiBase() + "/user/avatar", {
             method: "POST",
             headers: {
               "Authorization": "Bearer " + token
@@ -1042,7 +1053,7 @@
 
         // 提交表单
         if (editProfileForm) {
-          editProfileForm.addEventListener("submit", function(e) {
+          editProfileForm.addEventListener("submit", async function(e) {
             e.preventDefault();
 
             var formData = new FormData(editProfileForm);
@@ -1057,7 +1068,7 @@
             var token = localStorage.getItem("alliance_token");
 
             // 演示/静态托管模式没有后端：资料只保存在本机
-            if (window.AllianceRuntime && window.AllianceRuntime.isOffline()) {
+            if (await isOfflineMode()) {
               var localProfileUser = JSON.parse(localStorage.getItem("alliance_user") || "{}");
               Object.assign(localProfileUser, data);
               localStorage.setItem("alliance_user", JSON.stringify(localProfileUser));
@@ -1069,7 +1080,7 @@
               return;
             }
 
-            fetch("/api/user/profile", {
+            fetch(apiBase() + "/user/profile", {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",

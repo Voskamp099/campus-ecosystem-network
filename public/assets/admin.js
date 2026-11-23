@@ -224,19 +224,24 @@ const IS_FILE_PROTOCOL = window.location.protocol === "file:";
 // “离线模式”= 没有可用后端。除了 file:// 协议，静态托管（GitHub Pages）下同样没有
 // /api 路由，也必须走 localStorage 分支，否则后台页会一直停在未授权状态。
 let IS_FILE_MODE = IS_FILE_PROTOCOL;
-// 离线（file://）模式下的演示管理员账号：用户名与线上 .env 的 ADMIN_USERNAME 保持一致（admin）。
-// 密码不写死在代码里：首次使用时由使用者在这台电脑上设定，只保存在浏览器 localStorage。
-// 线上 server 模式以 .env 中的 ADMIN_PASSWORD 为准。
+// 离线（file:// 或静态托管）模式下的演示管理员账号。
+// 固定演示密码开箱即用，与登录页共用同一份凭据（见 runtime-mode.js 的 AllianceRuntime.DEMO）。
+// 只在探测不到后端时生效，绝不会影响真实后端的登录——线上以 .env 的 ADMIN_PASSWORD 为准。
 const LOCAL_ADMIN_USERNAME = "admin";
 const LOCAL_PASSWORD_KEY = "alliance_local_admin_password";
-function localAdminPassword() {
-  let pwd = localStorage.getItem(LOCAL_PASSWORD_KEY);
-  if (!pwd) {
-    pwd = window.prompt("本地演示模式：请为这台电脑设置一个本地管理员密码（仅保存在此浏览器，不会上传）");
-    if (!pwd) return null;
-    localStorage.setItem(LOCAL_PASSWORD_KEY, pwd);
+function demoAdminPassword() {
+  return (window.AllianceRuntime && window.AllianceRuntime.DEMO && window.AllianceRuntime.DEMO.password) || "demo2026";
+}
+// 固定演示密码始终有效；使用者自设的本地密码作为次要选项继续有效。
+function localAdminPasswordOk(input) {
+  if (!input) return false;
+  if (input === demoAdminPassword()) return true;
+  try {
+    const saved = localStorage.getItem(LOCAL_PASSWORD_KEY);
+    return !!saved && input === saved;
+  } catch (error) {
+    return false;
   }
-  return pwd;
 }
 const LOCAL_TOKEN_KEY = "alliance_admin_token";
 
@@ -318,9 +323,9 @@ function applyModeUI() {
     modeBadge.textContent = "本地模式 · 浏览器存储";
     modeBadge.classList.add("local");
     modeBadge.classList.remove("live");
-    modeNotice.innerHTML = "<strong>当前是本地模式。</strong> 你的修改会保存在当前浏览器 localStorage，不会同步到服务器。管理员账号为 <code>admin</code>，密码是这台电脑上设定的本地密码。";
+    modeNotice.innerHTML = "<strong>当前是本地模式。</strong> 你的修改会保存在当前浏览器 localStorage，不会同步到服务器。管理员账号为 <code>admin</code>，密码为固定的演示密码 <code>" + demoAdminPassword() + "</code>（公开可见，只在探测不到后端时生效）。";
     loginUsername.placeholder = "本地模式默认账号：admin";
-    loginPassword.placeholder = "本地模式密码（首次使用时会让你设置）";
+    loginPassword.placeholder = "演示密码：" + demoAdminPassword();
     return;
   }
 
@@ -435,8 +440,7 @@ async function localApi(path, options = {}) {
 
   if (path === "/api/admin/auth/login" && method === "POST") {
     const body = parseBody();
-    const localPassword = localAdminPassword();
-    if (body.username === LOCAL_ADMIN_USERNAME && body.password && body.password === localPassword) {
+    if (body.username === LOCAL_ADMIN_USERNAME && localAdminPasswordOk(body.password)) {
       return {
         token: "local-admin-token",
         admin: { username: LOCAL_ADMIN_USERNAME }
@@ -681,7 +685,6 @@ function parseJwt(token) {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) {
-      console.log('[Admin] parseJwt: invalid format, parts=', parts.length, token.substring(0, 50));
       return null;
     }
     const base64Url = parts[1];
@@ -692,7 +695,6 @@ function parseJwt(token) {
     }).join(''));
     return JSON.parse(jsonPayload);
   } catch (e) {
-    console.log('[Admin] parseJwt error:', e.message, 'token start:', token.substring(0, 30));
     return null;
   }
 }
@@ -700,14 +702,11 @@ function parseJwt(token) {
 // 检查是否是管理员（从 alliance_token）
 function checkAllianceAdminToken() {
   const token = localStorage.getItem('alliance_token');
-  console.log('[Admin] Checking alliance_token:', token ? 'exists' : 'not found');
-  console.log('[Admin] Raw token:', token); // 打印原始token
   if (!token) return null;
   if (IS_FILE_MODE && token === "local-admin-token") {
     try {
       const localUser = JSON.parse(localStorage.getItem("alliance_user") || "null");
       if (localUser && localUser.isAdmin) {
-        console.log('[Admin] Local admin session verified');
         return {
           token,
           payload: {
@@ -717,17 +716,12 @@ function checkAllianceAdminToken() {
           }
         };
       }
-    } catch (error) {
-      console.log('[Admin] Local admin session parse error:', error.message);
-    }
+    } catch (error) {}
   }
   const payload = parseJwt(token);
-  console.log('[Admin] JWT payload:', payload);
   if (payload && payload.role === 'admin') {
-    console.log('[Admin] Admin token verified');
     return { token, payload };
   }
-  console.log('[Admin] Not admin role:', payload ? payload.role : 'null');
   return null;
 }
 

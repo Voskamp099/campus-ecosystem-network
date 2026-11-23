@@ -39,7 +39,6 @@
       border: 1px solid var(--line);
       border-radius: 20px;
       padding: 40px 32px;
-      backdrop-filter: blur(8px);
     }
     .auth-header {
       text-align: center;
@@ -275,15 +274,15 @@
       <div class="demo-hint" id="demoHint" hidden>
         <strong>当前为演示模式（未检测到后端服务）</strong>
         <div class="demo-accounts">
-          <button type="button" class="demo-chip" data-email="gly" data-pwd="demo2026">
+          <button type="button" class="demo-chip" data-demo="admin">
             <span class="demo-role">管理员</span>
-            <span class="demo-id">gly</span>
-            <span class="demo-pwd">demo2026</span>
+            <span class="demo-id" data-demo-id>gly</span>
+            <span class="demo-pwd" data-demo-pwd></span>
           </button>
-          <button type="button" class="demo-chip" data-email="test@alliance.local" data-pwd="demo2026">
+          <button type="button" class="demo-chip" data-demo="user">
             <span class="demo-role">普通用户</span>
-            <span class="demo-id">test@alliance.local</span>
-            <span class="demo-pwd">demo2026</span>
+            <span class="demo-id" data-demo-id>test@alliance.local</span>
+            <span class="demo-pwd" data-demo-pwd></span>
           </button>
         </div>
         <p class="demo-note">点击任一账号自动填入。这些是公开的演示凭据，只在本地或静态托管下生效，不会影响正式服务。</p>
@@ -345,21 +344,17 @@
       }
       const REGISTER_PAGE = 'register.html';
       const FORGOT_PASSWORD_PAGE = 'forgot-password.html';
-      // 本地演示账号的密码不再写死在代码里：首次使用时由使用者在自己的电脑上设定，
-      // 只保存在本浏览器的 localStorage，不会提交到任何服务器。
+      // 演示凭据统一放在 runtime-mode.js 里，登录页与后台页共用一份，避免两处漂移。
+      const DEMO = (window.AllianceRuntime && window.AllianceRuntime.DEMO) || {
+        password: 'demo2026',
+        admin: { email: 'gly', nickname: 'gly', isAdmin: true },
+        user: { email: 'test@alliance.local', nickname: '测试用户', isAdmin: false }
+      };
+      const DEMO_PASSWORD = DEMO.password;
+      // 使用者自设的本地密码仍然有效（次要选项）：只读 localStorage，不弹窗。
       const LOCAL_PASSWORD_KEY = 'alliance_local_demo_password';
-      function localDemoPassword() {
-        let pwd = localStorage.getItem(LOCAL_PASSWORD_KEY);
-        if (!pwd) {
-          pwd = window.prompt('本地演示模式：请为这台电脑设置一个本地密码（仅保存在此浏览器，不会上传）');
-          if (!pwd) return null;
-          localStorage.setItem(LOCAL_PASSWORD_KEY, pwd);
-        }
-        return pwd;
-      }
 
       // 演示密码校验：固定演示密码开箱即用；使用者自设的本地密码同样有效。
-      // 这里只读 localStorage，不触发 prompt，避免每次登录都弹窗。
       function demoPasswordOk(input) {
         if (!input) return false;
         if (input === DEMO_PASSWORD) return true;
@@ -373,16 +368,15 @@
       // 演示账号：仅在"探测不到后端"的离线演示模式下生效，绝不会影响真实后端的登录。
       // 密码公开可见是有意为之——静态演示站没有服务端，这个凭据不具备任何真实权限；
       // 同时邮箱一律使用保留域名 .local，避免与真实账号撞车。
-      const DEMO_PASSWORD = 'demo2026';
       const LOCAL_TEST_ACCOUNT = {
-        email: 'test@alliance.local',
+        email: DEMO.user.email,
         password: null,
         user: {
           id: 10001,
           userId: 10001,
-          email: 'test@alliance.local',
-          nickname: '测试用户',
-          real_name: '测试用户',
+          email: DEMO.user.email,
+          nickname: DEMO.user.nickname,
+          real_name: DEMO.user.nickname,
           org_name: '北京校园生态合作联盟',
           org_role: '测试账号',
           isAdmin: false,
@@ -390,13 +384,13 @@
         }
       };
       const LOCAL_SUPER_ADMIN = {
-        email: 'gly',
+        email: DEMO.admin.email,
         password: null,
         user: {
           id: 90001,
           userId: 90001,
-          email: 'gly@alliance.local',
-          nickname: 'gly',
+          email: DEMO.admin.email + '@alliance.local',
+          nickname: DEMO.admin.nickname,
           real_name: '超级管理员',
           org_name: '北京校园生态合作联盟',
           org_role: '超级管理员',
@@ -419,14 +413,23 @@
         return csrfToken;
       }
       
-      // 检查是否已登录
-      const token = localStorage.getItem('alliance_token');
-      if (token) {
-        if (IS_FILE_MODE) {
-          window.location.href = MY_PAGE;
+      // 检查是否已登录。
+      // 必须等运行形态判定完成：静态托管下没有 /api，若不先判定就会把请求打到
+      // 站点根目录的 /api → 404 → 误判 token 失效 → 把演示登录态清掉。
+      ensureMode().then(function (offline) {
+        const token = localStorage.getItem('alliance_token');
+        if (!token) return;
+
+        if (offline) {
+          // 离线演示模式：本地 token 直接有效，跳到用户中心（管理员进后台）
+          const rawUser = localStorage.getItem('alliance_user');
+          let user = null;
+          try { user = rawUser ? JSON.parse(rawUser) : null; } catch (e) {}
+          window.location.href = (user && user.isAdmin) ? ADMIN_PAGE : MY_PAGE;
           return;
         }
-        // 验证 token 是否有效
+
+        // 有后端：验证 token 是否有效
         fetch(`${API_BASE}/auth/me`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
@@ -442,15 +445,20 @@
           localStorage.removeItem('alliance_token');
           localStorage.removeItem('alliance_user');
         });
-      }
+      });
 
       // 演示模式提示：探测不到后端时展示可一键填入的演示账号
       const demoHint = document.getElementById('demoHint');
       if (demoHint) {
+        // 演示凭据来自 runtime-mode.js 的共享常量，页面上的文案与实际校验始终一致。
         demoHint.querySelectorAll('.demo-chip').forEach(function (chip) {
+          var kind = chip.getAttribute('data-demo');
+          var account = kind === 'admin' ? DEMO.admin : DEMO.user;
+          chip.querySelectorAll('[data-demo-id]').forEach(function (el) { el.textContent = account.email; });
+          chip.querySelectorAll('[data-demo-pwd]').forEach(function (el) { el.textContent = DEMO_PASSWORD; });
           chip.addEventListener('click', function () {
-            document.getElementById('email').value = chip.getAttribute('data-email') || '';
-            document.getElementById('password').value = chip.getAttribute('data-pwd') || '';
+            document.getElementById('email').value = account.email;
+            document.getElementById('password').value = DEMO_PASSWORD;
             document.getElementById('email').classList.remove('input-error');
             document.getElementById('password').classList.remove('input-error');
             document.getElementById('emailError').classList.remove('show');

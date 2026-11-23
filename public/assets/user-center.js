@@ -5,7 +5,8 @@
   'use strict';
 
   var IS_FILE_MODE = window.location.protocol === 'file:';
-  var API_BASE = IS_FILE_MODE ? 'http://localhost:3000' : '';
+  // API 前缀：有后端时由 runtime-mode 探测得出（相对路径优先），离线时为空。
+  var API_BASE = '';
   // 静态托管（GitHub Pages）用的是 https，但并没有 /api 路由。
   // 只按协议判断会把它当成"有后端"，于是每个请求都打到站点根目录的 /api → 全部 404。
   // 因此统一用 AllianceRuntime 探测：探测不到后端即视为离线，走本地分支。
@@ -13,7 +14,7 @@
     if (window.AllianceRuntime && typeof window.AllianceRuntime.whenReady === 'function') {
       await window.AllianceRuntime.whenReady();
       IS_FILE_MODE = window.AllianceRuntime.isOffline();
-      if (!IS_FILE_MODE) API_BASE = '';
+      if (!IS_FILE_MODE) API_BASE = window.AllianceRuntime.apiBase();
     }
     return IS_FILE_MODE;
   }
@@ -30,12 +31,6 @@
     await resolveMode();
     await waitForAuthState();
     
-    // 调试日志
-    console.log('[UserCenter] AuthState:', window.AuthState);
-    console.log('[UserCenter] isLoggedIn:', window.AuthState?.isLoggedIn?.());
-    console.log('[UserCenter] isAdmin:', window.AuthState?.isAdmin?.());
-    console.log('[UserCenter] getUser:', window.AuthState?.getUser?.());
-
     if (!window.AuthState || !window.AuthState.isLoggedIn()) {
       document.getElementById('loginWall').classList.add('show');
       return;
@@ -48,15 +43,9 @@
     // 显示管理员入口（支持 isAdmin() 方法或 user.isAdmin 属性）
     var isAdminUser = (window.AuthState && window.AuthState.isAdmin && window.AuthState.isAdmin()) || 
                       (user && user.isAdmin === true);
-    console.log('[UserCenter] isAdmin check:', { method: window.AuthState?.isAdmin?.(), property: user?.isAdmin, result: isAdminUser });
     if (isAdminUser) {
       var adminLink = document.getElementById('adminMenuItem');
-      if (adminLink) {
-        adminLink.style.display = 'flex';
-        console.log('[UserCenter] admin link shown');
-      } else {
-        console.log('[UserCenter] adminMenuItem element not found!');
-      }
+      if (adminLink) adminLink.style.display = 'flex';
     }
     bindLogout();
 
@@ -152,6 +141,7 @@
     return res.json();
   }
 
+
   function readLocalJson(key, fallback) {
     try {
       var raw = localStorage.getItem(key);
@@ -200,7 +190,7 @@
       return;
     }
     try {
-      var data = await apiFetch('/api/user-center/applications?userId=' + uid());
+      var data = await apiFetch('/user-center/applications?userId=' + uid());
       if (!data) return;
       var list = data.applications || [];
       el.innerHTML = list.length
@@ -220,7 +210,7 @@
       return;
     }
     try {
-      var data = await apiFetch('/api/user-center/registrations?userId=' + uid());
+      var data = await apiFetch('/user-center/registrations?userId=' + uid());
       if (!data) return;
       var list = data.registrations || [];
       el.innerHTML = list.length
@@ -240,7 +230,7 @@
       return;
     }
     try {
-      var data = await apiFetch('/api/user-center/deliveries?userId=' + uid());
+      var data = await apiFetch('/user-center/deliveries?userId=' + uid());
       if (!data) return;
       var list = data.deliveries || [];
       el.innerHTML = list.length
@@ -261,8 +251,8 @@
     }
     try {
       var [evRes, recRes] = await Promise.all([
-        apiFetch('/api/my/events'),
-        apiFetch('/api/my/recruits')
+        apiFetch('/my/events'),
+        apiFetch('/my/recruits')
       ]);
       var events = (evRes && evRes.items) || [];
       var recruits = (recRes && recRes.items) || [];

@@ -107,11 +107,13 @@
 
   /**
    * 同步判断是否处于离线/演示模式。
-   * 探测尚未完成时按"离线"处理：宁可少发一次请求，也不要打到不存在的 API 上。
+   * 探测尚未完成时按"有后端"处理：此时只是还不知道，不能就此断定没有后端。
+   * 否则线上后端冷启动时会被误判成演示模式，登录、发布、后台全部降级到本地存储。
+   * 需要确定答案的调用方应先 await whenReady()。
    */
   function isOffline() {
     if (IS_FILE_PROTOCOL) return true;
-    if (!state.ready) return true;
+    if (!state.ready) return false;
     return !state.hasBackend;
   }
 
@@ -130,12 +132,23 @@
     return state.hasBackend ? "server" : "static";
   }
 
+  /* ====== 演示凭据 ====== */
+  // 只在"探测不到后端"的离线演示模式下生效，绝不影响真实后端的登录。
+  // 密码公开可见是有意为之：静态演示站没有服务端，这个凭据不具备任何真实权限。
+  // 邮箱一律使用保留域名 .local，避免与真实账号撞车。
+  var DEMO = {
+    password: "demo2026",
+    admin: { email: "gly", nickname: "gly", isAdmin: true },
+    user: { email: "test@alliance.local", nickname: "测试用户", isAdmin: false }
+  };
+
   window.AllianceRuntime = {
     detectBackend: detectBackend,
     whenReady: whenReady,
     isOffline: isOffline,
     apiBase: apiBase,
     mode: mode,
-    isFileProtocol: IS_FILE_PROTOCOL
+    isFileProtocol: IS_FILE_PROTOCOL,
+    DEMO: DEMO
   };
 })();
