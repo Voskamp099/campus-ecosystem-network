@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campus Ecosystem Network · 标识规范预览</title>
+<style>
+  :root {
+    --bg: #090B12;
+    --surface: #111725;
+    --surface-2: #161C2B;
+    --text: #EFF2F7;
+    --muted: #9BA6BA;
+    --weak: #768199;
+    --brand: #4C7DFF;
+    --accent: #2DD4EA;
+    --line: rgba(239,242,247,.10);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0 0 80px;
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.65; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 32px; }
+  header { padding: 56px 0 32px; }
+  h1 { margin: 0 0 6px; font-size: 30px; letter-spacing: -.03em; font-weight: 700; }
+  h1 .g { background: linear-gradient(100deg, #4C7DFF 0%, #2DD4EA 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lede { margin: 0; color: var(--muted); font-size: 15px; max-width: 660px; }
+  h2 {
+    margin: 48px 0 16px; font-size: 12px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--brand); font-weight: 600;
+  }
+  h2 + .note { margin: -8px 0 18px; color: var(--weak); font-size: 13.5px; }
+  .panel {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 26px;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .cell {
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 12px; padding: 22px; text-align: center;
+  }
+  .cell.dark { background: #05070C; }
+  .cell.light { background: #EFF2F7; }
+  .cell.gray { background: #808080; }
+  .cell .cap { margin-top: 14px; font-size: 12px; color: var(--muted); }
+  .cell.light .cap { color: #5A6272; }
+  .row { display: flex; align-items: flex-end; gap: 34px; flex-wrap: wrap; }
+  .row .item { text-align: center; }
+  .row .item .cap { margin-top: 10px; font-size: 11.5px; color: var(--weak); font-family: ui-monospace, Menlo, monospace; }
+  .big { width: 168px; height: 168px; }
+  .lockups { display: grid; gap: 14px; }
+  .lockups img { display: block; max-width: 100%; height: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--weak); font-weight: 500; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+  td { color: var(--muted); }
+  td b { color: var(--text); font-weight: 500; }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #7FD8E8; }
+  .clearspace { position: relative; display: inline-block; padding: 26px; border: 1px dashed rgba(76,125,255,.55); }
+  .clearspace img { display: block; width: 72px; height: 72px; }
+  .clearspace .x { position: absolute; color: var(--brand); font-size: 11px; font-family: ui-monospace, monospace; }
+  ul { margin: 10px 0 0; padding-left: 20px; color: var(--muted); font-size: 13.5px; }
+  ul li { margin-bottom: 5px; }
+  ul li b { color: var(--text); font-weight: 500; }
+  footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--weak); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>标识规范预览 <span class="g">Campus Ecosystem Network</span></h1>
+  <p class="lede">
+    参照 Linear / Vercel / Supabase / Notion / Anthropic 的品牌系统规范重建：
+    单一主导形状、24 网格构造、2px 最小描边、单色可辨、灰度可辨、
+    为 16px 单独设计 favicon、清晰空间 = 标志高度。
+  </p>
+</header>
+
+<h2>主标识</h2>
+<p class="note">三个切角节点沿对角排成<b>开放链</b>——刻意不用闭合三角，那是通用网络图标；开放链表达"正在连接"，且更独特。切角语言与全站区块的 22px 切角同源。</p>
+<div class="panel">
+  <div class="grid">
+    <div class="cell"><img class="big" src="../public/assets/brand/logo-mark.svg" alt=""><div class="cap">渐变版 · mark only</div></div>
+    <div class="cell dark"><img class="big" src="../public/assets/brand/logo-mark-mono.svg" alt="" style="color:#EFF2F7"><div class="cap">单色版（currentColor）</div></div>
+    <div class="cell gray"><img class="big" src="../public/assets/brand/logo-mark-mono.svg" alt="" style="color:#fff"><div class="cap">灰度可辨性测试</div></div>
+    <div class="cell light"><img class="big" src="../public/assets/brand/logo-mark-mono.svg" alt="" style="color:#0B0F1A"><div class="cap">浅底单色版</div></div>
+  </div>
+</div>
+
+<h2>实际尺寸梯度</h2>
+<p class="note">16px 是浏览器标签页的尺寸，也是最严苛的测试。三节点版在 16px 会糊，所以 favicon 单独做了两个节点的简化版本。</p>
+<div class="panel">
+  <div class="row">
+    <div class="item"><img src="../public/assets/brand/logo-mark.svg" width="16" height="16" alt=""><div class="cap">16px</div></div>
+    <div class="item"><img src="../public/assets/brand/logo-mark.svg" width="24" height="24" alt=""><div class="cap">24px</div></div>
+    <div class="item"><img src="../public/assets/brand/logo-mark.svg" width="32" height="32" alt=""><div class="cap">32px</div></div>
+    <div class="item"><img src="../public/assets/brand/logo-mark.svg" width="48" height="48" alt=""><div class="cap">48px</div></div>
+    <div class="item"><img src="../public/assets/brand/logo-mark.svg" width="96" height="96" alt=""><div class="cap">96px</div></div>
+    <div class="item"><img src="../public/favicon.svg" width="16" height="16" alt=""><div class="cap">favicon 16px</div></div>
+    <div class="item"><img src="../public/favicon.svg" width="32" height="32" alt=""><div class="cap">favicon 32px</div></div>
+  </div>
+</div>
+
+<h2>字标组合</h2>
+<p class="note">横向组合。字标用 Syne 800，与首页大标题同一字重体系。</p>
+<div class="panel lockups">
+  <div class="cell dark" style="text-align:left"><img src="../public/assets/brand/logo-lockup.svg" alt=""></div>
+  <div class="cell light" style="text-align:left"><img src="../public/assets/brand/logo-lockup-light.svg" alt=""></div>
+</div>
+
+<h2>清晰空间</h2>
+<p class="note">安全区 = 标志高度，四边留白不得小于该值。</p>
+<div class="panel">
+  <div class="clearspace">
+    <img src="../public/assets/brand/logo-mark.svg" alt="">
+    <span class="x" style="top:4px;left:50%">x</span>
+    <span class="x" style="bottom:4px;left:50%">x</span>
+    <span class="x" style="left:4px;top:50%">x</span>
+    <span class="x" style="right:4px;top:50%">x</span>
+  </div>
+</div>
+
+<h2>使用规则</h2>
+<div class="panel">
+  <table>
+    <thead><tr><th>规则</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td><b>最小尺寸</b></td><td>mark 版 ≥ 16px；favicon 专用版用于 ≤ 32px</td></tr>
+      <tr><td><b>单色优先</b></td><td>识别靠形状不靠颜色。渐变是修饰，删掉渐变仍须可辨</td></tr>
+      <tr><td><b>不要变形</b></td><td>不旋转、不拉伸、不加阴影、不改比例</td></tr>
+      <tr><td><b>留白</b></td><td>四周留白不小于标志高度</td></tr>
+      <tr><td><b>深浅背景</b></td><td>深底用渐变版，浅底用 <code>logo-lockup-light.svg</code> 或单色版</td></tr>
+      <tr><td><b>app icon</b></td><td>不要自己加圆角，系统会加。直接用 <code>logo-mark.svg</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>文件清单</h2>
+<div class="panel">
+  <table>
+    <thead><tr><th>文件</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td><code>public/assets/brand/logo-mark.svg</code></td><td>渐变标识，独立使用</td></tr>
+      <tr><td><code>public/assets/brand/logo-mark-mono.svg</code></td><td>单色标识（currentColor），深浅底通用</td></tr>
+      <tr><td><code>public/assets/brand/logo-lockup.svg</code></td><td>横向组合 · 深底</td></tr>
+      <tr><td><code>public/assets/brand/logo-lockup-light.svg</code></td><td>横向组合 · 浅底</td></tr>
+      <tr><td><code>public/favicon.svg</code></td><td>16px 专用简化版（两节点 + 粗线）</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>标识与全站切角几何同源 · 渐变与 C′ 首页共用一条 · 2026-11-23</footer>
+</div>
+</body>
+</html>

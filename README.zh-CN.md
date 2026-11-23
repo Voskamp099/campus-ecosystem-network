@@ -1,21 +1,92 @@
-# 北京校园生态合作联盟（Campus Ecosystem Network）
+<div align="center">
+  <img src="public/assets/brand/logo-lockup.svg" width="320" alt="Campus Ecosystem Network" />
+  <p><b>北京校园生态合作联盟</b> —— 连接高校与企业的全栈平台，让实习机会、活动与合作需求真正被匹配起来，而不是躺在一个微信群里。</p>
+  <p>
+    <a href="https://github.com/Voskamp099/campus-ecosystem-network/actions/workflows/ci.yml"><img src="https://github.com/Voskamp099/campus-ecosystem-network/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+    <a href="https://beijing-alliance.onrender.com"><img src="https://img.shields.io/badge/%E7%BA%BF%E4%B8%8A-bijing--alliance.onrender.com-46E3B7?style=flat-square" alt="Live" /></a>
+    <img src="https://img.shields.io/badge/Node-18%20%7C%2020-3FA45D?style=flat-square&logo=node.js&logoColor=white" alt="Node" />
+    <img src="https://img.shields.io/badge/%E6%B5%8B%E8%AF%95-114%20%E9%80%9A%E8%BF%87-3ECF8E?style=flat-square" alt="Tests" />
+    <img src="https://img.shields.io/badge/Express-4-000000?style=flat-square&logo=express&logoColor=white" alt="Express" />
+    <img src="https://img.shields.io/badge/MySQL-8-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL" />
+    <img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-%E9%9D%9E%E5%BC%80%E6%BA%90-9BA6BA?style=flat-square" alt="License" />
+  </p>
+  <p>
+    <a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a>
+  </p>
+</div>
 
-连接高校与企业的全栈平台，让实习机会、活动与合作需求真正被匹配起来，
-而不是躺在一个微信群里。
+---
 
-[English](README.md) · [简体中文](README.zh-CN.md)
+## 能力一览
 
-[![CI](https://github.com/Voskamp099/campus-ecosystem-network/actions/workflows/ci.yml/badge.svg)](https://github.com/Voskamp099/campus-ecosystem-network/actions/workflows/ci.yml)
+<div align="center">
+
+<table>
+  <thead>
+    <tr>
+      <th align="center" width="60">&nbsp;</th>
+      <th align="center" width="210">能力</th>
+      <th align="left">具体做了什么</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">🏫</td>
+      <td align="center"><b>生态对接名录</b></td>
+      <td align="left">高校、政府、企业三类伙伴汇总成一张名录，支持按类型筛选与关键词搜索。</td>
+    </tr>
+    <tr>
+      <td align="center">🔄</td>
+      <td align="center"><b>五段对接流程</b></td>
+      <td align="left">每一份申请都带追踪码，按 <code>pending → reviewing → matched → contacted → completed</code> 推进。</td>
+    </tr>
+    <tr>
+      <td align="center">📝</td>
+      <td align="center"><b>用户发布与审核</b></td>
+      <td align="left">注册用户发布活动和实习信息，管理员审核通过或拒绝，拒绝时附上原因。</td>
+    </tr>
+    <tr>
+      <td align="center">🔐</td>
+      <td align="center"><b>分层安全</b></td>
+      <td align="left">JWT 会话、CSRF 双重提交 Cookie、入参 schema 校验、限流与请求体过滤。</td>
+    </tr>
+    <tr>
+      <td align="center">🛟</td>
+      <td align="center"><b>降级而不是崩溃</b></td>
+      <td align="left">MySQL 不可达时数据层自动切到 JSON 文件存储，站点照常运行而不是崩掉。</td>
+    </tr>
+    <tr>
+      <td align="center">🗂️</td>
+      <td align="center"><b>12 个页签的后台</b></td>
+      <td align="left">增删改查、拖拽排序、投稿审核、用户与统计视图，外加完整的操作审计日志。</td>
+    </tr>
+    <tr>
+      <td align="center">🚀</td>
+      <td align="center"><b>三种运行方式</b></td>
+      <td align="left">作为 Node 服务运行、作为无后端的静态站发布，或直接双击 <code>public/index.html</code> 以本地模式打开。</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
 
 > **关于本仓库** — 作为作品展示公开，用于说明平台背后的工程实现。本仓库不以开源项目方式发布，
 > 未授予任何许可，详见 [NOTICE](NOTICE)。样本数据已脱敏，提交历史保留原样。
 
-![首页](docs/screenshots/home-hero.jpg)
+---
+
+## 界面截图
 
 <p align="center">
+  <img src="docs/screenshots/home-hero.jpg" alt="首页" width="100%" />
+  <br /><br />
   <img src="docs/screenshots/home-directory.jpg" width="49%" alt="生态对接名录" />
   <img src="docs/screenshots/admin-dashboard.jpg" width="49%" alt="后台控制台" />
 </p>
+
+<p align="center"><em>上：首页——首屏轮播、合作伙伴矩阵与联盟权益中心。
+左下：生态对接名录，支持类型筛选与关键词搜索。
+右下：后台控制台。</em></p>
 
 ---
 
@@ -33,7 +104,7 @@
 
 ## 工程亮点
 
-### 降级而不是崩溃
+### 🛟 降级而不是崩溃
 
 整个数据层只暴露一个接口：isDatabaseAvailable()。MySQL 连不上时，读操作降级到 JSON 文件存储，
 写操作返回 503，而不是让进程崩掉。服务照常启动、照常对外提供页面，后台控制台也照常可用。
@@ -41,7 +112,7 @@
 这不是理论上的设计。这个应用在大部分生命周期里都是在 MySQL 停着的状态下开发和测试的，
 正是这条降级路径让本地开发成为可能。
 
-### 安全模型
+### 🔐 安全模型
 
 每一次写操作都走同一条固定的链条，每一环都是刻意选的：
 
@@ -56,7 +127,7 @@
 | 密码 | bcrypt cost 12，哈希值不进日志 |
 | 可观测 | Pino 结构化日志、Sentry 错误追踪、/health /ready /live 三个探针端点 |
 
-### 一个值得单独说的 bug
+### 🐛 一个值得单独说的 bug
 
 /api/user/ 下的四条历史遗留路由，从 query 里取手机号，直接返回这个人的对接申请、
 活动报名和投递记录，全程不需要任何认证。谁猜到一个手机号，就能拉走别人的记录——
@@ -66,19 +137,21 @@
 保持一致。__tests__/integration/user-records-auth.test.js 把这个行为钉住了，
 其中包括"带着合法令牌、但 query 里填别人的手机号"这一种情况。
 
-### 测试
+### 🧪 测试
 
-8 个套件共 64 个测试，用 supertest 驱动真正的 Express 应用，不对框架本身做 mock。
+14 个套件共 114 个测试，用 supertest 驱动真正的 Express 应用，不对框架本身做 mock。
 
 ```
-Test Suites: 8 passed, 8 total
-Tests:       64 passed, 64 total
+Test Suites: 14 passed, 14 total
+Tests:       114 passed, 114 total
 ```
 
-utils/csrf.js 覆盖率 91%，utils/validator.js 93%，server/auth.js 87%。
+utils/csrf.js 覆盖率 93%，utils/validator.js 93%，server/auth.js 87%。
 
 测试用例名写的是它守护的那条保证，所以失败时告诉你的是"哪条保证被破坏了"，
 而不是"第几行坏了"。例如：写操作不带 CSRF token 时被拒绝。
+
+---
 
 ## 架构
 
@@ -107,7 +180,35 @@ utils/csrf.js 覆盖率 91%，utils/validator.js 93%，server/auth.js 87%。
 内容用 section_key + group_key + 有序条目来建模，所以同一张后台表格能同时驱动首屏轮播、
 联盟权益中心、生态对接名录和近期活动列表，而这几块彼此并不需要知道对方存在。
 
+---
+
 ## 技术栈
+
+<div align="center">
+<p>
+  <img src="https://img.shields.io/badge/Node.js-18%2B-3FA45D?style=flat-square&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Express-4-000000?style=flat-square&logo=express&logoColor=white" alt="Express" />
+  <img src="https://img.shields.io/badge/MySQL-8-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL" />
+  <img src="https://img.shields.io/badge/JWT-jsonwebtoken-000000?style=flat-square" alt="JWT" />
+  <img src="https://img.shields.io/badge/bcrypt-5.0-4A4A4A?style=flat-square" alt="bcrypt" />
+  <img src="https://img.shields.io/badge/Jest-30-3FA45D?style=flat-square&logo=jest&logoColor=white" alt="Jest" />
+  <img src="https://img.shields.io/badge/supertest-7-1F6F43?style=flat-square" alt="supertest" />
+  <img src="https://img.shields.io/badge/Swagger-2-85EA2D?style=flat-square&logo=swagger&logoColor=white" alt="Swagger" />
+</p>
+<p>
+  <img src="https://img.shields.io/badge/Pino-10-3FA45D?style=flat-square&logo=pino&logoColor=white" alt="Pino" />
+  <img src="https://img.shields.io/badge/Sentry-10-362D59?style=flat-square&logo=sentry&logoColor=white" alt="Sentry" />
+  <img src="https://img.shields.io/badge/helmet-8-333333?style=flat-square" alt="helmet" />
+  <img src="https://img.shields.io/badge/%E9%99%90%E6%B5%81-express--rate--limit-9C27B0?style=flat-square" alt="express-rate-limit" />
+  <img src="https://img.shields.io/badge/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C-express--validator-9C27B0?style=flat-square" alt="express-validator" />
+  <img src="https://img.shields.io/badge/xss-%E8%BF%87%E6%BB%A4-6E4798?style=flat-square" alt="xss" />
+  <img src="https://img.shields.io/badge/nodemailer-2-A1C349?style=flat-square" alt="nodemailer" />
+  <img src="https://img.shields.io/badge/sharp-0.33-5F3DC4?style=flat-square&logo=sharp&logoColor=white" alt="sharp" />
+  <img src="https://img.shields.io/badge/npm-2-3FA45D?style=flat-square&logo=npm&logoColor=white" alt="npm" />
+</p>
+</div>
+
+不依赖框架，也不需要构建步骤——前端就是纯 HTML、CSS 和 ES6+。
 
 **后端** Node.js 18+、Express 4、MySQL 8（InnoDB，utf8mb4）、mysql2、jsonwebtoken、
 bcryptjs、csrf-csrf、helmet、express-rate-limit、express-validator、xss、
@@ -117,6 +218,8 @@ pino、@sentry/node、swagger-jsdoc、nodemailer、sharp、@volcengine/tos-sdk
 带拖拽排序的单页应用，同时支持 file:// 模式用 localStorage 完整运行，不起服务也能演示。
 
 **测试** Jest + supertest
+
+---
 
 ## 目录结构
 
@@ -145,6 +248,8 @@ __tests__/
   integration/          针对真实应用的 supertest 套件
 ```
 
+---
+
 ## 本地运行
 
 ```bash
@@ -159,6 +264,8 @@ node server/index.js
 底层存储换成 localStorage。
 
 ## 部署
+
+**线上地址：** [https://beijing-alliance.onrender.com](https://beijing-alliance.onrender.com)
 
 站点以 Node Web Service 的形态跑在 Render 上。`render.yaml` 是 Render Blueprint：
 在 Render 控制台 **New → Blueprint** 指向本仓库，构建命令、健康检查和环境变量
@@ -200,11 +307,13 @@ https://voskamp099.github.io/campus-ecosystem-network/
 两者都使用保留域名 `.local`，且只在探测不到后端时生效，因此无法用于正式环境。
 
 ```bash
-npm test                  # 64 个测试
+npm test                  # 114 个测试
 npm run test:coverage     # 覆盖率报告
 ```
 
 服务运行时，Swagger 文档在 /api-docs。
+
+---
 
 ## 说明
 

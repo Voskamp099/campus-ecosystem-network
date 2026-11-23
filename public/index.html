@@ -80,14 +80,12 @@
       white-space: nowrap;
     }
 
-    /* logo：10px 斜切方块 */
-    .c-dot {
-      width: 10px;
-      height: 10px;
+    /* 标识：三个切角节点沿对角排成开放链（与全站切角几何同源） */
+    .c-mark {
+      width: 26px;
+      height: 26px;
       flex: 0 0 auto;
-      display: inline-block;
-      background: #4c7dff;
-      transform: skewX(-12deg);
+      display: block;
     }
 
     .c-navlinks {
@@ -814,7 +812,7 @@
     <nav class="c-nav" id="nav" aria-label="主导航">
       <div class="c-nav-inner">
         <a href="#hero" class="c-brand">
-          <span class="c-dot" aria-hidden="true"></span>
+          <img class="c-mark" src="assets/brand/logo-mark.svg" width="26" height="26" alt="" aria-hidden="true" />
           <span>北京校园生态合作联盟</span>
         </a>
 

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 40" width="260" height="40" role="img" aria-label="Campus Ecosystem Network">
+<defs><linearGradient id="allianceGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="40" y2="40"><stop offset="0" stop-color="#4C7DFF"/><stop offset="1" stop-color="#2DD4EA"/></linearGradient></defs>
+<g transform="translate(0, 8) scale(1)">
+  <path d="M3.5 3.5 L20.5 20.5" stroke="url(#allianceGradient)" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M2.5 0.5 H6.5 V4.5 L4.5 6.5 H0.5 V2.5 Z" fill="url(#allianceGradient)"/>
+  <path d="M11 9 H15 V13 L13 15 H9 V11 Z" fill="url(#allianceGradient)"/>
+  <path d="M19.5 17.5 H23.5 V21.5 L21.5 23.5 H17.5 V19.5 Z" fill="url(#allianceGradient)"/>
+</g>
+<text x="36" y="26" font-family="Syne, 'Noto Sans SC', system-ui, sans-serif" font-size="19" font-weight="800" letter-spacing="-0.4" fill="#EFF2F7">Campus Ecosystem</text>
+<text x="222" y="26" font-family="'Noto Sans SC', system-ui, sans-serif" font-size="19" font-weight="500" fill="#EFF2F7" opacity="0.55">Network</text>
+</svg>

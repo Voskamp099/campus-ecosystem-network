@@ -1,18 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 联盟标识：三个节点连成三角，对应校园 / 企业 / 政府三方生态对接 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Campus Ecosystem Network">
-  <defs>
-    <linearGradient id="allianceGradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#2a4fa8"/>
-      <stop offset="0.55" stop-color="#5b8def"/>
-      <stop offset="1" stop-color="#8b7cf0"/>
-    </linearGradient>
-  </defs>
-  <rect width="32" height="32" rx="9" fill="url(#allianceGradient)"/>
-  <path d="M11 10.5 L21 10.5 L16 21 Z" fill="none" stroke="rgba(255,255,255,0.94)" stroke-width="1.7" stroke-linejoin="round"/>
-  <g fill="#ffffff">
-    <circle cx="11" cy="10.5" r="2.7"/>
-    <circle cx="21" cy="10.5" r="2.7"/>
-    <circle cx="16" cy="21" r="2.7"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" role="img" aria-label="Campus Ecosystem Network">
+<defs><linearGradient id="allianceGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="16" y2="16"><stop offset="0" stop-color="#4C7DFF"/><stop offset="1" stop-color="#2DD4EA"/></linearGradient></defs>
+<path d="M3 3 L13 13" stroke="url(#allianceGradient)" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+<path d="M2.3 0.5 H5.5 V3.7 L3.7 5.5 H0.5 V2.3 Z" fill="url(#allianceGradient)"/>
+<path d="M12.3 10.5 H15.5 V13.7 L13.7 15.5 H10.5 V12.3 Z" fill="url(#allianceGradient)"/>
 </svg>
